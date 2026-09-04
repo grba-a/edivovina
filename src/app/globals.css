@@ -1,26 +1,59 @@
 @import "tailwindcss";
+@import "../styles/descent.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Iz "Edivo Brand Identity — Logo and Color Guide" (svibanj 2024).
+     Nista ovdje nije izabrano; sve su njihove vrijednosti. */
+  --color-gold: #d2ac67;   /* Pantone 7509C */
+  --color-navy: #09334e;   /* Pantone 7463C — brend boja */
+  --color-ivory: #ffffff;
+
+  /* Vodeni stupac: plicak je teal, dubina je NJIHOV navy, dno je navy
+     potamnjen. Prijelaz teal -> tamnoplavo je namjerno zadrzan. */
+  --color-teal: #12777a;
+  --color-abyss: #03141f;
+
+  /* Fizicki materijali amfore — nisu brend boje */
+  --color-sand: #c4a184;
+  --color-coral: #c98a70;
+  --color-plavac: #6b1f2a;
+
+  --font-display: var(--font-baskerville), ui-serif, Georgia, serif;
+  --font-sans: var(--font-raleway), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    background: var(--color-abyss);
+    color: var(--color-ivory);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: auto; /* Lenis vodi; native smooth bi se borio s njim */
+  }
+  body {
+    font-family: var(--font-sans);
+    overflow-x: clip; /* horizontalni scroll je bug, ne feature */
+  }
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-abyss);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Tehnicka oznaka. Brend nema mono font, pa je Raleway s tabularnim
+   znamenkama i sirokim trackingom — cita se instrumentalno bez treceg fonta. */
+@utility data-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  letter-spacing: 0.19em;
+  font-size: 0.6875rem;
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
 }

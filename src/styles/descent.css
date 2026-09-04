@@ -1,0 +1,258 @@
+/* ============================================================================
+   EDIVO — descent.css
+   Cijeli vizualni sustav spusta. NAMJERNO bez Tailwind utilities i bez JS-a:
+   ovo se kopira u Breakdance Code Block kako jest. Jedini ulaz je --descent
+   (0 = povrsina, 1 = morsko dno), koji pise src/lib/descent.ts u ~15 linija.
+   Sve ostalo ispod je cisti CSS.
+   ========================================================================= */
+
+@property --descent {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+:root {
+  /* Iz Edivo brand guidelinesa (Pantone 7509C / 7463C). */
+  --ed-gold: #d2ac67;
+  --ed-navy: #09334e;
+  --ed-ivory: #ffffff;
+
+  /* Rampa dubine: plicak teal -> njihov navy -> navy potamnjen. */
+  --ed-teal: #12777a;
+  --ed-abyss: #03141f;
+
+  --ed-sand: #c4a184;
+  --ed-coral: #c98a70;
+
+  /* Jedan zajednicki sat. Sve ambijentalne animacije dijele trajanje i
+     razlikuju se samo po animation-delay -> ne mogu otici u drift. */
+  --ed-period: 24s;
+}
+
+/* --- vodeni stupac -------------------------------------------------------
+   Tri sloja, ne color-mix: radi svugdje i monotono je po konstrukciji.
+   Baza je abis; nad njom se gase deep i shallow kako --descent raste.      */
+
+.ed-water {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--ed-abyss);
+  pointer-events: none;
+}
+.ed-water::before,
+.ed-water::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.ed-water::before {
+  background: var(--ed-navy);
+  opacity: calc(1 - clamp(0, (var(--descent) - 0.34) / 0.42, 1));
+}
+.ed-water::after {
+  background: var(--ed-teal);
+  opacity: calc(1 - clamp(0, var(--descent) / 0.34, 1));
+}
+
+/* --- snopovi svjetla s povrsine -----------------------------------------
+   Mekoca je ispecena u gradijent stopove. NE filter: blur() preko pola
+   ekrana - to obori frame rate i ne treba mu.                             */
+
+.ed-shafts {
+  position: fixed;
+  inset: -10% 0 auto 0;
+  height: 96vh;
+  z-index: 1;
+  pointer-events: none;
+  opacity: calc(clamp(0, 1 - var(--descent) * 1.85, 1));
+}
+.ed-shaft {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transform-origin: 50% 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0.15) 28%,
+    rgba(255, 255, 255, 0.05) 62%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  /* Bocno feathanje maskom - bez ovoga je snop tvrda pruga.
+     -webkit- prefiks je obavezan, WebKit jos trazi oba zapisa. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 38%, #000 62%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 38%, #000 62%, transparent);
+  animation: ed-sway var(--ed-period) ease-in-out infinite alternate;
+}
+.ed-shaft:nth-child(1) { left: 14%; width: 15vw; rotate: -8deg;  animation-delay: calc(var(--ed-period) * -0.05); }
+.ed-shaft:nth-child(2) { left: 34%; width: 7vw;  rotate: -3deg;  animation-delay: calc(var(--ed-period) * -0.37); }
+.ed-shaft:nth-child(3) { left: 58%; width: 11vw; rotate: 6deg;   animation-delay: calc(var(--ed-period) * -0.62); }
+.ed-shaft:nth-child(4) { left: 79%; width: 6vw;  rotate: 11deg;  animation-delay: calc(var(--ed-period) * -0.81); }
+
+@keyframes ed-sway {
+  from { transform: skewX(-2.5deg) scaleY(0.97); opacity: 0.75; }
+  to   { transform: skewX(3deg)    scaleY(1.03); opacity: 1; }
+}
+
+/* --- marine snow ---------------------------------------------------------
+   Tri tiled sloja umjesto 30 divova. Pomice se transform (GPU), nikad
+   background-position.                                                     */
+
+.ed-snow {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: calc(clamp(0, var(--descent) * 2.1, 1) * 0.55);
+}
+.ed-snow-layer {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  top: -100%;
+  background-repeat: repeat;
+  animation: ed-fall var(--ed-period) linear infinite;
+}
+.ed-snow-layer:nth-child(1) {
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9) 0 0.9px, transparent 1.2px);
+  background-size: 132px 132px;
+  animation-duration: calc(var(--ed-period) * 2.4);
+}
+.ed-snow-layer:nth-child(2) {
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.7) 0 1.4px, transparent 1.9px);
+  background-size: 218px 218px;
+  animation-duration: calc(var(--ed-period) * 1.6);
+  animation-delay: calc(var(--ed-period) * -0.44);
+}
+.ed-snow-layer:nth-child(3) {
+  background-image: radial-gradient(circle at 50% 50%, rgba(201, 138, 112, 0.5) 0 2px, transparent 2.6px);
+  background-size: 340px 340px;
+  animation-duration: var(--ed-period);
+  animation-delay: calc(var(--ed-period) * -0.71);
+}
+@keyframes ed-fall {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, 50%, 0); }
+}
+
+/* --- morsko dno ---------------------------------------------------------- */
+
+.ed-floor {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  height: calc(clamp(0, (var(--descent) - 0.74) / 0.26, 1) * 34vh);
+  background: linear-gradient(to bottom, rgba(3, 20, 31, 0) 0%, #062033 44%, #041420 100%);
+  border-top: 1px solid rgba(208, 160, 96, calc(clamp(0, (var(--descent) - 0.78) / 0.22, 1) * 0.4));
+}
+
+/* --- dubinomjer (traka; brojku pise JS) --------------------------------- */
+
+.ed-gauge-track {
+  position: relative;
+  width: 1px;
+  /* ODREDENA visina, ne 100%. S height:100% na auto-visokom roditelju
+     procentualna visina .ed-gauge-fill se srusi na 0 i traka tiho ostane
+     prazna — snimka to ne pokaze, mehanicka provjera pokaze. */
+  height: var(--ed-gauge-h, 13rem);
+  background: rgba(255, 255, 255, 0.16);
+}
+.ed-gauge-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--descent) * 100%);
+  background: var(--ed-gold);
+}
+.ed-gauge-fill::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ed-gold);
+}
+
+/* --- ulazna animacija hera ----------------------------------------------
+   CISTI CSS, ne GSAP. Naslov na GSAP-u digne mobilni LCP na ~5 s jer tekst
+   fizicki ne postoji dok se bundle ne skine. Stagger ide kroz inline
+   animation-delay, ne kroz JS.                                             */
+
+.ed-mask { display: block; overflow: hidden; }
+.ed-line {
+  display: block;
+  transform: translateY(104%);
+  animation: ed-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes ed-rise {
+  from { transform: translateY(104%); }
+  to   { transform: translateY(0); }
+}
+
+.ed-fade {
+  opacity: 0;
+  animation: ed-fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes ed-fade-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- image reveal (maska; GSAP samo skida --r) -------------------------- */
+
+.ed-reveal {
+  clip-path: inset(0 0 calc((1 - var(--r, 1)) * 100%) 0);
+}
+
+/* --- amfora na mobitelu -----------------------------------------------
+   Spust ostaje, ali ispod hera se stisa: na 390px je kadar tako uzak da
+   amfora inace sjedi tocno iza teksta i proizvoda.                       */
+
+/* Amfora ostaje prisutna cijelim spustom, ali se ispod hera stisa: inace
+   sjedi tocno iza naslova i cita se kao mrlja, ne kao dubina. */
+.ed-canvas {
+  opacity: calc(1 - clamp(0, (var(--descent) - 0.07) / 0.15, 1) * 0.42);
+}
+
+@media (max-width: 767px) {
+  .ed-canvas {
+    opacity: calc(1 - clamp(0, (var(--descent) - 0.05) / 0.16, 1) * 0.66);
+  }
+}
+
+/* --- reduced motion -----------------------------------------------------
+   Bez pokreta, ne "brze". Bazno stanje mora biti VIDLJIVO.                 */
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-line { transform: none; animation: none; }
+  .ed-fade { opacity: 1; transform: none; animation: none; }
+  .ed-shaft, .ed-snow-layer { animation: none; }
+  .ed-snow { opacity: 0.2; }
+  .ed-reveal { clip-path: none; }
+}
+
+/* --- full-bleed kadar s parallaxom ------------------------------------
+   GSAP pise samo --py; transform ostaje u CSS-u i prenosiv je.
+   Slika je 112% visine da pomak od +-8% nikad ne otkrije rub.            */
+
+.ed-px { overflow: hidden; }
+.ed-px > img {
+  height: 112%;
+  width: 100%;
+  object-fit: cover;
+  transform: translate3d(0, var(--py, 0%), 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-px > img { height: 100%; transform: none; }
+}

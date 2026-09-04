@@ -1,7 +1,9 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  // Bez Next.js dev bedza u kadru
+  devIndicators: false,
+  images: { formats: ['image/webp'] },
+}
 
-export default nextConfig;
+export default nextConfig
