@@ -21,7 +21,7 @@ export default function BottleCanvas() {
         frameloop={rich && !still ? 'always' : 'demand'}
         camera={{ position: [0, 0, 11], fov: 32 }}
         gl={{ antialias: rich, alpha: true, powerPreference: 'high-performance' }}
-        onCreated={({ gl, scene, invalidate }) => {
+        onCreated={({ gl, scene, camera, invalidate }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping
           gl.toneMappingExposure = 1.05
           scene.fog = new THREE.Fog('#12777a', 13, 26)
@@ -29,6 +29,8 @@ export default function BottleCanvas() {
           window.addEventListener('descent', on)
           if (process.env.NODE_ENV !== 'production') {
             ;(window as unknown as Record<string, unknown>).__scene = scene
+            ;(window as unknown as Record<string, unknown>).__cam = camera
+            ;(window as unknown as Record<string, unknown>).__THREE = THREE
           }
         }}
       >

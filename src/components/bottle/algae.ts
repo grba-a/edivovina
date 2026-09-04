@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { amphoraProfile, surfacePoint, AMPHORA_HEIGHT } from './amphora'
+import type { SurfacePoint } from './surface'
 
 /**
  * Alge. Instancirane trake koje IZRASTU dok amfora tone i valovito se micu.
@@ -53,11 +53,10 @@ export const algaeFragment = /* glsl */ `
   }
 `
 
-export function algaePlacements(count = 90) {
-  const prof = amphoraProfile(120)
+export function algaePlacements(points: SurfacePoint[], modelHeight: number) {
   const matrices: THREE.Matrix4[] = []
-  const appear = new Float32Array(count)
-  const phase = new Float32Array(count)
+  const appear = new Float32Array(points.length)
+  const phase = new Float32Array(points.length)
 
   let s = 0x1f123bb5
   const rnd = () => {
@@ -66,28 +65,17 @@ export function algaePlacements(count = 90) {
   }
 
   const up = new THREE.Vector3(0, 1, 0)
-  for (let i = 0; i < count; i++) {
-    // guste nize: donji dio amfore stoji u sedimentu i prvi obrasta
-    const t = 0.06 + Math.pow(rnd(), 1.45) * 0.86
-    const theta = rnd() * Math.PI * 2
-    const { pos, nrm } = surfacePoint(prof, t, theta)
+  points.forEach((sp, i) => {
+    const len = modelHeight * (0.055 + rnd() * 0.085)
+    const wide = modelHeight * (0.011 + rnd() * 0.018)
 
-    const len = 0.17 + rnd() * 0.26
-    const wide = 0.032 + rnd() * 0.055
-
-    const q = new THREE.Quaternion().setFromUnitVectors(up, nrm)
+    const q = new THREE.Quaternion().setFromUnitVectors(up, sp.nrm)
     q.multiply(new THREE.Quaternion().setFromAxisAngle(up, rnd() * Math.PI * 2))
 
-    matrices.push(
-      new THREE.Matrix4().compose(
-        pos.clone().setY(pos.y - AMPHORA_HEIGHT / 2),
-        q,
-        new THREE.Vector3(wide, len, wide),
-      ),
-    )
-    appear[i] = 0.1 + rnd() * 0.8
+    matrices.push(new THREE.Matrix4().compose(sp.pos.clone(), q, new THREE.Vector3(wide, len, wide)))
+    appear[i] = 0.1 + rnd() * 0.78
     phase[i] = rnd() * Math.PI * 2
-  }
+  })
 
   return { matrices, appear, phase }
 }

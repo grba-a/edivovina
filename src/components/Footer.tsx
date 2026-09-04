@@ -6,8 +6,10 @@ export default function Footer() {
   return (
     <footer id="seabed" className="relative z-10 border-t border-ivory/10 px-5 pb-10 pt-16 md:px-8 md:pt-20">
       <div className="mx-auto w-full max-w-[92rem]">
-        <div className="grid gap-10 md:grid-cols-4">
-          <div>
+        {/* Na desktopu su svi blokovi u VANJSKIM stupcima: stupci 6-7 ostaju
+            prazni jer tamo amfora sjeda u leziste. */}
+        <div className="grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-3">
             <Image
               src="/brand/edivo-wordmark.png"
               alt="Edivo Vina"
@@ -20,7 +22,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <div>
+          <div className="md:col-span-2 md:col-start-4">
             <p className="data-label mb-4 text-ivory/40">Winery</p>
             <address className="not-italic text-sm leading-relaxed text-ivory/70">
               Janjina 62<br />
@@ -29,7 +31,7 @@ export default function Footer() {
             </address>
           </div>
 
-          <div>
+          <div className="md:col-span-2 md:col-start-8">
             <p className="data-label mb-4 text-ivory/40">Wine bar</p>
             <address className="not-italic text-sm leading-relaxed text-ivory/70">
               Drače 18<br />
@@ -38,7 +40,7 @@ export default function Footer() {
             </address>
           </div>
 
-          <div>
+          <div className="md:col-span-3 md:col-start-10">
             <p className="data-label mb-4 text-ivory/40">Contact</p>
             <ul className="text-sm text-ivory/70">
               <li>
