@@ -8,7 +8,7 @@ import path from 'node:path'
 
 const RAW = new URL('../.cache/raw/', import.meta.url).pathname
 const OUT = new URL('../public/img/', import.meta.url).pathname
-const WIDTHS = [640, 1280, 1600]
+const WIDTHS = [420, 640, 840, 1240, 1600]
 
 // Jedan grade ne znaci jedni parametri. Podvodni setovi trebaju jaci warm i
 // cyan-kill da bi USLI U ISTI SET kao suhe fotke. To je balans bijele, ne drugi look.
