@@ -41,7 +41,11 @@ export default function BuyBar() {
           atClose.current = e.isIntersecting
           apply()
         },
-        { threshold: 0, rootMargin: '0px 0px -10% 0px' },
+        // NE negativni bottom margin: on SKRACUJE root, pa CTA u donjih 10%
+        // viewporta ne kvalificira kao vidljiv i traka mu sjedne na glavu
+        // (izmjereno: CTA na 767-818px, root skracen na 760px). Pozitivan
+        // margin PROSIRUJE root, pa se traka sakrije malo prije.
+        { threshold: 0, rootMargin: '0px 0px 140px 0px' },
       )
       io2.observe(close)
     }

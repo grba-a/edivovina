@@ -33,6 +33,12 @@ const SINK_SCALE = 0.95
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 
+/* Scratch objekti. Na module scopeu jer je instanca jedna, a mutiranje
+   useMemo vrijednosti React Compiler ispravno prijavljuje kao gresku. */
+const _fog = new THREE.Color()
+const _mat4 = new THREE.Matrix4()
+const _scale = new THREE.Vector3()
+
 export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boolean }) {
   const p = useDescentRef()
   const group = useRef<THREE.Group>(null)
@@ -89,9 +95,9 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
     [],
   )
 
-  const fogColor = useMemo(() => new THREE.Color(), [])
-  const tmp = useMemo(() => new THREE.Matrix4(), [])
-  const tmpScale = useMemo(() => new THREE.Vector3(), [])
+  /* Uniformi se mutiraju KROZ REF na materijal, ne kroz useMemo vrijednost. */
+  const crustMat = useRef<THREE.ShaderMaterial>(null)
+  const algaeMat = useRef<THREE.ShaderMaterial>(null)
 
   useFrame((state, dt) => {
     const target = p.current
@@ -128,12 +134,17 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
         lerp(HERO_TILT, 0, tip) + Math.sin(d * Math.PI * 1.3) * 0.2 * tip - settle * 1.4
     }
 
-    crustUniforms.uCrust.value = THREE.MathUtils.clamp((d - 0.14) / 0.86, 0, 1)
-    algaeUniforms.uDescent.value = d
-    algaeUniforms.uTime.value = state.clock.elapsedTime
-    fogColor.copy(TEAL).lerp(NAVY, Math.min(1, d / 0.38)).lerp(ABYSS, Math.max(0, (d - 0.38) / 0.62))
-    crustUniforms.uWater.value = fogColor
-    if (scene.fog) (scene.fog as THREE.Fog).color.copy(fogColor)
+    _fog.copy(TEAL).lerp(NAVY, Math.min(1, d / 0.38)).lerp(ABYSS, Math.max(0, (d - 0.38) / 0.62))
+
+    if (crustMat.current) {
+      crustMat.current.uniforms.uCrust.value = THREE.MathUtils.clamp((d - 0.14) / 0.86, 0, 1)
+      crustMat.current.uniforms.uWater.value = _fog
+    }
+    if (algaeMat.current) {
+      algaeMat.current.uniforms.uDescent.value = d
+      algaeMat.current.uniforms.uTime.value = state.clock.elapsedTime
+    }
+    if (scene.fog) (scene.fog as THREE.Fog).color.copy(_fog)
 
     // Kamenice se pojavljuju JEDNA PO JEDNA dok amfora pada. To je koncept:
     // pad je starenje, a kolonizacija je vidljivi dokaz proteklog vremena.
@@ -142,9 +153,9 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
       for (let i = 0; i < placements.length; i++) {
         const pl = placements[i]
         const grow = THREE.MathUtils.smoothstep(d, pl.appearAt, pl.appearAt + 0.14)
-        tmpScale.copy(pl.scale).multiplyScalar(grow)
-        tmp.compose(pl.pos, pl.quat, tmpScale)
-        im.setMatrixAt(i, tmp)
+        _scale.copy(pl.scale).multiplyScalar(grow)
+        _mat4.compose(pl.pos, pl.quat, _scale)
+        im.setMatrixAt(i, _mat4)
       }
       im.instanceMatrix.needsUpdate = true
     }
@@ -178,6 +189,7 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
       {/* Fina kalcificirana kora — raste s dubinom */}
       <mesh geometry={geometry} scale={1.008}>
         <shaderMaterial
+          ref={crustMat}
           vertexShader={crustVertex}
           fragmentShader={crustFragment}
           uniforms={crustUniforms}
@@ -188,6 +200,7 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
       {/* Alge — izrastu i valovito se micu dok amfora tone */}
       <instancedMesh ref={algae} args={[bladeGeo, undefined, algaeData.matrices.length]}>
         <shaderMaterial
+          ref={algaeMat}
           vertexShader={algaeVertex}
           fragmentShader={algaeFragment}
           uniforms={algaeUniforms}

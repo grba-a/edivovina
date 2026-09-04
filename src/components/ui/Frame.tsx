@@ -43,6 +43,10 @@ export default function Frame({
   const widths = [...meta.widths].sort((a, b) => a - b)
 
   return (
+    /* Namjerno obican <img>, ne next/image: tierovi su vec izgradeni u
+       scripts/build-photos.mjs i tocno pogadaju device pixel ratio, pa nam
+       Vercelov image optimizer ne treba (i ne placamo ga po zahtjevu). */
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={`/${dir}/${name}-${widths[widths.length - 1]}.webp`}
       srcSet={widths.map((w) => `/${dir}/${name}-${w}.webp ${w}w`).join(', ')}

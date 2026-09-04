@@ -1,36 +1,12 @@
 import Image from 'next/image'
-import Link from 'next/link'
 
 const YEAR_FOUNDED = 2011
 
 export default function Footer() {
   return (
-    <footer id="seabed" className="relative z-10 border-t border-ivory/10 px-5 pb-10 pt-20 md:px-8 md:pt-28">
+    <footer id="seabed" className="relative z-10 border-t border-ivory/10 px-5 pb-10 pt-16 md:px-8 md:pt-20">
       <div className="mx-auto w-full max-w-[92rem]">
-        <p className="data-label mb-4 text-gold">09 / The Seabed</p>
-        <h2 className="max-w-[22ch] font-display text-[clamp(2.4rem,7vw,5rem)] leading-[0.95] tracking-[-0.02em] text-ivory">
-          Open one yourself.
-        </h2>
-        <p className="mt-6 max-w-[44ch] text-[1.0625rem] leading-[1.7] text-ivory/60">
-          The bar at Drače pours all three side by side — cellar, sea, amphora — so you can taste
-          what the depth actually did. Bottles ship from the winery at Janjina.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/wines"
-            className="data-label bg-gold px-6 py-4 text-abyss transition-colors duration-200 hover:bg-ivory"
-          >
-            Buy a bottle
-          </Link>
-          <Link
-            href="/visit"
-            className="data-label border border-ivory/25 px-6 py-4 text-ivory/80 transition-colors duration-200 hover:border-gold hover:text-gold"
-          >
-            Taste at Drače
-          </Link>
-        </div>
-
-        <div className="mt-20 grid gap-10 border-t border-ivory/10 pt-10 md:grid-cols-4">
+        <div className="grid gap-10 md:grid-cols-4">
           <div>
             <Image
               src="/brand/edivo-wordmark.png"

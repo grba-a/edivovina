@@ -2,18 +2,15 @@
 
 import { Canvas } from '@react-three/fiber'
 import { Environment } from '@react-three/drei'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import * as THREE from 'three'
 import AmphoraMesh from './AmphoraMesh'
 
 export default function BottleCanvas() {
-  const [rich, setRich] = useState(false)
-  const [still, setStill] = useState(false)
-
-  useEffect(() => {
-    setRich(window.matchMedia('(min-width: 768px)').matches)
-    setStill(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-  }, [])
+  /* Lazy inicijalizatori, ne efekt: komponenta se ucitava s ssr:false pa
+     window postoji vec pri prvom renderu. Efekt bi izazvao kaskadni render. */
+  const [rich] = useState(() => window.matchMedia('(min-width: 768px)').matches)
+  const [still] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 
   return (
     <div aria-hidden className="ed-canvas pointer-events-none fixed inset-0 z-[2]">
