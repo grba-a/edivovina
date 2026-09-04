@@ -47,18 +47,6 @@
   ],
   "src": "Edivo Photoshoot 2024/edivo-47.jpg"
  },
- "hands-amphora": {
-  "w": 5504,
-  "h": 8256,
-  "widths": [
-   420,
-   640,
-   840,
-   1240,
-   1600
-  ],
-  "src": "Edivo Photoshoot 2024/edivo-104.jpg"
- },
  "hands-amphora-2": {
   "w": 5504,
   "h": 8256,
@@ -70,6 +58,18 @@
    1600
   ],
   "src": "Edivo Photoshoot 2024/edivo-106.jpg"
+ },
+ "hands-amphora": {
+  "w": 5504,
+  "h": 8256,
+  "widths": [
+   420,
+   640,
+   840,
+   1240,
+   1600
+  ],
+  "src": "Edivo Photoshoot 2024/edivo-104.jpg"
  },
  "boat-bottle-2": {
   "w": 5383,
@@ -193,7 +193,7 @@
  },
  "p-amphora": {
   "w": 1991,
-  "h": 3000,
+  "h": 2489,
   "widths": [
    420,
    640,
@@ -201,7 +201,8 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I03138.jpg"
+  "src": "Edivo Bottles/A7I03138.jpg",
+  "cropped": true
  },
  "bay-bottle": {
   "w": 5504,
@@ -229,7 +230,7 @@
  },
  "p-sea-bottle": {
   "w": 1991,
-  "h": 3000,
+  "h": 2489,
   "widths": [
    420,
    640,
@@ -237,11 +238,12 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I03086.jpg"
+  "src": "Edivo Bottles/A7I03086.jpg",
+  "cropped": true
  },
  "p-navis": {
   "w": 1991,
-  "h": 3000,
+  "h": 2489,
   "widths": [
    420,
    640,
@@ -249,11 +251,12 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I03117.jpg"
+  "src": "Edivo Bottles/A7I03117.jpg",
+  "cropped": true
  },
  "p-eros-sea": {
   "w": 1991,
-  "h": 3000,
+  "h": 2489,
   "widths": [
    420,
    640,
@@ -261,11 +264,12 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I03162.jpg"
+  "src": "Edivo Bottles/A7I03162.jpg",
+  "cropped": true
  },
  "p-cellar": {
   "w": 2000,
-  "h": 3000,
+  "h": 2500,
   "widths": [
    420,
    640,
@@ -273,11 +277,12 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I02982.jpg"
+  "src": "Edivo Bottles/A7I02982.jpg",
+  "cropped": true
  },
  "p-q-white": {
   "w": 1991,
-  "h": 3000,
+  "h": 2489,
   "widths": [
    420,
    640,
@@ -285,11 +290,12 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I03003.jpg"
+  "src": "Edivo Bottles/A7I03003.jpg",
+  "cropped": true
  },
  "p-rose": {
   "w": 1991,
-  "h": 3000,
+  "h": 2489,
   "widths": [
    420,
    640,
@@ -297,7 +303,8 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I03024.jpg"
+  "src": "Edivo Bottles/A7I03024.jpg",
+  "cropped": true
  },
  "p-plavac": {
   "w": 2000,
@@ -313,7 +320,7 @@
  },
  "p-dingac": {
   "w": 2000,
-  "h": 3000,
+  "h": 2500,
   "widths": [
    420,
    640,
@@ -321,23 +328,12 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I02988.jpg"
- },
- "p-eros": {
-  "w": 4129,
-  "h": 6223,
-  "widths": [
-   420,
-   640,
-   840,
-   1240,
-   1600
-  ],
-  "src": "Edivo Bottles/A7I03057.jpg"
+  "src": "Edivo Bottles/A7I02988.jpg",
+  "cropped": true
  },
  "p-plavac-red": {
   "w": 2000,
-  "h": 3000,
+  "h": 2500,
   "widths": [
    420,
    640,
@@ -345,11 +341,25 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I02951.jpg"
+  "src": "Edivo Bottles/A7I02951.jpg",
+  "cropped": true
+ },
+ "p-eros": {
+  "w": 4129,
+  "h": 5161,
+  "widths": [
+   420,
+   640,
+   840,
+   1240,
+   1600
+  ],
+  "src": "Edivo Bottles/A7I03057.jpg",
+  "cropped": true
  },
  "p-box": {
   "w": 4076,
-  "h": 6143,
+  "h": 5095,
   "widths": [
    420,
    640,
@@ -357,6 +367,7 @@
    1240,
    1600
   ],
-  "src": "Edivo Bottles/A7I03206.jpg"
+  "src": "Edivo Bottles/A7I03206.jpg",
+  "cropped": true
  }
 }

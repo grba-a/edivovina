@@ -11,7 +11,9 @@ import Parallax from './ui/Parallax'
 export default function Reveal2() {
   return (
     <section id="reveal" className="relative z-10">
-      <div className="relative h-[86svh] min-h-[30rem] md:h-[104svh]">
+      {/* Jedan od dva namjerna full-bleed trenutka. Ne preko 100svh — vise od
+          ekrana znaci da korisnik ne vidi ni pocetak ni kraj kadra. */}
+      <div className="relative h-[60svh] min-h-[22rem] md:h-[84svh]">
         <Parallax className="absolute inset-0">
           <Frame
             name="pour-amphora"

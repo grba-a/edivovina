@@ -36,9 +36,11 @@ const TEAL = new THREE.Color('#12777a')
 const MODEL_H = 1
 const SCALE = 3
 
-/* Centrirano u 100svh hera. Prije je bilo 0,86 i amfora je sjedila previse
-   pri vrhu kadra. */
-const Y_TOP = 0.05
+/* Pocetna visina u heru ovisi o kadru:
+   desktop je centriran (0,05), a na mobitelu amfora stoji VISE (0,86) jer
+   inace sjedne na naslov. Ista formula kao za scale — narrow^2. */
+const Y_TOP_WIDE = 0.45
+const Y_TOP_NARROW = 1.5
 /* Amfora sjedne UNUTAR kaveza: gornja resetka prolazi kroz donji dio tijela,
    kao na fotkama s dna. Izvedeno iz CAGE-a da odnos ostane istinit i kad se
    dimenzije kaveza promijene. */
@@ -60,6 +62,9 @@ const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 /* Scratch objekti na module scopeu — instanca je jedna, a mutiranje useMemo
    vrijednosti React Compiler ispravno prijavljuje kao gresku. */
 const _fog = new THREE.Color()
+/* Uniform obraštaja. Na module scopeu jer ga cita onBeforeCompile (koji tece
+   tokom rendera), a ref procitan u renderu otruje cijeli memo. */
+const _crustU = { value: 0 }
 const _mat4 = new THREE.Matrix4()
 const _scale = new THREE.Vector3()
 
@@ -107,7 +112,6 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
   const algae = useRef<THREE.InstancedMesh>(null)
   const smooth = useRef(0)
   const intro = useRef(0)
-  const crustU = useRef({ value: 0 })
   const cage = useRef<THREE.InstancedMesh>(null)
   const seabed = useRef<THREE.InstancedMesh>(null)
   const fish = useRef<THREE.InstancedMesh>(null)
@@ -128,7 +132,7 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
     mat.metalness = 0
     mat.envMapIntensity = 1.05
     mat.onBeforeCompile = (shader) => {
-      shader.uniforms.uCrust = crustU.current
+      shader.uniforms.uCrust = _crustU
       shader.uniforms.uClay = { value: CLAY }
       shader.fragmentShader = shader.fragmentShader
         .replace('void main() {', 'uniform float uCrust;\nuniform vec3 uClay;\nvoid main() {')
@@ -256,14 +260,15 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
       // world unita), pa SINK_X od 1,55 padne izvan kadra. Clamp na stvarnu
       // polusirinu umjesto fiksne vrijednosti.
       const narrow = Math.min(1, state.viewport.width / 4.4)
+      // narrow^2 je namjerno: linearni lerp ne moze istovremeno dati vecu
+      // amforu na desktopu i ostaviti mobilnu velicinu netaknutom.
+      const wide = narrow * narrow
       group.current.position.x = lerp(HERO_X, SINK_X, sink)
       // Amfora u vodi gotovo odmah dosegne terminalnu brzinu — blago
       // ubrzanje (^1.15), ne slobodan pad.
-      group.current.position.y = lerp(Y_TOP, Y_REST, Math.pow(d, 1.15)) + (1 - io) * 0.55
-      // narrow^2 je namjerno: linearni lerp ne moze istovremeno dati vecu
-      // amforu na desktopu i ostaviti mobilnu velicinu netaknutom.
-      // desktop (narrow=1) -> 1,45 · mobitel (narrow~0,66) -> 1,45*0,61 = 0,88
-      const wide = narrow * narrow
+      const yTop = lerp(Y_TOP_NARROW, Y_TOP_WIDE, wide)
+      group.current.position.y = lerp(yTop, Y_REST, Math.pow(d, 1.15)) + (1 - io) * 0.55
+      // desktop (wide=1) -> 1,45 · mobitel (wide~0,44) -> 1,45*0,61 = 0,88
       const sc = lerp(HERO_SCALE, SINK_SCALE, sink) * lerp(0.9, 1, io) * lerp(0.31, 1, wide)
       group.current.scale.setScalar(sc * SCALE)
 
@@ -276,7 +281,7 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
 
     _fog.copy(TEAL).lerp(NAVY, Math.min(1, d / 0.38)).lerp(ABYSS, Math.max(0, (d - 0.38) / 0.62))
     // Bez rasta model pokazuje svoj puni zapeceni obrastaj od prvog kadra.
-    crustU.current.value = GROWTH ? THREE.MathUtils.clamp((d - 0.12) / 0.78, 0, 1) : 1
+    _crustU.value = GROWTH ? THREE.MathUtils.clamp((d - 0.12) / 0.78, 0, 1) : 1
     if (GROWTH && algaeMat.current) {
       algaeMat.current.uniforms.uDescent.value = d
       algaeMat.current.uniforms.uTime.value = state.clock.elapsedTime
@@ -373,7 +378,7 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
         />
       </instancedMesh>
 
-    <group ref={group} position={[HERO_X, Y_TOP, 0]} scale={HERO_SCALE * SCALE}>
+    <group ref={group} position={[HERO_X, Y_TOP_NARROW, 0]} scale={HERO_SCALE * SCALE}>
       <mesh geometry={geometry} material={material} />
 
       {GROWTH && (

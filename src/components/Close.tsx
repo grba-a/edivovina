@@ -11,7 +11,7 @@ import Parallax from './ui/Parallax'
 export default function Close() {
   return (
     <section id="close" className="relative z-10">
-      <div className="relative h-[92svh] min-h-[34rem]">
+      <div className="relative h-[64svh] min-h-[24rem] md:h-[78svh]">
         <Parallax className="absolute inset-0" amount={6}>
           <Frame
             name="sunset-glasses"

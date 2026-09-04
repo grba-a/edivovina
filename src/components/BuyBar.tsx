@@ -58,7 +58,9 @@ export default function BuyBar() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-3 transition-all duration-[380ms] md:px-5 md:pb-5"
+      /* SAMO mobitel: na desktopu je nav uvijek u kadru s "Buy a bottle", pa je
+         traka suvisna i samo pokriva sadrzaj. */
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-3 transition-all duration-[380ms] md:hidden"
       style={{
         opacity: show ? 1 : 0,
         transform: show ? 'translateY(0)' : 'translateY(120%)',
@@ -66,7 +68,9 @@ export default function BuyBar() {
       }}
       aria-hidden={!show}
     >
-      <div className="mx-auto flex w-full max-w-[92rem] items-center gap-3 border border-gold/25 bg-abyss/92 p-2.5 backdrop-blur-[2px] md:gap-6 md:p-3">
+      {/* Solidna podloga: backdrop-filter WebKit ne crta pod maskom, a i bez toga
+          poluprozirna traka nad tekstom se cita kao greska. */}
+      <div className="mx-auto flex w-full max-w-[92rem] items-center gap-3 border border-gold/25 bg-abyss p-2.5">
         <div className="min-w-0 flex-1 pl-2 md:pl-4">
           <p className="data-label text-gold" style={{ fontSize: '0.5rem' }}>
             One wine, three lives
@@ -74,16 +78,16 @@ export default function BuyBar() {
           {/* Cijena je vlastiti element sa shrink-0 — u istom <p> ju truncate
               odreze prvu, a cijena je zadnje sto smije nestati. */}
           <div className="flex items-baseline gap-2">
-            <span className="min-w-0 truncate font-display text-sm leading-tight text-ivory md:text-base">
+            <span className="min-w-0 truncate font-display text-sm leading-tight text-ivory">
               Navis Mysterium TRIS
             </span>
-            <span className="tnum shrink-0 text-sm text-gold md:text-base">€536</span>
+            <span className="tnum shrink-0 text-sm text-gold">€536</span>
           </div>
         </div>
         <Link
           href="/wines/navis-mysterium-tris"
           tabIndex={show ? 0 : -1}
-          className="data-label pointer-events-auto shrink-0 bg-gold px-4 py-3.5 text-abyss transition-colors duration-200 hover:bg-ivory md:px-7"
+          className="data-label pointer-events-auto shrink-0 bg-gold px-5 py-3.5 text-abyss transition-colors duration-200 hover:bg-ivory"
         >
           Take the set
         </Link>

@@ -12,6 +12,10 @@
      potamnjen. Prijelaz teal -> tamnoplavo je namjerno zadrzan. */
   --color-teal: #12777a;
   --color-abyss: #03141f;
+  /* SOLIDNA povrsina za kartice, panele i polja. Poluprozirni paneli su na
+     ovakvoj stranici pogreska: voda i marine snow prolaze kroz njih i sve
+     izgleda prasno. */
+  --color-surface: #072536;
 
   /* Fizicki materijali amfore — nisu brend boje */
   --color-sand: #c4a184;

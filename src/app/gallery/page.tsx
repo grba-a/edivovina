@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import PageHead from '@/components/PageHead'
+import PageHero from '@/components/PageHero'
+import CtaBand from '@/components/CtaBand'
 import Footer from '@/components/Footer'
 import Frame from '@/components/ui/Frame'
 import Reveal from '@/components/ui/Reveal'
@@ -7,24 +8,25 @@ import { GALLERY, galleryCount } from '@/data/gallery'
 
 export const metadata: Metadata = {
   title: 'Gallery — Edivo Vina',
-  description: 'The vineyard, the amphorae, the wreck and what comes back up.',
+  description: 'The work, the wreck, and what comes back up.',
 }
 
 export default function GalleryPage() {
   return (
     <>
       <main className="relative z-10">
-        <PageHead
+        <PageHero
           eyebrow={`${galleryCount} photographs`}
-          title="Everything above the wine, and everything under it."
+          lines={['Everything above the wine,', 'and everything under it.']}
+          readout={`${galleryCount} frames`}
         />
 
-        <section className="px-5 pb-24 md:px-8 md:pb-32">
+        <section className="px-5 pb-16 md:px-8 md:pb-24">
           <div className="mx-auto w-full max-w-[92rem]">
             {GALLERY.map((g) => (
-              <div key={g.title} className="border-t border-ivory/12 py-12 md:py-16">
-                <div className="mb-8 flex flex-wrap items-baseline gap-4">
-                  <h2 className="font-display text-2xl text-ivory md:text-3xl">{g.title}</h2>
+              <div key={g.title} className="border-t border-ivory/12 py-10 md:py-14">
+                <div className="mb-7 flex flex-wrap items-baseline gap-4">
+                  <h2 className="font-display text-xl text-ivory md:text-2xl">{g.title}</h2>
                   <span className="data-label text-ivory/30" style={{ fontSize: '0.5rem' }}>
                     {g.note} · {g.names.length}
                   </span>
@@ -39,7 +41,7 @@ export default function GalleryPage() {
                           name={n}
                           alt={`Edivo Vina — ${g.title.toLowerCase()}`}
                           sizes="(min-width: 1024px) 24vw, (min-width: 768px) 32vw, 48vw"
-                          className="w-full bg-navy/30"
+                          className="w-full bg-surface"
                         />
                       </Reveal>
                     </figure>
@@ -49,6 +51,8 @@ export default function GalleryPage() {
             ))}
           </div>
         </section>
+
+        <CtaBand />
       </main>
       <Footer />
     </>

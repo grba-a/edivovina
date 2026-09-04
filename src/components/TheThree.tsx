@@ -49,7 +49,7 @@ export default function TheThree() {
   const tris = bySlug('navis-mysterium-tris')!
 
   return (
-    <section id="three" className="relative z-10 px-5 py-20 md:px-8 md:py-32">
+    <section id="three" className="relative z-10 px-5 py-14 md:px-8 md:py-24">
       <div className="mx-auto w-full max-w-[92rem]">
         {/* Naslov je namjerno gurnut desno — lijeva trecina ostaje prazna. */}
         <div className="md:grid md:grid-cols-12">
@@ -77,8 +77,8 @@ export default function TheThree() {
                       name={c.photo}
                       alt={w.name}
                       sizes="(min-width: 768px) 31vw, 100vw"
-                      /* Nativni 2:3 — s 3/4 se boci odreze grlo */
-                      className="aspect-[2/3] w-full bg-navy/40 object-cover transition-opacity duration-300 group-hover:opacity-88"
+                      ratio="natural"
+                      className="w-full max-w-[21rem] transition-opacity duration-300 group-hover:opacity-88"
                     />
                   </Reveal>
 
@@ -117,7 +117,7 @@ export default function TheThree() {
                 in the order they should be opened.
               </p>
             </div>
-            <div className="flex flex-col justify-between gap-6 border-t border-gold/30 bg-navy/30 p-7 md:col-span-4 md:border-l md:border-t-0 md:p-12">
+            <div className="flex flex-col justify-between gap-6 border-t border-gold/30 bg-surface p-7 md:col-span-4 md:border-l md:border-t-0 md:p-12">
               <div>
                 <p className="font-display tnum text-[clamp(2rem,3.4vw,2.8rem)] leading-none text-ivory">
                   {price(tris.price)}

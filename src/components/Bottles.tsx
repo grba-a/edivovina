@@ -22,7 +22,7 @@ export default function Bottles() {
   const lead = bySlug(LEAD.slug)!
 
   return (
-    <section id="shop" className="relative z-10 px-5 pb-20 md:px-8 md:pb-32">
+    <section id="shop" className="relative z-10 px-5 pb-14 md:px-8 md:pb-24">
       <div className="mx-auto w-full max-w-[92rem]">
         <div className="flex flex-wrap items-end justify-between gap-5 border-t border-ivory/15 pt-10">
           <h2 className="font-display text-[clamp(1.6rem,3.2vw,2.6rem)] leading-tight text-ivory">
@@ -43,7 +43,8 @@ export default function Bottles() {
                 name={LEAD.photo}
                 alt={lead.name}
                 sizes="(min-width: 768px) 56vw, 100vw"
-                className="aspect-[4/5] w-full bg-navy/40 object-cover transition-opacity duration-300 group-hover:opacity-88 md:aspect-[3/4]"
+                ratio="natural"
+                className="w-full max-w-[27rem] transition-opacity duration-300 group-hover:opacity-88"
               />
             </Reveal>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
@@ -75,7 +76,8 @@ export default function Bottles() {
                       name={s.photo}
                       alt={w.name}
                       sizes="120px"
-                      className="h-24 w-20 shrink-0 bg-navy/40 object-cover transition-opacity duration-300 group-hover:opacity-85 md:h-28 md:w-24"
+                      ratio="natural"
+                      className="w-20 shrink-0 transition-opacity duration-300 group-hover:opacity-85 md:h-28 md:w-24"
                     />
                     <div className="min-w-0 flex-1">
                       <h3 className="font-display text-lg leading-tight text-ivory">{w.name}</h3>

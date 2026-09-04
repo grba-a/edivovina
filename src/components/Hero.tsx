@@ -53,11 +53,13 @@ export default function Hero() {
             >
               Buy a bottle
             </Link>
+            {/* Cijena je u heru namjerno: kupac koji trazi dar treba red
+                velicine odmah, a ne nakon tri ekrana scrolla. */}
             <a
               href="#three"
               className="data-label border border-ivory/25 px-6 py-4 text-ivory/80 transition-colors duration-200 hover:border-gold hover:text-gold"
             >
-              One wine, three lives
+              One wine, three lives — €536
             </a>
           </div>
         </div>

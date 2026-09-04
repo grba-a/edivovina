@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import PageHead from '@/components/PageHead'
+import PageHero from '@/components/PageHero'
+import CtaBand from '@/components/CtaBand'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
@@ -8,49 +9,41 @@ export const metadata: Metadata = {
 }
 
 /**
- * FORM TEMPLATE. Namjerno bez action/handlera — obrazac se spaja u
- * WordPressu (Breakdance + WP Forms / WooCommerce). Sve je ispravno
- * oznaceno i tipizirano da se polja mapiraju 1:1.
+ * FORM TEMPLATE — namjerno bez action/handlera. Obrazac se spaja u WordPressu
+ * (Breakdance + WP Forms), pa su polja tipizirana i oznacena da se mapiraju 1:1.
+ *
+ * Skraceno na cetiri polja. Prijasnja verzija je imala sest i citala se kao
+ * prijavnica; nikoga ne priblizava kupnji.
  */
 const FIELDS = [
-  { name: 'name', label: 'Name', type: 'text', autoComplete: 'name', required: true },
-  { name: 'email', label: 'Email', type: 'email', autoComplete: 'email', required: true },
-  { name: 'country', label: 'Country', type: 'text', autoComplete: 'country-name', required: false },
+  { name: 'name', label: 'Name', type: 'text', autoComplete: 'name', span: '' },
+  { name: 'email', label: 'Email', type: 'email', autoComplete: 'email', span: '' },
 ] as const
 
-const SUBJECTS = ['Order a bottle', 'Visit the wine bar', 'Trade and distribution', 'Press', 'Something else']
+const SUBJECTS = ['Order a bottle', 'Visit the wine bar', 'Trade and distribution', 'Press']
 
 export default function ContactPage() {
   return (
     <>
       <main className="relative z-10">
-        <PageHead
+        <PageHero
           eyebrow="Get in touch"
-          title="Write to us, or just call."
-          intro="It is a small winery. A phone call usually gets you an answer faster than a form does."
+          lines={['A phone call is', 'faster than a form.']}
+          intro="It is a small winery on a narrow peninsula. If you want a specific bottle, say which one — the undersea ones are made in small numbers."
+          cta={{ href: 'tel:+385916127229', label: '+385 91 6127 229' }}
+          readout="info@edivovina.hr"
         />
 
-        <section className="px-5 pb-24 md:px-8 md:pb-32">
-          <div className="mx-auto grid w-full max-w-[92rem] gap-14 border-t border-ivory/12 pt-12 md:grid-cols-12 md:gap-10 md:pt-16">
-            <div className="md:col-span-5">
+        <section className="px-5 pb-16 md:px-8 md:pb-24">
+          <div className="mx-auto grid w-full max-w-[92rem] gap-12 border-t border-ivory/12 pt-12 md:grid-cols-12 md:gap-8 md:pt-16">
+            <div className="md:col-span-4">
               <dl className="space-y-8">
-                <div>
-                  <dt className="data-label mb-3 text-ivory/35">Phone</dt>
-                  <dd>
-                    <a
-                      href="tel:+385916127229"
-                      className="inline-block py-2 font-display text-2xl text-ivory transition-colors hover:text-gold"
-                    >
-                      +385 91 6127 229
-                    </a>
-                  </dd>
-                </div>
                 <div>
                   <dt className="data-label mb-3 text-ivory/35">Email</dt>
                   <dd>
                     <a
                       href="mailto:info@edivovina.hr"
-                      className="inline-block py-2 font-display text-2xl text-ivory transition-colors hover:text-gold"
+                      className="inline-block py-2 font-display text-xl text-ivory transition-colors hover:text-gold md:text-2xl"
                     >
                       info@edivovina.hr
                     </a>
@@ -58,7 +51,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <dt className="data-label mb-3 text-ivory/35">Winery</dt>
-                  <dd className="text-sm leading-relaxed text-ivory/65">
+                  <dd className="text-sm leading-relaxed text-ivory/60">
                     Janjina 62, 20246 Janjina
                     <br />
                     Pelješac, Croatia
@@ -66,7 +59,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <dt className="data-label mb-3 text-ivory/35">Wine bar</dt>
-                  <dd className="text-sm leading-relaxed text-ivory/65">
+                  <dd className="text-sm leading-relaxed text-ivory/60">
                     Drače 18, 20246 Drače
                     <br />
                     Pelješac, Croatia
@@ -75,26 +68,25 @@ export default function ContactPage() {
               </dl>
             </div>
 
-            <form className="md:col-span-7" noValidate>
+            <form className="md:col-span-7 md:col-start-6" noValidate>
               <div className="grid gap-6 sm:grid-cols-2">
                 {FIELDS.map((f) => (
-                  <div key={f.name} className={f.name === 'country' ? 'sm:col-span-2' : ''}>
+                  <div key={f.name}>
                     {/* Vidljiva oznaka, ne placeholder-only */}
                     <label
                       htmlFor={f.name}
                       className="data-label mb-3 block text-ivory/45"
                       style={{ fontSize: '0.5625rem' }}
                     >
-                      {f.label}
-                      {f.required && <span className="ml-1 text-gold">*</span>}
+                      {f.label} <span className="text-gold">*</span>
                     </label>
                     <input
                       id={f.name}
                       name={f.name}
                       type={f.type}
                       autoComplete={f.autoComplete}
-                      required={f.required}
-                      className="h-12 w-full border border-ivory/20 bg-transparent px-4 text-base text-ivory outline-none transition-colors placeholder:text-ivory/25 focus:border-gold"
+                      required
+                      className="h-12 w-full border border-ivory/20 bg-surface px-4 text-base text-ivory outline-none transition-colors focus:border-gold"
                     />
                   </div>
                 ))}
@@ -111,7 +103,7 @@ export default function ContactPage() {
                     id="subject"
                     name="subject"
                     defaultValue={SUBJECTS[0]}
-                    className="h-12 w-full border border-ivory/20 bg-abyss px-4 text-base text-ivory outline-none transition-colors focus:border-gold"
+                    className="h-12 w-full border border-ivory/20 bg-surface px-4 text-base text-ivory outline-none transition-colors focus:border-gold"
                   >
                     {SUBJECTS.map((s) => (
                       <option key={s} value={s}>
@@ -132,19 +124,15 @@ export default function ContactPage() {
                   <textarea
                     id="message"
                     name="message"
-                    rows={6}
-                    className="w-full resize-y border border-ivory/20 bg-transparent px-4 py-3 text-base leading-relaxed text-ivory outline-none transition-colors focus:border-gold"
+                    rows={5}
+                    className="w-full resize-y border border-ivory/20 bg-surface px-4 py-3 text-base leading-relaxed text-ivory outline-none transition-colors focus:border-gold"
                   />
-                  <p className="mt-3 text-xs leading-relaxed text-ivory/35">
-                    If you are asking about a specific bottle, tell us which one — the undersea
-                    ones are made in small numbers and not all vintages are still here.
-                  </p>
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="data-label mt-9 bg-gold px-7 py-4 text-abyss transition-colors duration-200 hover:bg-ivory"
+                className="data-label mt-8 bg-gold px-7 py-4 text-abyss transition-colors duration-200 hover:bg-ivory"
               >
                 Send
               </button>
@@ -154,6 +142,8 @@ export default function ContactPage() {
             </form>
           </div>
         </section>
+
+        <CtaBand />
       </main>
       <Footer />
     </>

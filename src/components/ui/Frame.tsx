@@ -8,11 +8,20 @@ const WEB = images as Record<string, Meta>
 /**
  * Jedan ulaz za sve slike.
  *
- * Postoje dva seta: profesionalni shoot iz svibnja 2024 (public/photo, do
- * 1800px) i stariji materijal s njihovog weba (public/img, do 1600px).
- * Komponenta sama pogodi koji je koji po imenu, pa pozivatelj nikad ne mora
- * znati odakle slika dolazi — i zamjena starog kadra novim je promjena imena,
- * ne promjena koda.
+ * Dva seta: profesionalni shoot iz svibnja 2024 (public/photo) i stariji
+ * materijal s njihovog weba (public/img). Komponenta pogodi koji je koji po
+ * imenu, pa zamjena starog kadra novim je promjena imena, ne koda.
+ *
+ * KADRIRANJE — dva nacina, oba bez rezanja sadrzaja:
+ *
+ *   ratio="natural"  okvir preuzme odnos IZVORA iz manifesta, pa `cover` nema
+ *                    sto rezati. Za reportazne kadrove. Visinu okvira drzi
+ *                    sirina stupca, ne fiksni clamp.
+ *
+ *   fit="contain"    cijeli objekt u kadru, ostatak je solidna povrsina. Za
+ *                    studijske snimke boca: sve su na istoj drvenoj podlozi pa
+ *                    letterbox cita kao kataloska plocica, a boci se ne odreze
+ *                    grlo — sto se s `cover` na 2:3 izvoru uvijek dogodi.
  */
 export default function Frame({
   name,
@@ -21,6 +30,8 @@ export default function Frame({
   className = '',
   priority = false,
   position,
+  ratio,
+  fit = 'cover',
 }: {
   name: string
   alt: string
@@ -28,6 +39,9 @@ export default function Frame({
   className?: string
   priority?: boolean
   position?: string
+  /** 'natural' = odnos izvora; broj = w/h. Bez toga okvir odreduje className. */
+  ratio?: 'natural' | number
+  fit?: 'cover' | 'contain'
 }) {
   const pro = PRO[name]
   const meta = pro ?? WEB[name]
@@ -41,6 +55,7 @@ export default function Frame({
   }
 
   const widths = [...meta.widths].sort((a, b) => a - b)
+  const aspect = ratio === 'natural' ? meta.w / meta.h : typeof ratio === 'number' ? ratio : undefined
 
   return (
     /* Namjerno obican <img>, ne next/image: tierovi su vec izgradeni u
@@ -57,8 +72,11 @@ export default function Frame({
       loading={priority ? 'eager' : 'lazy'}
       decoding={priority ? 'sync' : 'async'}
       fetchPriority={priority ? 'high' : undefined}
-      className={className}
-      style={position ? { objectPosition: position } : undefined}
+      className={`${fit === 'contain' ? 'object-contain' : 'object-cover'} ${className}`}
+      style={{
+        ...(aspect ? { aspectRatio: String(aspect) } : null),
+        ...(position ? { objectPosition: position } : null),
+      }}
     />
   )
 }

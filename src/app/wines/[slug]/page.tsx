@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import PageHead from '@/components/PageHead'
+import PageHero from '@/components/PageHero'
 import Footer from '@/components/Footer'
 import Frame from '@/components/ui/Frame'
 import { WINES, bySlug } from '@/data/wines'
@@ -59,9 +59,15 @@ export default async function WinePage({ params }: { params: Promise<{ slug: str
   return (
     <>
       <main className="relative z-10">
-        <PageHead eyebrow={`${AGING_LABEL[w.aging]} · ${w.sku}`} title={w.name} />
+        <PageHero
+          eyebrow={`${AGING_LABEL[w.aging]} · ${w.sku}`}
+          lines={[w.name]}
+          intro={w.shortDescription}
+          cta={{ href: '#buy', label: `Take it — ${price(w.price)}` }}
+          readout={w.daysUnderSea > 0 ? `${w.daysUnderSea} days · 25 m` : 'cellar aged'}
+        />
 
-        <section className="px-5 pb-24 md:px-8 md:pb-32">
+        <section className="px-5 pb-14 md:px-8 md:pb-24">
           <div className="mx-auto grid w-full max-w-[92rem] gap-12 md:grid-cols-12 md:gap-10">
             <div className="md:col-span-6">
               <Frame
@@ -69,7 +75,8 @@ export default async function WinePage({ params }: { params: Promise<{ slug: str
                 alt={w.name}
                 priority
                 sizes="(min-width: 768px) 48vw, 100vw"
-                className="w-full bg-navy/30 object-cover"
+                ratio="natural"
+                className="w-full max-w-[25rem]"
               />
             </div>
 
@@ -89,7 +96,7 @@ export default async function WinePage({ params }: { params: Promise<{ slug: str
                 ))}
               </dl>
 
-              <div className="mt-10 flex flex-wrap items-end justify-between gap-6">
+              <div id="buy" className="mt-10 flex flex-wrap items-end justify-between gap-6">
                 <div>
                   <p className="font-sans tnum text-4xl text-ivory">{price(w.price)}</p>
                   <p className="data-label mt-2 text-ivory/35" style={{ fontSize: '0.5rem' }}>
@@ -112,7 +119,7 @@ export default async function WinePage({ params }: { params: Promise<{ slug: str
             </div>
           </div>
 
-          <div className="mx-auto mt-24 w-full max-w-[92rem] border-t border-ivory/12 pt-10">
+          <div className="mx-auto mt-16 w-full max-w-[92rem] border-t border-ivory/12 pt-10">
             <p className="data-label mb-8 text-ivory/35">Also from Edivo</p>
             <ul className="grid gap-x-5 gap-y-10 sm:grid-cols-3">
               {others.map((o) => (
@@ -122,7 +129,8 @@ export default async function WinePage({ params }: { params: Promise<{ slug: str
                       name={o.image}
                       alt={o.name}
                       sizes="(min-width: 640px) 30vw, 100vw"
-                      className="aspect-[4/5] w-full bg-navy/30 object-cover transition-opacity duration-300 group-hover:opacity-85"
+                      ratio="natural"
+                      className="w-full transition-opacity duration-300 group-hover:opacity-85"
                     />
                     <div className="mt-4 flex items-start justify-between gap-3">
                       <h3 className="font-display text-lg leading-tight text-ivory">{o.name}</h3>

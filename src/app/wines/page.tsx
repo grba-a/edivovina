@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import PageHead from '@/components/PageHead'
+import PageHero from '@/components/PageHero'
 import Footer from '@/components/Footer'
 import Frame from '@/components/ui/Frame'
 import Reveal from '@/components/ui/Reveal'
@@ -21,36 +21,34 @@ const price = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixe
  * koji objasnjava ostale. Podmorske boce dobivaju vece kadrove od podrumskih,
  * jer nisu jednako vazne — jednaki grid bi tvrdio da jesu.
  */
-function Row({ w, big = false }: { w: Wine; big?: boolean }) {
+/**
+ * Kartica u katalogu. NEMA "big" varijante: 2-up grid je davao slike od 845px,
+ * 94% laptop ekrana — kupac je vidio jednu bocu po ekranu i nije mogao
+ * usporediti. Cetiri u redu je gustoca u kojoj se katalog cita.
+ */
+function Row({ w }: { w: Wine }) {
   return (
-    <li className={big ? 'md:col-span-6' : 'md:col-span-4'}>
+    <li>
       <Link href={`/wines/${w.slug}`} className="group block">
         <Reveal from={0.16}>
           <Frame
             name={w.image}
             alt={w.name}
-            sizes={big ? '(min-width: 768px) 46vw, 100vw' : '(min-width: 768px) 31vw, 100vw'}
-            className="aspect-[2/3] w-full bg-navy/40 object-cover transition-opacity duration-300 group-hover:opacity-88"
+            sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 100vw" 
+            ratio="natural"
+            className="w-full transition-opacity duration-300 group-hover:opacity-88"
           />
         </Reveal>
         <div className="mt-5 flex items-start justify-between gap-4 border-t border-ivory/12 pt-4">
           <div className="min-w-0">
-            <h3
-              className={`font-display leading-tight text-ivory ${
-                big ? 'text-[clamp(1.3rem,2.2vw,1.75rem)]' : 'text-lg'
-              }`}
-            >
-              {w.name}
-            </h3>
+            <h3 className="font-display text-base leading-tight text-ivory md:text-lg">{w.name}</h3>
             <p className="data-label mt-2 text-gold/70" style={{ fontSize: '0.5rem' }}>
               {w.daysUnderSea > 0 ? `${w.daysUnderSea} days down` : w.grapes.join(' · ')}
             </p>
           </div>
           <p className="tnum shrink-0 text-ivory/80">{price(w.price)}</p>
         </div>
-        <p className="mt-3 max-w-[38ch] text-[0.9375rem] leading-relaxed text-ivory/50">
-          {w.shortDescription}
-        </p>
+        <p className="mt-3 text-[0.8125rem] leading-relaxed text-ivory/50">{w.shortDescription}</p>
       </Link>
     </li>
   )
@@ -64,17 +62,19 @@ export default function WinesPage() {
   return (
     <>
       <main className="relative z-10">
-        <PageHead
+        <PageHero
           eyebrow={`${WINES.length} wines`}
-          title="Four of these have been underwater."
-          intro="Everything is made from Croatian fruit on the Pelješac peninsula. The price is not a scale
-          of quality — it is a scale of how much the sea was involved."
+          lines={['Four of these have', 'been underwater.']}
+          intro="The price is not a scale of quality. It is a scale of how much the sea was involved."
+          cta={{ href: '#tris', label: 'Start with the set' }}
+          readout={`${WINES.length} wines · 4 undersea`}
         />
 
-        <section className="px-5 pb-24 md:px-8 md:pb-32">
+        <section className="px-5 pb-14 md:px-8 md:pb-24">
           <div className="mx-auto w-full max-w-[92rem]">
             {/* --- TRIS preko cijele sirine: skuplji je I objasnjava ostale --- */}
             <Link
+              id="tris"
               href={`/wines/${tris.slug}`}
               className="group grid border border-gold/30 md:grid-cols-12"
             >
@@ -84,7 +84,8 @@ export default function WinesPage() {
                   alt={tris.name}
                   priority
                   sizes="(min-width: 768px) 42vw, 100vw"
-                  className="h-full max-h-[30rem] w-full bg-navy/40 object-cover transition-opacity duration-300 group-hover:opacity-90"
+                  ratio="natural"
+                  className="mx-auto w-full max-w-[19rem] transition-opacity duration-300 group-hover:opacity-90"
                 />
               </div>
               <div className="flex flex-col justify-between gap-8 p-7 md:col-span-7 md:p-12">
@@ -112,20 +113,20 @@ export default function WinesPage() {
             </Link>
 
             {/* --- podmorske: veci kadrovi --- */}
-            <div className="mt-24 flex flex-wrap items-baseline gap-x-5 gap-y-2 border-t border-ivory/15 pt-8">
+            <div className="mt-16 flex flex-wrap items-baseline gap-x-5 gap-y-2 border-t border-ivory/15 pt-8">
               <h2 className="font-display text-2xl text-ivory md:text-3xl">Aged at 25 metres</h2>
               <span className="data-label text-gold/60" style={{ fontSize: '0.5rem' }}>
                 700 days on the seabed
               </span>
             </div>
-            <ul className="mt-10 grid gap-x-6 gap-y-14 sm:grid-cols-2 md:grid-cols-12">
-              {sea.map((w, i) => (
-                <Row key={w.slug} w={w} big={i < 2} />
+            <ul className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
+              {sea.map((w) => (
+                <Row key={w.slug} w={w} />
               ))}
             </ul>
 
             {/* --- podrumske: manji kadrovi, cetiri u redu --- */}
-            <div className="mt-24 flex flex-wrap items-baseline gap-x-5 gap-y-2 border-t border-ivory/15 pt-8">
+            <div className="mt-16 flex flex-wrap items-baseline gap-x-5 gap-y-2 border-t border-ivory/15 pt-8">
               <h2 className="font-display text-2xl text-ivory md:text-3xl">Aged in Janjina</h2>
               <span className="data-label text-ivory/30" style={{ fontSize: '0.5rem' }}>
                 the control group
@@ -140,7 +141,8 @@ export default function WinesPage() {
                         name={w.image}
                         alt={w.name}
                         sizes="(min-width: 1024px) 22vw, 46vw"
-                        className="aspect-[2/3] w-full bg-navy/40 object-cover transition-opacity duration-300 group-hover:opacity-88"
+                        ratio="natural"
+            className="w-full transition-opacity duration-300 group-hover:opacity-88"
                       />
                     </Reveal>
                     <div className="mt-4 flex items-start justify-between gap-3 border-t border-ivory/12 pt-3">

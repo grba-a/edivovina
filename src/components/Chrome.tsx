@@ -22,7 +22,18 @@ const NAV = [
  */
 export default function Chrome() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const isHome = pathname === '/'
+
+  /* Header je proziran SAMO na vrhu naslovnice, gdje stoji nad hero kadrom.
+     Svugdje drugdje je solidan — inace tekst stranice prolazi kroz njega. */
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   // Fragment link koji ne skrola drugi put: jedan delegirani slusac popravi sve.
   useEffect(() => {
@@ -44,26 +55,43 @@ export default function Chrome() {
   return (
     <>
       <div className="ed-water" aria-hidden />
-      <div className="ed-shafts" aria-hidden>
-        <div className="ed-shaft" />
-        <div className="ed-shaft" />
-        <div className="ed-shaft" />
-        <div className="ed-shaft" />
-      </div>
-      <div className="ed-snow" aria-hidden>
-        <div className="ed-snow-layer" />
-        <div className="ed-snow-layer" />
-        <div className="ed-snow-layer" />
-      </div>
-      <div className="ed-floor" aria-hidden />
+      {/* Snopovi svjetla i marine snow su atmosfera SPUSTA. Na podstranicama su
+          samo sum preko teksta i obrazaca, pa ih tamo nema. */}
+      {isHome && (
+        <>
+          <div className="ed-shafts" aria-hidden>
+            <div className="ed-shaft" />
+            <div className="ed-shaft" />
+            <div className="ed-shaft" />
+            <div className="ed-shaft" />
+          </div>
+          <div className="ed-snow" aria-hidden>
+            <div className="ed-snow-layer" />
+            <div className="ed-snow-layer" />
+            <div className="ed-snow-layer" />
+          </div>
+          <div className="ed-floor" aria-hidden />
+        </>
+      )}
 
-      <header className="fixed inset-x-0 top-0 z-40">
-        {/* Zastitni gradijent putuje s trakom, ne stoji nad hero filmom */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-28"
-          style={{ background: 'linear-gradient(to bottom, rgba(4,25,28,0.62), rgba(4,25,28,0))' }}
-        />
+      {/* Traka je prozirna SAMO na vrhu naslovnice, gdje stoji nad hero kadrom.
+          Svugdje drugdje je solidna — inace tekst stranice prolazi kroz nju i
+          logo se cita preko sadrzaja. */}
+      <header
+        className="fixed inset-x-0 top-0 z-40 transition-colors duration-300"
+        style={
+          scrolled || !isHome
+            ? { background: 'var(--color-abyss)', borderBottom: '1px solid rgba(255,255,255,0.09)' }
+            : undefined
+        }
+      >
+        {isHome && !scrolled && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-28"
+            style={{ background: 'linear-gradient(to bottom, rgba(3,20,31,0.62), rgba(3,20,31,0))' }}
+          />
+        )}
         <div className="relative mx-auto flex max-w-[92rem] items-center justify-between px-5 py-4 md:px-8 md:py-5">
           {/* py-2 diže hit area s 28 na 44px — vizualno nevidljivo */}
           <Link href="/" aria-label="Edivo Vina — home" className="flex items-center gap-3 py-2">
@@ -122,7 +150,7 @@ export default function Chrome() {
         </div>
 
         {open && (
-          <div className="relative border-t border-ivory/10 bg-abyss/95 px-5 py-4 md:hidden">
+          <div className="relative border-t border-ivory/10 bg-abyss px-5 py-4 md:hidden">
             <nav className="flex flex-col">
               {NAV.map((n) => (
                 <Link
@@ -146,7 +174,7 @@ export default function Chrome() {
         )}
       </header>
 
-      {pathname === '/' && <DepthGauge />}
+      {isHome && <DepthGauge />}
     </>
   )
 }

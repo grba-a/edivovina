@@ -17,6 +17,31 @@ const OUT = new URL('../public/photo/', import.meta.url).pathname
 // Bez 840 tiera retina mobitel povuce 1200 i placa dvostruko.
 const WIDTHS = [420, 640, 840, 1240, 1600]
 
+/**
+ * Namjenski rezovi.
+ *
+ * Studijske snimke boca su 2:3, a u karticama trebaju 4:5. Rezanje u CSS-u
+ * (`object-cover`) odreze grlo boce, a `object-contain` ostavi vidljivu ploču
+ * ispod slike. Zato se reze OVDJE: okvir i izvor imaju isti odnos, pa cover
+ * nema sto rezati i podloga se nikad ne vidi.
+ *
+ * `anchorY` je udio visine oko kojeg se rez centrira. 0,44 znaci "malo iznad
+ * sredine" — tamo je boca, a odlazi visak police iznad i bacve ispod.
+ */
+const CROPS = {
+  'p-amphora': { ratio: 4 / 5, anchorY: 0.44 },
+  'p-sea-bottle': { ratio: 4 / 5, anchorY: 0.44 },
+  'p-navis': { ratio: 4 / 5, anchorY: 0.44 },
+  'p-eros-sea': { ratio: 4 / 5, anchorY: 0.44 },
+  'p-cellar': { ratio: 4 / 5, anchorY: 0.46 },
+  'p-q-white': { ratio: 4 / 5, anchorY: 0.46 },
+  'p-rose': { ratio: 4 / 5, anchorY: 0.46 },
+  'p-eros': { ratio: 4 / 5, anchorY: 0.46 },
+  'p-plavac-red': { ratio: 4 / 5, anchorY: 0.46 },
+  'p-dingac': { ratio: 4 / 5, anchorY: 0.46 },
+  'p-box': { ratio: 4 / 5, anchorY: 0.5 },
+}
+
 /** Semanticka imena — kod se cita, ne dekodira. */
 const PICKS = [
   // --- 2024 photoshoot: ritual, obala, brod
@@ -68,7 +93,7 @@ async function build([rel, name]) {
   const file = path.join(SRC, rel)
   const meta = await sharp(file).rotate().metadata()
 
-  const graded = await sharp(file)
+  let graded = await sharp(file)
     .rotate()
     .modulate({ saturation: 0.9 })
     .linear(0.97, 4)
@@ -77,9 +102,27 @@ async function build([rel, name]) {
     .png()
     .toBuffer()
 
+  let outW = meta.width
+  let outH = meta.height
+
+  const crop = CROPS[name]
+  if (crop) {
+    const srcRatio = meta.width / meta.height
+    let w = meta.width
+    let h = meta.height
+    if (srcRatio < crop.ratio) h = Math.round(meta.width / crop.ratio)
+    else w = Math.round(meta.height * crop.ratio)
+    const top = Math.max(0, Math.min(meta.height - h, Math.round(meta.height * crop.anchorY - h / 2)))
+    const left = Math.round((meta.width - w) / 2)
+    // Rez ide u SVOJ sharp poziv: u istom lancu bi se izveo prije gradea
+    graded = await sharp(graded).extract({ left, top, width: w, height: h }).png().toBuffer()
+    outW = w
+    outH = h
+  }
+
   const widths = []
   for (const w of WIDTHS) {
-    if (w > meta.width * 1.02) continue
+    if (w > outW * 1.02) continue
     // resize TEK iz gradiranog buffera — sharp inace preuredi lanac
     await sharp(graded)
       .resize({ width: w })
@@ -87,8 +130,11 @@ async function build([rel, name]) {
       .toFile(path.join(OUT, `${name}-${w}.webp`))
     widths.push(w)
   }
-  manifest[name] = { w: meta.width, h: meta.height, widths, src: rel }
-  process.stdout.write(`  ${String(++done).padStart(2)}/${PICKS.length} ${name} ${meta.width}x${meta.height} -> ${widths.join(',')}\n`)
+  manifest[name] = { w: outW, h: outH, widths, src: rel, ...(crop ? { cropped: true } : null) }
+  process.stdout.write(
+    `  ${String(++done).padStart(2)}/${PICKS.length} ${name} ${meta.width}x${meta.height}` +
+      `${crop ? ` -[rez]-> ${outW}x${outH}` : ''} -> ${widths.join(',')}\n`,
+  )
 }
 
 const queue = [...PICKS]
