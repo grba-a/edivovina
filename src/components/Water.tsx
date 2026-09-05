@@ -14,6 +14,7 @@ export default function Water() {
   return (
     <>
       <div className="ed-water" aria-hidden />
+      <div className="ed-warm" aria-hidden />
       <div className="ed-shafts" aria-hidden>
         <div className="ed-shaft" />
         <div className="ed-shaft" />

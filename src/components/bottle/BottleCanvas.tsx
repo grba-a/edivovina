@@ -13,7 +13,7 @@ export default function BottleCanvas() {
   const [still] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 
   return (
-    <div aria-hidden className="ed-canvas pointer-events-none fixed inset-0 z-[2]">
+    <div aria-hidden className="ed-canvas pointer-events-none fixed inset-0">
       <Canvas
         dpr={rich ? [1, 1.5] : [1, 1]}
         // Mobitel i reduced-motion: crta samo kad se p promijeni (descent event

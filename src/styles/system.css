@@ -1,0 +1,107 @@
+/* ============================================================================
+   EDIVO — system.css
+
+   Skala prostora, ljestvica tipografije i sustav pokreta. Postoji jer su dvije
+   prethodne verzije gradene reaktivno: svaki je element izmisljao svoja pravila
+   i zbir se raspadao. Ovdje su odluke donesene JEDNOM, prije koda.
+
+   Boje NISU ovdje — one zive u descent.css jer ovise o dubini (vidi ondje).
+   ========================================================================= */
+
+:root {
+  /* --- prostor: jedna geometrijska skala, nista izvan nje --------------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --s-10: 128px;
+
+  /* Ritam sekcija su DVA tokena, ne devet vrijednosti razasutih po fileovima */
+  --sec-y: var(--s-8);
+  --sec-y-tight: var(--s-7);
+
+  --wrap: 92rem;
+
+  /* --- pokret: jedan set za cijeli web ---------------------------------- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-move: cubic-bezier(0.77, 0, 0.175, 1);
+  --t-press: 140ms;
+  --t-ui: 200ms;
+  --t-enter: 260ms;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --sec-y: var(--s-9);
+    --sec-y-tight: var(--s-8);
+  }
+}
+
+/* --- ljestvica tipografije --------------------------------------------
+   Pet razina, svaka ima JEDAN posao. Nove velicine ad hoc su zabranjene.
+   Guideline: Libre Baskerville nosi naslove, Raleway tekst.               */
+
+.t-display {
+  font-family: var(--font-baskerville), Georgia, serif;
+  font-size: clamp(2.6rem, 8.4vw, 7rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.t-plate {
+  font-family: var(--font-baskerville), Georgia, serif;
+  font-size: clamp(1.9rem, 5.2vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.t-title {
+  font-family: var(--font-baskerville), Georgia, serif;
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+}
+.t-body {
+  font-family: var(--font-raleway), system-ui, sans-serif;
+  font-size: 1.03rem;
+  line-height: 1.72;
+  max-width: 54ch;
+}
+.t-field {
+  font-family: var(--font-raleway), system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- pritisak i hover --------------------------------------------------
+   Svaki pritiskivi element odgovara na pritisak. Bez ovoga UI ne "slusa".  */
+
+.pressable {
+  transition: transform var(--t-press) var(--ease-out);
+}
+.pressable:active {
+  transform: scale(0.97);
+}
+
+/* Hover samo tamo gdje hover postoji — na touchu je tap lazni hover */
+@media (hover: hover) and (pointer: fine) {
+  .hov-lift {
+    transition: transform var(--t-ui) var(--ease-out);
+  }
+  .hov-lift:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pressable:active,
+  .hov-lift:hover {
+    transform: none;
+  }
+}

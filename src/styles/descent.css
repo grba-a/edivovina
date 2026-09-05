@@ -56,6 +56,24 @@
   opacity: calc(1 - clamp(0, var(--descent) / 0.34, 1));
 }
 
+/* --- toplo svjetlo s povrsine -------------------------------------------
+   Pod morem crveno nestaje prvo, oko pet metara. Ovaj sloj je taj dio spektra:
+   postoji na vrhu stranice i ugasi se do --descent 0,09. Zbog njega povrsina
+   izgleda kao dan, a ne kao plitka verzija dubine.                          */
+
+.ed-warm {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    124% 80% at 50% -16%,
+    rgba(229, 164, 92, 0.8),
+    rgba(229, 164, 92, 0) 62%
+  );
+  opacity: calc(1 - clamp(0, var(--descent) / 0.09, 1));
+}
+
 /* --- snopovi svjetla s povrsine -----------------------------------------
    Mekoca je ispecena u gradijent stopove. NE filter: blur() preko pola
    ekrana - to obori frame rate i ne treba mu.                             */
@@ -148,7 +166,9 @@
   bottom: 0;
   z-index: 2;
   pointer-events: none;
-  height: calc(clamp(0, (var(--descent) - 0.74) / 0.26, 1) * 34vh);
+  /* Kasnije nego prije: postaja Nagrade traje do samog dna stranice, pa bi se
+     dno inace otvorilo dok se citaju nagrade. */
+  height: calc(clamp(0, (var(--descent) - 0.88) / 0.12, 1) * 34vh);
   background: linear-gradient(to bottom, rgba(3, 20, 31, 0) 0%, #062033 44%, #041420 100%);
   border-top: 1px solid rgba(208, 160, 96, calc(clamp(0, (var(--descent) - 0.78) / 0.22, 1) * 0.4));
 }
@@ -169,7 +189,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(var(--descent) * 100%);
+  /* Po metrima, ne po sirovom scrollu: vidi komentar u src/lib/stage.ts. */
+  height: calc(var(--depth-m, 0) / 25 * 100%);
   background: var(--ed-gold);
 }
 .ed-gauge-fill::after {
@@ -218,16 +239,20 @@
    Spust ostaje, ali ispod hera se stisa: na 390px je kadar tako uzak da
    amfora inace sjedi tocno iza teksta i proizvoda.                       */
 
-/* Amfora ostaje prisutna cijelim spustom, ali se ispod hera stisa: inace
-   sjedi tocno iza naslova i cita se kao mrlja, ne kao dubina. */
+/* Amfora vise ne visi samo o dubini nego o POSTAJI na kojoj smo: negdje je
+   ispred teksta, negdje je uopce nema. Vrijednosti pise src/lib/stage.ts iz
+   tablice u src/data/stations.ts — ovdje se samo trose.
+
+   z-index zivi ovdje, a ne kao Tailwind klasa na elementu, jer se mijenja:
+   2 = iza sadrzaja, 20 = ispred njega. */
 .ed-canvas {
-  opacity: calc(1 - clamp(0, (var(--descent) - 0.07) / 0.15, 1) * 0.42);
+  opacity: var(--amph-o, 1);
+  z-index: var(--amph-z, 2);
+  transition: opacity 620ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-@media (max-width: 767px) {
-  .ed-canvas {
-    opacity: calc(1 - clamp(0, (var(--descent) - 0.05) / 0.16, 1) * 0.66);
-  }
+@media (prefers-reduced-motion: reduce) {
+  .ed-canvas { transition: none; }
 }
 
 /* --- reduced motion -----------------------------------------------------
@@ -255,4 +280,120 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ed-px > img { height: 100%; transform: none; }
+}
+
+/* --- postaja ------------------------------------------------------------
+   Ogromna brojka dubine u margini. Nije ukras nego koordinata: ista je koju
+   cita i traka dubine, i jedina navigacijska oznaka koju stranica ima.     */
+
+.ed-station { position: relative; }
+
+.ed-depth-no {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  font-family: var(--font-baskerville), Georgia, serif;
+  font-size: clamp(4rem, 15vw, 12.5rem);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.07);
+  user-select: none;
+  pointer-events: none;
+}
+.ed-depth-no small {
+  font-size: 0.26em;
+  letter-spacing: 0.04em;
+  vertical-align: 0.9em;
+}
+.ed-station[data-side='l'] .ed-depth-no { left: 10px; }
+.ed-station[data-side='r'] .ed-depth-no { right: 10px; }
+
+/* Traka dubine zivi uz desni rub od 1080px navise — brojka joj se mice. */
+@media (min-width: 1080px) {
+  .ed-station[data-side='r'] .ed-depth-no { right: 11.5rem; }
+}
+
+/* --- povrsina ------------------------------------------------------------
+   Fotografija iznad vode postoji samo na vrhu stranice. Gasi se do
+   --descent 0,12 i pod njom se nastavlja isti vodeni stupac — zato nema reza
+   izmedu "iznad mora" i "pod morem", nego uranjanje.                        */
+
+.ed-surface-shot {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  opacity: calc(1 - clamp(0, (var(--descent) - 0.02) / 0.1, 1));
+  /* Donji rub se rastopi u vodu. Bez maske je fotografija zavrsavala ostrom
+     vodoravnom trakom jer je scrim ide u gotovo crno, a sekcija ispod je
+     svijetli teal — izgledalo je kao dvije stranice zalijepljene. */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%);
+}
+.ed-surface-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Scrim nije zavrtanj: jacanje prode mjerenje kontrasta i ubije fotku. Zato
+   dva blaga sloja umjesto jednog jakog — vodoravni drzi header, a lijevi drzi
+   naslov. Desna strana ostaje cista jer tamo nema teksta. */
+.ed-surface-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(3, 20, 31, 0.5) 0%, rgba(3, 20, 31, 0.12) 34%, rgba(3, 20, 31, 0) 62%),
+    linear-gradient(90deg, rgba(3, 20, 31, 0.74) 0%, rgba(3, 20, 31, 0.26) 46%, rgba(3, 20, 31, 0) 76%);
+}
+
+/* Naslov drzi lijevu stranu: amfora tada presijeca samo rep zadnjeg reda, a
+   tekuci tekst nikad ne dira. */
+@media (min-width: 1000px) {
+  .ed-hero-copy { max-width: 64%; }
+}
+
+/* Kadar koji probija rub EKRANA, a ne rub svog stupca.
+   `margin-right: calc(50% - 50vw)` ovdje ne radi: 50% je pola stupca, ne pola
+   ekrana, pa je slika izlazila 376 px izvan kadra. Racuna se sirina: stupac +
+   vanjski zljeb (0 dok je omotac uzi od ekrana) + unutarnji padding.        */
+.ed-bleed-l {
+  width: calc(100% + max(0px, (100vw - var(--wrap)) / 2) + 1.25rem);
+  max-width: none;
+}
+@media (min-width: 768px) {
+  .ed-bleed-l { width: calc(100% + max(0px, (100vw - var(--wrap)) / 2) + 2rem); }
+}
+
+/* --- slot za bocu --------------------------------------------------------
+   Okvir i izvor imaju isti odnos (4:5), pa `cover` nema sto rezati i podloga
+   se ne vidi. Grade preko njega spusta fotku iz ducana na dubinu sekcije.   */
+
+.ed-slot {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: #0a2532;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.ed-slot img {
+  object-fit: cover;
+  transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+  filter: saturate(0.62) brightness(0.78) contrast(1.08);
+}
+.ed-slot-grade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(18, 119, 122, 0.5), rgba(9, 51, 78, 0.72));
+  mix-blend-mode: multiply;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a:hover > .ed-slot img { transform: scale(1.035); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ed-slot img { transition: none; }
+  a:hover > .ed-slot img { transform: none; }
 }

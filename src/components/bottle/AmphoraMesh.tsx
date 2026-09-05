@@ -10,6 +10,7 @@ import { bladeGeometry, algaePlacements, algaeVertex, algaeFragment } from './al
 import { cageBars, seabedBlades, CAGE } from './cage'
 import { fishGeometry, fishShoals, fishVertex, fishFragment } from './fish'
 import { useDescentRef } from '@/lib/useDescent'
+import { getStage } from '@/lib/stage'
 
 const MODEL = '/model/amphora.glb'
 
@@ -46,15 +47,24 @@ const Y_TOP_NARROW = 1.5
    dimenzije kaveza promijene. */
 const Y_REST = CAGE.base + (SCALE * MODEL_H) / 2 - 0.05
 
-/* Hero poza: amfora lezi dijagonalno, kao na klijentovoj hero fotografiji.
-   Pri prvom scrollu se uspravi i potone siljkom nadolje. */
-const HERO_TILT = -0.92 // rad, ~ -53 stupnjeva
+/* Hero poza. Nagib je smanjen s -53 na -24 stupnja: gotovo vodoravna amfora
+   je zauzimala cijelu sirinu kadra i pokrivala naslov, a trebala bi presjeci
+   samo njegov rep — kao boca preko „RELEASE" u referenci. Uspravnija poza je i
+   tocnija: predmet koji tone siljkom nadolje vec je krenuo dolje. */
+const HERO_TILT = -0.42 // rad, ~ -24 stupnja
 const HERO_X = 0
 const HERO_SCALE = 1.45
-/* Pada po SREDINI cijelim spustom i upada u leziste koje je takoder u centru.
-   Prije je driftala desno i to je citalo kao slucajnost, ne kao putanja. */
+/* Osnovna putanja spusta. Na nju se ZBRAJA koreografija postaje (stage.ts):
+   predmet i dalje tone po sredini i sjeda u leziste u centru, ali usput skrece
+   i mijenja velicinu ovisno o tome sto se na toj dubini cita.
+
+   Prije je bio samo pad. Sad je pad KROZ stranicu.                         */
 const SINK_X = 0
 const SINK_SCALE = 1.02
+
+/* Koliko brzo predmet stize na novu poziciju postaje. Sporije od scrolla
+   namjerno: skretanje mora izgledati kao otpor vode, ne kao snap. */
+const STAGE_EASE = 2.1
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
@@ -112,6 +122,10 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
   const algae = useRef<THREE.InstancedMesh>(null)
   const smooth = useRef(0)
   const intro = useRef(0)
+  /* Koreografija se izglada zasebno od spusta: skok na novu postaju bi inace
+     bio trenutan, a predmet u vodi nema trenutnih poteza. */
+  const stageX = useRef(0)
+  const stageScale = useRef(1)
   const cage = useRef<THREE.InstancedMesh>(null)
   const seabed = useRef<THREE.InstancedMesh>(null)
   const fish = useRef<THREE.InstancedMesh>(null)
@@ -253,23 +267,40 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
     if (group.current) {
       const tip = THREE.MathUtils.smoothstep(d, 0.015, 0.19)
       // Amfore u kavezima STOJE. Zato zavrsna poza ide u uspravno, ne u lezece.
-      const settle = THREE.MathUtils.smoothstep(d, 0.8, 0.97)
+      // Postaja Nagrade traje do d 1,0, pa sjedanje mora pocet tek u footeru.
+      const settle = THREE.MathUtils.smoothstep(d, 0.93, 1)
       const sink = THREE.MathUtils.smoothstep(d, 0, 0.26)
 
       // Na uskom viewportu je vidljiva SIRINA mala (na 390x844 svega ~2,9
       // world unita), pa SINK_X od 1,55 padne izvan kadra. Clamp na stvarnu
       // polusirinu umjesto fiksne vrijednosti.
+      /* Koreografija postaje. Cita se svaki frame jer se scroll i tako mijenja;
+         izglada se prema cilju umjesto da skoci. */
+      const st = getStage()
+      const k = still ? 1 : Math.min(1, dt * STAGE_EASE)
+      stageX.current = lerp(stageX.current, st.x, k)
+      stageScale.current = lerp(stageScale.current, st.scale, k)
+
       const narrow = Math.min(1, state.viewport.width / 4.4)
       // narrow^2 je namjerno: linearni lerp ne moze istovremeno dati vecu
       // amforu na desktopu i ostaviti mobilnu velicinu netaknutom.
       const wide = narrow * narrow
-      group.current.position.x = lerp(HERO_X, SINK_X, sink)
+      /* Osnovna putanja + skretanje postaje, ograniceno stvarnom polusirinom
+         kadra: na 390 px je vidljiva sirina svega ~2,9 world unita, pa bi
+         fiksni pomak izbacio amforu izvan ekrana. */
+      const halfW = state.viewport.width * 0.5
+      const drift = THREE.MathUtils.clamp(stageX.current, -halfW * 0.62, halfW * 0.62)
+      group.current.position.x = lerp(HERO_X, SINK_X, sink) + drift
       // Amfora u vodi gotovo odmah dosegne terminalnu brzinu — blago
       // ubrzanje (^1.15), ne slobodan pad.
       const yTop = lerp(Y_TOP_NARROW, Y_TOP_WIDE, wide)
       group.current.position.y = lerp(yTop, Y_REST, Math.pow(d, 1.15)) + (1 - io) * 0.55
       // desktop (wide=1) -> 1,45 · mobitel (wide~0,44) -> 1,45*0,61 = 0,88
-      const sc = lerp(HERO_SCALE, SINK_SCALE, sink) * lerp(0.9, 1, io) * lerp(0.31, 1, wide)
+      const sc =
+        lerp(HERO_SCALE, SINK_SCALE, sink) *
+        lerp(0.9, 1, io) *
+        lerp(0.31, 1, wide) *
+        stageScale.current
       group.current.scale.setScalar(sc * SCALE)
 
       group.current.rotation.y = d * Math.PI * 1.5 + (1 - io) * -0.6
@@ -305,7 +336,7 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
     // Kavez izlazi iz mraka na samom dnu spusta
     const cg = cage.current
     if (cg) {
-      const show = THREE.MathUtils.smoothstep(d, 0.78, 0.99)
+      const show = THREE.MathUtils.smoothstep(d, 0.9, 1)
       cg.visible = show > 0.01
       for (let i = 0; i < bars.length; i++) {
         const b = bars[i]

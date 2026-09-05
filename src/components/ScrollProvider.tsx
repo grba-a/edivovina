@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { startDescent } from '@/lib/descent'
+import { startStage } from '@/lib/stage'
 
 /**
  * Pokretac spusta i Lenis.
@@ -19,9 +20,12 @@ const ENABLE_LENIS = true
 export default function ScrollProvider() {
   useEffect(() => {
     const stopDescent = startDescent()
+    const stopStage = startStage()
 
-    if (!ENABLE_LENIS) return stopDescent
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return stopDescent
+    const stopAll = () => { stopStage(); stopDescent() }
+
+    if (!ENABLE_LENIS) return stopAll
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return stopAll
 
     let lenis: { raf: (t: number) => void; destroy: () => void } | null = null
     let frame = 0
@@ -47,7 +51,7 @@ export default function ScrollProvider() {
       if (frame) cancelAnimationFrame(frame)
       lenis?.destroy()
       delete (window as unknown as Record<string, unknown>).__lenis
-      stopDescent()
+      stopAll()
     }
   }, [])
 
