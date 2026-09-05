@@ -22,7 +22,7 @@ export default function DepthGauge() {
               className="data-label leading-none transition-colors duration-300"
               style={{
                 fontSize: '0.5rem',
-                color: p >= c.p ? 'var(--color-clay)' : 'rgba(232,217,198,0.22)',
+                color: p >= c.p ? 'var(--color-gold)' : 'rgba(232,217,198,0.22)',
               }}
             >
               {c.index}

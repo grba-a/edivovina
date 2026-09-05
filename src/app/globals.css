@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "../styles/descent.css";
-@import "../styles/system.css";
 
 @theme {
   /* Iz "Edivo Brand Identity — Logo and Color Guide" (svibanj 2024).
@@ -23,7 +22,6 @@
   --color-coral: #c98a70;
   --color-plavac: #6b1f2a;
 
-  /* Ploca: svijetli materijal koji pluta nad vodom (vidi system.css) */
   --color-plate: #f2efe6;
   --color-plate-ink: #071a24;
   --color-stamp: #a97c2f;

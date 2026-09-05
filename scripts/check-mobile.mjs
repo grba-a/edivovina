@@ -8,7 +8,7 @@
 import { webkit, devices } from 'playwright'
 
 const BASE = process.env.URL ?? 'http://localhost:4200'
-const ROUTES = ['/', '/wines', '/wines/navis-mysterium-amphora', '/story', '/visit', '/contact']
+const ROUTES = ['/'] // rute se vracaju kad se vrati sadrzaj
 const WIDTHS = [360, 390, 430]
 
 const problems = []

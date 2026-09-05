@@ -6,7 +6,7 @@
 import { chromium } from 'playwright'
 
 const BASE = process.env.URL ?? 'http://localhost:4200'
-const ROUTES = ['/', '/wines', '/wines/navis-mysterium-tris', '/story', '/visit', '/gallery', '/contact']
+const ROUTES = ['/'] // rute se vracaju kad se vrati sadrzaj
 const VIEWPORTS = [
   { name: 'desktop', width: 1440, height: 900 },
   { name: 'mobile', width: 390, height: 844 },

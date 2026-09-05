@@ -5,7 +5,7 @@
 import { chromium } from 'playwright'
 
 const BASE = process.env.URL ?? 'http://localhost:4200'
-const ROUTES = ['/', '/wines', '/wines/navis-mysterium-tris', '/story']
+const ROUTES = ['/'] // rute se vracaju kad se vrati sadrzaj
 
 const browser = await chromium.launch()
 for (const route of ROUTES) {
