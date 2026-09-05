@@ -46,6 +46,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
       </head>
       <body>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `<!--
+THESIS: Every wine here is a catalogued artefact raised from a depth, not a product in a
+grid. Refuses the category arrangement: big hero bottle shot, gold serif, "Our Story".
+
+OWN-WORLD: Light museum plates (#F2EFE6, ink #071A24) floating over the dark water column;
+a plate never spans edge to edge, so the falling amphora passes between and behind them.
+Gold (Pantone 7509C) is a stamp and an action only, never a frame. Libre Baskerville titles
+the plate; Raleway with tabular figures is the record's field type.
+
+STORY: The buyer is choosing an object for a gift or a moment. They read a find record,
+see the depth and the duration in its fields, and act from inside the record itself.
+
+FIRST VIEWPORT: Unchanged, approved. Dark water, 3D amphora descending, headline bottom
+left, two buttons in a row, price line. The plates begin below it.
+
+FORM: Finds catalogue. Candidate 2 of the grounded list; user-pinned over the roll
+(a pinned direction beats the roll). Seed key 57859abb.
+
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review,
+the verdict, and DESIGN.md
+-->`,
+          }}
+        />
         <ScrollProvider />
         <Chrome />
         {children}

@@ -18,10 +18,12 @@ export default function GalleryPage() {
         <PageHero
           eyebrow={`${galleryCount} photographs`}
           lines={['Everything above the wine,', 'and everything under it.']}
+          intro="The vineyard, the clay, the wreck at 25 metres, and what comes back up wearing oysters."
+          cta={{ href: '/wines', label: 'See the wines' }}
           readout={`${galleryCount} frames`}
         />
 
-        <section className="px-5 pb-16 md:px-8 md:pb-24">
+        <section className="px-5 pb-14 md:px-8 md:pb-24">
           <div className="mx-auto w-full max-w-[92rem]">
             {GALLERY.map((g) => (
               <div key={g.title} className="border-t border-ivory/12 py-10 md:py-14">

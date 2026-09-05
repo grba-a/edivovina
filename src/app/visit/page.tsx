@@ -23,7 +23,7 @@ const PLACES = [
     name: 'Drače',
     line: 'All three poured side by side — cellar, sea, amphora — from the same barrel. Oysters from the bay in front of you.',
     address: ['Drače 18', '20246 Drače'],
-    image: 'bar-terrace',
+    image: 'bar-terrace-wide',
     alt: 'The terrace of the Edivo wine bar at Drače',
     map: 'https://www.google.com/maps/search/?api=1&query=Edivo+Vina+Dra%C4%8De',
   },
@@ -32,7 +32,7 @@ const PLACES = [
     name: 'Janjina',
     line: 'Where the fruit comes in and the amphorae are filled and sealed before they go down to the wreck.',
     address: ['Janjina 62', '20246 Janjina'],
-    image: 'founder',
+    image: 'founder-wide',
     alt: 'Ivo Šegović above the underwater cellar off Janjina',
     map: 'https://www.google.com/maps/search/?api=1&query=Edivo+Vina+Janjina',
   },
@@ -50,7 +50,7 @@ export default function VisitPage() {
           readout="42°55′N 17°28′E"
         />
 
-        <section className="px-5 pb-12 md:px-8 md:pb-20">
+        <section className="px-5 pb-14 md:px-8 md:pb-24">
           <div className="mx-auto grid w-full max-w-[92rem] gap-10 md:grid-cols-2 md:gap-6">
             {PLACES.map((pl) => (
               <div key={pl.name} className="border border-ivory/12">
@@ -60,7 +60,7 @@ export default function VisitPage() {
                     alt={pl.alt}
                     sizes="(min-width: 768px) 48vw, 100vw"
                     ratio="natural"
-                    className="mx-auto w-full max-w-[17rem] bg-surface"
+                    className="w-full bg-surface"
                   />
                 </Reveal>
                 <div className="p-6 md:p-9">

@@ -34,7 +34,7 @@ function Row({ w }: { w: Wine }) {
           <Frame
             name={w.image}
             alt={w.name}
-            sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 100vw" 
+            sizes="(min-width: 1024px) 23vw, 46vw" 
             ratio="natural"
             className="w-full transition-opacity duration-300 group-hover:opacity-88"
           />
@@ -78,17 +78,17 @@ export default function WinesPage() {
               href={`/wines/${tris.slug}`}
               className="group grid border border-gold/30 md:grid-cols-12"
             >
-              <div className="md:col-span-5">
+              <div className="p-5 md:col-span-3 md:p-7">
                 <Frame
                   name={tris.image}
                   alt={tris.name}
                   priority
                   sizes="(min-width: 768px) 42vw, 100vw"
                   ratio="natural"
-                  className="mx-auto w-full max-w-[19rem] transition-opacity duration-300 group-hover:opacity-90"
+                  className="w-full transition-opacity duration-300 group-hover:opacity-90"
                 />
               </div>
-              <div className="flex flex-col justify-between gap-8 p-7 md:col-span-7 md:p-12">
+              <div className="flex flex-col justify-between gap-8 p-7 md:col-span-9 md:p-12">
                 <div>
                   <p className="data-label text-gold">Start here</p>
                   <h2 className="mt-4 font-display text-[clamp(1.6rem,3.2vw,2.6rem)] leading-tight text-ivory">
@@ -114,7 +114,7 @@ export default function WinesPage() {
 
             {/* --- podmorske: veci kadrovi --- */}
             <div className="mt-16 flex flex-wrap items-baseline gap-x-5 gap-y-2 border-t border-ivory/15 pt-8">
-              <h2 className="font-display text-2xl text-ivory md:text-3xl">Aged at 25 metres</h2>
+              <h2 className="font-display text-xl text-ivory md:text-2xl">Aged at 25 metres</h2>
               <span className="data-label text-gold/60" style={{ fontSize: '0.5rem' }}>
                 700 days on the seabed
               </span>
@@ -127,12 +127,14 @@ export default function WinesPage() {
 
             {/* --- podrumske: manji kadrovi, cetiri u redu --- */}
             <div className="mt-16 flex flex-wrap items-baseline gap-x-5 gap-y-2 border-t border-ivory/15 pt-8">
-              <h2 className="font-display text-2xl text-ivory md:text-3xl">Aged in Janjina</h2>
+              <h2 className="font-display text-xl text-ivory md:text-2xl">Aged in Janjina</h2>
               <span className="data-label text-ivory/30" style={{ fontSize: '0.5rem' }}>
                 the control group
               </span>
             </div>
-            <ul className="mt-10 grid gap-x-5 gap-y-12 grid-cols-2 lg:grid-cols-4">
+            {/* Tri u redu, ne cetiri: podrumskih je pet, pa bi u 4-stupcanom
+                gridu Rose ostao sam s tri prazna stupca. */}
+            <ul className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-3">
               {land.map((w) => (
                 <li key={w.slug}>
                   <Link href={`/wines/${w.slug}`} className="group block">

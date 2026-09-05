@@ -42,7 +42,7 @@ const BEATS = [
     depth: 'back up',
     title: 'The sea signs every one differently',
     body: 'Each amphora surfaces wearing oysters, coralline and the shape of the cage it hung in. We do not clean them off. That crust is the only signature the sea leaves, and no two bottles carry the same one.',
-    image: 'lift-water',
+    image: 'lift-water-wide',
     alt: 'An amphora lifted from the sea, water still running off the shells',
   },
 ]
@@ -76,7 +76,7 @@ export default function StoryPage() {
           />
         </div>
 
-        <section className="px-5 py-12 md:px-8 md:py-16">
+        <section className="px-5 pb-14 pt-12 md:px-8 md:pb-24 md:pt-16">
           <div className="mx-auto w-full max-w-[92rem]">
             <dl className="grid grid-cols-3 gap-6 border-y border-ivory/12 py-10 md:gap-10">
               <CountUp to={700} label="days under the sea" />
@@ -90,18 +90,21 @@ export default function StoryPage() {
                   key={b.n}
                   className="grid gap-7 border-b border-ivory/12 py-10 md:grid-cols-12 md:gap-10 md:py-14"
                 >
-                  <div className={i % 2 ? 'md:col-span-5 md:order-2 md:col-start-8' : 'md:col-span-5'}>
+                  <div className={i % 2 ? 'md:col-span-3 md:order-2 md:col-start-10' : 'md:col-span-3'}>
                     <Reveal from={0.16}>
                       <Frame
                         name={b.image}
                         alt={b.alt}
                         sizes="(min-width: 768px) 40vw, 100vw"
-                        ratio="natural"
-                        className="w-full max-w-[20rem] bg-surface"
+                        /* Jedinstveni 3:2 okvir: izvori su mijesani (jetty-2 i
+                           seabed-pebbles su 3:2, lift-water 2:3), pa je s
+                           ratio="natural" jedan kadar bio dvostruko visi od
+                           ostalih i red je ostajao poluprazan. */
+                        className="aspect-[3/2] w-full bg-surface object-cover"
                       />
                     </Reveal>
                   </div>
-                  <div className={i % 2 ? 'md:col-span-6 md:order-1 md:col-start-1' : 'md:col-span-6 md:col-start-7'}>
+                  <div className={i % 2 ? 'md:col-span-8 md:order-1 md:col-start-1' : 'md:col-span-8 md:col-start-5'}>
                     <div className="flex items-baseline gap-4">
                       <span className="tnum text-sm text-gold">{b.n}</span>
                       <span className="data-label text-ivory/30" style={{ fontSize: '0.5rem' }}>

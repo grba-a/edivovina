@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { WINES, bySlug } from '@/data/wines'
 
 /**
  * 01 / SURFACE.
@@ -11,6 +12,11 @@ import Link from 'next/link'
  * tipografija ide u donji rub i sredina kadra ostaje njoj.
  */
 const LINES = ['Two years', 'underwater.']
+
+/** Izvedeno iz kataloga, ne prepisano — cijena u heru ne smije odlutati. */
+const eur = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','))
+const FROM = eur(Math.min(...WINES.map((w) => w.price)))
+const SET = eur(bySlug('navis-mysterium-tris')!.price)
 
 export default function Hero() {
   return (
@@ -43,30 +49,38 @@ export default function Hero() {
             The first underwater winery in the world. Plavac Mali sealed in clay and left on the
             seabed for 700 days.
           </p>
-          <div
-            className="ed-fade mt-6 flex flex-wrap items-center gap-3"
-            style={{ animationDelay: '0.64s' }}
-          >
+          {/* Gumbi u JEDNOM REDU i na uskom ekranu: flex-wrap ih je lomio u
+              stupac, a dva puna gumba jedan pod drugim pojedu pol kadra. */}
+          <div className="ed-fade mt-6 flex items-stretch gap-2.5" style={{ animationDelay: '0.64s' }}>
             <Link
               href="/wines"
-              className="data-label bg-gold px-6 py-4 text-abyss transition-colors duration-200 hover:bg-ivory"
+              className="data-label flex flex-1 items-center justify-center bg-gold px-4 py-4 text-center text-abyss transition-colors duration-200 hover:bg-ivory sm:flex-none sm:px-6"
             >
               Buy a bottle
             </Link>
-            {/* Cijena je u heru namjerno: kupac koji trazi dar treba red
-                velicine odmah, a ne nakon tri ekrana scrolla. */}
             <a
               href="#three"
-              className="data-label border border-ivory/25 px-6 py-4 text-ivory/80 transition-colors duration-200 hover:border-gold hover:text-gold"
+              className="data-label flex flex-1 items-center justify-center border border-ivory/25 px-4 py-4 text-center text-ivory/80 transition-colors duration-200 hover:border-gold hover:text-gold sm:flex-none sm:px-6"
             >
-              One wine, three lives — €536
+              Three lives
             </a>
           </div>
+
+          {/* Cijena stoji SAMOSTALNO, ne u gumbu: kupac koji trazi dar treba
+              red velicine u prvom kadru, a gumb s cijenom nije stao na 390px. */}
+          <p
+            className="ed-fade data-label mt-4 text-ivory/40"
+            style={{ animationDelay: '0.72s', fontSize: '0.5625rem' }}
+          >
+            From {FROM} · the set {SET}
+          </p>
         </div>
       </div>
 
+      {/* Samo desktop: na mobitelu je ovaj red gurao sadrzaj uz gornji rub i
+          amforu tiskao izvan kadra. Dubinu na mobitelu ionako pokazuje spust. */}
       <div
-        className="ed-fade mx-auto mt-8 flex w-full max-w-[92rem] items-center gap-4 border-t border-ivory/12 pt-4"
+        className="ed-fade mx-auto mt-8 hidden w-full max-w-[92rem] items-center gap-4 border-t border-ivory/12 pt-4 md:flex"
         style={{ animationDelay: '0.78s' }}
       >
         <span className="data-label text-ivory/30" style={{ fontSize: '0.5rem' }}>

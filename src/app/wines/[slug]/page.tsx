@@ -69,18 +69,18 @@ export default async function WinePage({ params }: { params: Promise<{ slug: str
 
         <section className="px-5 pb-14 md:px-8 md:pb-24">
           <div className="mx-auto grid w-full max-w-[92rem] gap-12 md:grid-cols-12 md:gap-10">
-            <div className="md:col-span-6">
+            <div className="md:col-span-5">
               <Frame
                 name={w.image}
                 alt={w.name}
                 priority
                 sizes="(min-width: 768px) 48vw, 100vw"
                 ratio="natural"
-                className="w-full max-w-[25rem]"
+                className="w-full"
               />
             </div>
 
-            <div className="md:col-span-6 md:pt-2">
+            <div className="md:col-span-6 md:col-start-7 md:pt-2">
               <p className="max-w-[46ch] text-[1.0625rem] leading-[1.75] text-ivory/75">
                 {w.description}
               </p>
@@ -98,7 +98,7 @@ export default async function WinePage({ params }: { params: Promise<{ slug: str
 
               <div id="buy" className="mt-10 flex flex-wrap items-end justify-between gap-6">
                 <div>
-                  <p className="font-sans tnum text-4xl text-ivory">{price(w.price)}</p>
+                  <p className="font-display tnum text-4xl text-ivory">{price(w.price)}</p>
                   <p className="data-label mt-2 text-ivory/35" style={{ fontSize: '0.5rem' }}>
                     {w.stockStatus === 'instock' ? 'available' : 'sold out'} · VAT included
                   </p>
@@ -134,7 +134,7 @@ export default async function WinePage({ params }: { params: Promise<{ slug: str
                     />
                     <div className="mt-4 flex items-start justify-between gap-3">
                       <h3 className="font-display text-lg leading-tight text-ivory">{o.name}</h3>
-                      <p className="font-sans tnum shrink-0 text-sm text-ivory/70">{price(o.price)}</p>
+                      <p className="font-display tnum shrink-0 text-sm text-ivory/70">{price(o.price)}</p>
                     </div>
                   </Link>
                 </li>

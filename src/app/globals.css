@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/descent.css";
+@import "../styles/system.css";
 
 @theme {
   /* Iz "Edivo Brand Identity — Logo and Color Guide" (svibanj 2024).
@@ -21,6 +22,12 @@
   --color-sand: #c4a184;
   --color-coral: #c98a70;
   --color-plavac: #6b1f2a;
+
+  /* Ploca: svijetli materijal koji pluta nad vodom (vidi system.css) */
+  --color-plate: #f2efe6;
+  --color-plate-ink: #071a24;
+  --color-stamp: #a97c2f;
+  --color-stamp-bright: #d2ac67;
 
   --font-display: var(--font-baskerville), ui-serif, Georgia, serif;
   --font-sans: var(--font-raleway), ui-sans-serif, system-ui, sans-serif;

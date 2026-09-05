@@ -40,6 +40,14 @@ const CROPS = {
   'p-plavac-red': { ratio: 4 / 5, anchorY: 0.46 },
   'p-dingac': { ratio: 4 / 5, anchorY: 0.46 },
   'p-box': { ratio: 4 / 5, anchorY: 0.5 },
+  // Namjenski SIROKI rezovi za /visit: kartice su tamo dvije u redu, pa
+  // portretni izvor daje 812 px visine. 16:10 kroz sredinu kadra ispuni
+  // karticu i stane u 45% ekrana.
+  'bar-terrace-wide': { ratio: 16 / 10, anchorY: 0.52 },
+  'founder-wide': { ratio: 16 / 10, anchorY: 0.34 },
+  /* /story red trazi jedinstveni 3:2 okvir. jetty-2 i seabed-pebbles su vec
+     3:2, lift-water je portret — pa dobiva svoj rez kroz ruke i amforu. */
+  'lift-water-wide': { ratio: 3 / 2, anchorY: 0.46 },
 }
 
 /** Semanticka imena — kod se cita, ne dekodira. */
@@ -53,6 +61,7 @@ const PICKS = [
   ['Edivo Photoshoot 2024/edivo-47.jpg', 'boat-bottle'],
   ['Edivo Photoshoot 2024/edivo-46.jpg', 'boat-bottle-2'],
   ['Edivo Photoshoot 2024/edivo-31.jpg', 'lift-water'],
+  ['Edivo Photoshoot 2024/edivo-31.jpg', 'lift-water-wide'],
   ['Edivo Photoshoot 2024/edivo-33.jpg', 'seabed-pebbles'],
   ['Edivo Photoshoot 2024/edivo-37.jpg', 'surface-amphora'],
   ['Edivo Photoshoot 2024/edivo-34.jpg', 'founder'],
@@ -61,6 +70,8 @@ const PICKS = [
   ['Edivo Photoshoot 2024/edivo-70.jpg', 'jetty'],
   ['Edivo Photoshoot 2024/edivo-86.jpg', 'oyster'],
   ['Edivo Photoshoot 2024/edivo-1.jpg', 'bar-terrace'],
+  ['Edivo Photoshoot 2024/edivo-1.jpg', 'bar-terrace-wide'],
+  ['Edivo Photoshoot 2024/edivo-34.jpg', 'founder-wide'],
   ['Edivo Photoshoot 2024/edivo-95.jpg', 'bay-bottle'],
   ['Edivo Photoshoot 2024/edivo-66.jpg', 'jetty-2'],
   // --- studijske boce (jedna podloga = konzistentan katalog)

@@ -1,16 +1,21 @@
 import Link from 'next/link'
+import Plate from './record/Plate'
+import Silhouette from './record/Silhouette'
+import ScaleBar from './record/ScaleBar'
 import { bySlug } from '@/data/wines'
 
+const eur = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','))
+
 /**
- * Zavrsna prodajna traka. Ista na SVAKOJ podstranici — to je druga konstanta:
- * gdje god korisnik zavrsi citati, ponuda je ista i put je jedan klik.
+ * Zavrsni zapis. Ista na svakoj podstranici — gdje god korisnik zavrsi citati,
+ * ponuda je ista i put je jedan klik.
  *
- * Namjerno bez fotografije i bez druge opcije osim TRIS-a: podstranica nije
- * mjesto za birati, nego za odluciti.
+ * Nije "CTA traka" nego ZAPIS s cijenom i akcijom u zadnjem redu, kao svaki
+ * drugi na webu.
  */
 export default function CtaBand({
-  line = 'One wine. Three lives.',
-  sub = 'Cellar, sea and amphora from the same barrel — the only way to taste what the depth actually did.',
+  line = 'One wine, measured three ways.',
+  sub = 'Cellar, sea and clay from the same barrel — the only way to see what the depth actually did.',
 }: {
   line?: string
   sub?: string
@@ -18,33 +23,45 @@ export default function CtaBand({
   const tris = bySlug('navis-mysterium-tris')!
 
   return (
-    <section className="relative z-10 px-5 pb-20 md:px-8 md:pb-28">
-      <div className="mx-auto w-full max-w-[92rem] border border-gold/30">
-        <div className="grid md:grid-cols-12">
-          <div className="p-7 md:col-span-8 md:p-12">
-            <p className="data-label mb-4 text-gold">Start here</p>
-            <h2 className="max-w-[22ch] font-display text-[clamp(1.6rem,3.4vw,2.7rem)] leading-tight text-ivory">
-              {line}
-            </h2>
-            <p className="mt-4 max-w-[46ch] text-[0.9375rem] leading-relaxed text-ivory/60">{sub}</p>
+    <section style={{ paddingBottom: 'var(--sec-y)' }} className="relative z-10 px-5 md:px-8">
+      <div className="mx-auto w-full max-w-[92rem]">
+        <Plate enter>
+          <div
+            className="flex items-baseline justify-between gap-[var(--s-3)] border-b border-plate-rule-strong"
+            style={{ padding: 'var(--s-3) var(--s-4)' }}
+          >
+            <span className="t-stamp text-plate-ink/50">Start here</span>
+            <span className="t-stamp text-stamp">Batch 1–4000</span>
           </div>
-          <div className="flex flex-col justify-between gap-6 border-t border-gold/30 bg-surface p-7 md:col-span-4 md:border-l md:border-t-0 md:p-12">
+
+          <div className="flex items-start gap-[var(--s-5)]" style={{ padding: 'var(--s-5) var(--s-4)' }}>
+            <div className="hidden w-[14%] shrink-0 justify-center text-plate-ink sm:flex">
+              <Silhouette name="amphora" draw className="max-h-[11rem] w-full" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="t-title max-w-[24ch] text-plate-ink">{line}</h2>
+              <p className="t-body mt-[var(--s-3)] text-plate-ink/65">{sub}</p>
+            </div>
+          </div>
+
+          <div
+            className="flex items-end justify-between gap-[var(--s-4)] border-t border-plate-rule-strong"
+            style={{ padding: 'var(--s-3) var(--s-4)' }}
+          >
             <div>
-              <p className="font-display tnum text-[clamp(1.9rem,3.2vw,2.6rem)] leading-none text-ivory">
-                €{tris.price}
-              </p>
-              <p className="data-label mt-3 text-ivory/35" style={{ fontSize: '0.5rem' }}>
+              <ScaleBar />
+              <p className="t-stamp mt-[var(--s-2)] text-plate-ink/45">
                 {tris.volume} · ships from Janjina
               </p>
             </div>
-            <Link
-              href={`/wines/${tris.slug}`}
-              className="data-label block bg-gold px-6 py-4 text-center text-abyss transition-colors duration-200 hover:bg-ivory"
-            >
-              Take the set
+            <Link href={`/wines/${tris.slug}`} className="pressable flex items-baseline gap-[var(--s-3)]">
+              <span className="t-title tnum text-plate-ink">{eur(tris.price)}</span>
+              <span className="t-stamp bg-stamp px-[var(--s-4)] py-[var(--s-3)] text-plate">
+                Take all three
+              </span>
             </Link>
           </div>
-        </div>
+        </Plate>
       </div>
     </section>
   )

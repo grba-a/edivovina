@@ -34,7 +34,7 @@ export default function ContactPage() {
           readout="info@edivovina.hr"
         />
 
-        <section className="px-5 pb-16 md:px-8 md:pb-24">
+        <section className="px-5 pb-14 md:px-8 md:pb-24">
           <div className="mx-auto grid w-full max-w-[92rem] gap-12 border-t border-ivory/12 pt-12 md:grid-cols-12 md:gap-8 md:pt-16">
             <div className="md:col-span-4">
               <dl className="space-y-8">
