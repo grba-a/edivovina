@@ -11,35 +11,46 @@ const eur = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixed(
  * 3 METRA — URANJANJE. Jedina sekcija u kojoj je predmet subjekt.
  *
  * Na fotografiji iznad amfora tek udara u vodu; ovdje pada kroz kadar i tekst
- * stoji OKO nje. Sredinski stupac je namjerno prazan — to nije praznina nego
+ * stoji OKO nje. Sredisnji stupac je namjerno prazan — to nije praznina nego
  * mjesto gdje predmet zivi.
  *
  * DESKTOP: tri stupca, glina lijevo, more desno, amfora izmedu.
  * MOBITEL: nema bocnog prostora, pa ista ideja ide vertikalno — glina gore,
- *   prazan pojas u kojem se predmet vidi, more i akcija ispod. Ovo je drugi
- *   raspored, ne stisnuti desktop.
+ *   prazan pojas u kojem se predmet vidi, mjere pa more i akcija ispod.
  *
- * Brojke su izmjerene s 3D modela (PRODUCT.md): 300 x 108 mm. Volumen i cijena
- * dolaze iz kataloga, pa ne mogu otici u drift.
+ * OVDJE SE ZATVARA CIJENA. Argument dolazi prije broja, i to je najbolja
+ * odluka na stranici — ali broj je dugo stajao sam. Sad uz njega stoji
+ * KONTROLA: `NM-REG` je isto vino, ista bacva, ista berba, nikad nije silo,
+ * i kosta €39. Bez tog broja €382 nema s cime usporediti; s njim je razlika
+ * cinjenica, a ne tvrdnja. Oba dolaze iz kataloga pa ne mogu driftati.
  */
 export default function Dive() {
   const amphora = bySlug('navis-mysterium-amphora')!
+  const control = bySlug('navis-mysterium-cellar')!
+
+  const FIELDS: [string, string][] = [
+    ['Visina', '300 mm'],
+    ['Promjer', '108 mm'],
+    ['Volumen', amphora.volume],
+    /* Oskudnost je svojstvo predmeta kao i mjere, pa stoji uz njih. Prije je
+       bila fusnota uz gumb, na 8 px i 40 % prozirnosti. */
+    ['Serija', '1–4000'],
+    ['Berba', String(amphora.vintage)],
+  ]
 
   return (
     <Station data={S} side="l" className="ed-dive">
-      <div className="ed-in relative z-10 flex min-h-[124svh] flex-col pb-[var(--sec-y)] pt-[var(--s-9)]">
+      <div className="ed-in relative z-10 flex flex-col pb-[var(--sec-y)] pt-[var(--s-9)] ed-dive-in">
+        {/* Samo „Uranjanje": rečenica o svjetlu je naslov ove sekcije. */}
         <p className="data-label text-gold">Uranjanje</p>
 
         <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[13ch] text-ivory">
           Crveno nestaje prvo.
         </h2>
 
-        {/* Predmet zivi u sredisnjem stupcu. Na mobitelu je to prazan pojas. */}
         <div className="ed-dive-band mt-[var(--s-8)]">
           <div className="ed-dive-l">
-            <p className="data-label text-gold" style={{ fontSize: '0.5rem' }}>
-              Glina
-            </p>
+            <p className="data-label text-gold">Glina</p>
             <p className="t-body mt-[var(--s-4)] text-ivory/72">
               Izbačena iz petrinjske gline, začepljena plutom i zapečaćena dvama slojevima gume.
               Trebalo je godinu dana neuspjelih brtvi prije nego je morska voda ostala vani.
@@ -51,18 +62,12 @@ export default function Dive() {
           <div className="ed-dive-gap" aria-hidden />
 
           {/* Mjere stoje ISPOD predmeta na mobitelu, a u lijevom stupcu na
-              desktopu (grid-row 2). Prije su bile u lijevom bloku i na 390px
-              su tabularne brojke lezale preko grla amfore. */}
-          <dl className="ed-dive-nums t-field max-w-[16rem]">
-            {[
-              ['Visina', '300 mm'],
-              ['Promjer', '108 mm'],
-              ['Volumen', amphora.volume],
-            ].map(([k, v]) => (
+              desktopu (grid-row 2). U lijevom bloku su na 390px tabularne
+              brojke lezale preko grla amfore. */}
+          <dl className="ed-dive-nums t-field max-w-[18rem]">
+            {FIELDS.map(([k, v]) => (
               <div key={k} className="flex items-baseline gap-[var(--s-2)] border-t border-ivory/12 py-[var(--s-2)]">
-                <dt className="data-label shrink-0 text-ivory/40" style={{ fontSize: '0.5rem' }}>
-                  {k}
-                </dt>
+                <dt className="data-label shrink-0 text-ivory/60">{k}</dt>
                 <span aria-hidden className="h-px flex-1 bg-ivory/12" />
                 <dd className="tnum shrink-0 text-ivory/80">{v}</dd>
               </div>
@@ -70,24 +75,35 @@ export default function Dive() {
           </dl>
 
           <div className="ed-dive-r">
-            <p className="data-label text-gold" style={{ fontSize: '0.5rem' }}>
-              More
-            </p>
+            <p className="data-label text-gold">More</p>
             <p className="t-body mt-[var(--s-4)] text-ivory/72">
               Sedamsto dana bez svjetla i bez vibracije, na dvostrukom pritisku površine. Svaka se
               vrati noseći nešto drugo — kamenice, koralinu, oblik kaveza u kojem je visjela.
               Ne čistimo to.
             </p>
+            <p className="t-body mt-[var(--s-4)] text-ivory/72">
+              Gore dođe u borovoj kutiji, u kovanom ležištu u kojem je visjela na dnu.
+            </p>
 
-            <div className="mt-[var(--s-6)] flex flex-wrap items-center gap-[var(--s-4)]">
+            <div className="mt-[var(--s-6)]">
               <Link
-                href={`/wines/${amphora.slug}`}
-                className="data-label pressable bg-gold px-[var(--s-5)] py-[var(--s-4)] text-abyss"
+                /* v. napomena o rutama u Shop.tsx */
+                href="#shop"
+                className="data-label pressable inline-block bg-gold px-[var(--s-5)] py-[var(--s-4)] text-abyss"
               >
                 Uzmi jednu — {eur(amphora.price)}
               </Link>
-              <p className="data-label text-ivory/40" style={{ fontSize: '0.5rem' }}>
-                serija 1–4000
+
+              {/* Recenice s brojem, ne tabela. Kao <dl> je `shrink-0` na dugom
+                  <dt> razvlacio red i izbacivao cijenu 17 px izvan kadra na
+                  360 px — tekst koji se moze lomiti nikad ne smije biti
+                  shrink-0. */}
+              <p className="t-field mt-[var(--s-4)] max-w-[34ch] text-ivory/65">
+                {control.name}, ista bačva, nikad nije sišla:{' '}
+                <b className="tnum font-normal text-ivory/85">{eur(control.price)}</b>
+              </p>
+              <p className="t-field mt-[var(--s-2)] max-w-[34ch] text-ivory/65">
+                Šaljemo iz Janjine — UPS, DPD ili DHL; carinu plaća kupac.
               </p>
             </div>
           </div>

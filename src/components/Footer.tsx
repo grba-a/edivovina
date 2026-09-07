@@ -17,7 +17,7 @@ const S = station('seabed')
  */
 export default function Footer() {
   return (
-    <Station data={S} side="l" style={{ paddingBlock: 'var(--sec-y) var(--s-7)' }} className="mt-auto">
+    <Station data={S} as="footer" side="l" className="ed-seabed mt-auto">
       <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
@@ -38,7 +38,7 @@ export default function Footer() {
               height={230}
               className="h-7 w-auto"
             />
-            <p className="t-field mt-[var(--s-4)] max-w-[28ch] text-ivory/55">
+            <p className="t-field mt-[var(--s-4)] max-w-[28ch] text-ivory/65">
               Podmorski podrum kod Janjine, vinski bar u Draču.
             </p>
           </div>
@@ -77,7 +77,7 @@ export default function Footer() {
             </address>
             {/* min-h/min-w umjesto veceg fonta: oznaka ostaje sitna kakva je
                 zamisljena, a prst dobiva svojih 44 px. */}
-            <div className="data-label mt-[var(--s-2)] flex gap-[var(--s-4)] text-gold" style={{ fontSize: '0.5rem' }}>
+            <div className="data-label-sm mt-[var(--s-2)] flex gap-[var(--s-4)] text-gold">
               <a
                 href="https://www.instagram.com/edivowines/"
                 target="_blank"
@@ -96,8 +96,10 @@ export default function Footer() {
               </a>
             </div>
 
-            {/* Predlozak: obrazac se spaja u WordPressu (Breakdance + WooCommerce). */}
-            <form className="mt-[var(--s-4)] flex gap-[var(--s-2)]" action="#">
+            {/* Predlozak: obrazac se spaja u WordPressu (Breakdance + WooCommerce).
+                Do tada je ONEMOGUCEN, ne `action="#"` — tako je polje tiho jelo
+                adresu i skakalo na vrh stranice. */}
+            <form className="mt-[var(--s-4)] flex gap-[var(--s-2)]">
               <label htmlFor="nl" className="sr-only">
                 Email za newsletter
               </label>
@@ -106,9 +108,17 @@ export default function Footer() {
                 name="email"
                 type="email"
                 placeholder="tvoj@mail.com"
-                className="min-w-0 flex-1 border border-ivory/20 bg-transparent px-[var(--s-3)] py-[var(--s-3)] text-sm text-ivory outline-none transition-colors focus:border-gold"
+                autoComplete="email"
+                disabled
+                /* Bez `outline-none`: ono je gasilo globalni :focus-visible i ovo
+                   je bio jedini element na stranici bez vidljivog fokusa. */
+                className="min-w-0 flex-1 border border-ivory/20 bg-transparent px-[var(--s-3)] py-[var(--s-3)] text-sm text-ivory transition-colors focus:border-gold disabled:opacity-60"
               />
-              <button type="submit" className="data-label pressable bg-gold px-[var(--s-4)] text-abyss">
+              <button
+                type="submit"
+                disabled
+                className="data-label bg-gold px-[var(--s-4)] text-abyss disabled:opacity-60"
+              >
                 Prijavi me
               </button>
             </form>
@@ -116,14 +126,13 @@ export default function Footer() {
         </div>
 
         <div className="mt-[var(--s-8)] flex items-center gap-[var(--s-4)] border-t border-ivory/14 pt-[var(--s-3)]">
-          <span className="data-label text-ivory/35" style={{ fontSize: '0.5rem' }}>
+          <span className="data-label-sm text-ivory/60">
             © Edivo Vina
           </span>
           <span aria-hidden className="h-px flex-1 bg-ivory/14" />
           <Link
             href="#surface"
-            className="data-label inline-flex min-h-11 items-center text-ivory/35 hover:text-gold"
-            style={{ fontSize: '0.5rem' }}
+            className="data-label-sm inline-flex min-h-11 items-center text-ivory/60 hover:text-gold"
           >
             Natrag na površinu ↑
           </Link>

@@ -40,14 +40,22 @@ const SCALE = 3
 /* Pocetna visina u heru ovisi o kadru:
    desktop je centriran (0,05), a na mobitelu amfora stoji VISE (0,86) jer
    inace sjedne na naslov. Ista formula kao za scale — narrow^2. */
-/* Spustena blize sredini kadra: na 0,45 je sjedila visoko i „lebdjela" nad
-   naslovom umjesto da stoji u desnom stupcu uz njega. */
-const Y_TOP_WIDE = 0.1
+/* Pocetak spusta mora biti VISOKO, inace predmet nema kamo pasti.
+   Izmjereno na 0,1: centroid je kroz cijelu stranicu padao 420 → 700 px, tj.
+   280 px na 5 543 px scrolla — trecina jednog kadra za dvadeset pet metara. A
+   na prijelazu hero → uranjanje se pomicao 380 px u stranu i RASTAO, sto se
+   cita kao zamah prema kameri, ne kao tonjenje.
+   Granica je izmjerena: pri hero skali je predmet 3,48 unita visok, pa mu je
+   poluvisina 1,74, a pola kadra 3,155. Sve iznad y = 1,41 znaci odrezan vrh, a
+   nav traka jos pojede ~0,53. Predmet je uz to NAGNUT i rotira se, pa mu je
+   stvarni okvir visi od visine modela — na 0,85 mu je grlo jos diralo gornji
+   rub. Na 0,45 stoji CIJEO u desnom stupcu (to je Petar odobrio) i pritom ima
+   1,6 unita pada do lezista na −1,15; prije je imao 1,25. */
+const Y_TOP_WIDE = 0.45
 const Y_TOP_NARROW = 1.5
 /* Amfora sjedne UNUTAR kaveza: gornja resetka prolazi kroz donji dio tijela,
-   kao na fotkama s dna. Izvedeno iz CAGE-a da odnos ostane istinit i kad se
-   dimenzije kaveza promijene. */
-const Y_REST = CAGE.base + (SCALE * MODEL_H) / 2 - 0.05
+   kao na fotkama s dna. Visina se racuna PO FRAMEU iz stvarne skale (vidi
+   `yRest` u useFrameu) jer predmet nije jednako velik na svakoj sirini. */
 
 /* Hero poza. Nagib je smanjen s -53 na -24 stupnja: gotovo vodoravna amfora
    je zauzimala cijelu sirinu kadra i pokrivala naslov, a trebala bi presjeci
@@ -128,6 +136,8 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
      bio trenutan, a predmet u vodi nema trenutnih poteza. */
   const stageX = useRef(0)
   const stageScale = useRef(1)
+  /** Sirina kaveza; puni se u istom frameu u kojem se racuna skala predmeta. */
+  const cageWide = useRef(1)
   const cage = useRef<THREE.InstancedMesh>(null)
   const seabed = useRef<THREE.InstancedMesh>(null)
   const fish = useRef<THREE.InstancedMesh>(null)
@@ -259,12 +269,22 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
   }, [shoals])
 
   useFrame((state, dt) => {
+    /* Na mobitelu je frameloop 'demand': frame se crta samo kad padne `descent`
+       event. Sve sto se izgladuje PO FRAMEU tada nikad ne stigne do cilja —
+       kad scroll stane, stanu i frameovi, i na ekranu ostane ono sto je zadnji
+       frame izracunao na pola puta.
+       Izmjereno: na dnu stranice s --descent 1 i --amph-o 0,9 predmet je nosio
+       9 054 piksela umjesto 34 341, lebdio nad polu-skaliranim kavezom, i
+       `intro` nikad nije stigao do 1 pa je ostao na 0,9x i pomaknut u y.
+       Zato: gdje nema stalnog frameloopa, nema ni izgladivanja. */
+    const snap = still || !rich
+
     const target = p.current
-    smooth.current = still ? target : lerp(smooth.current, target, Math.min(1, dt * 3.4))
+    smooth.current = snap ? target : lerp(smooth.current, target, Math.min(1, dt * 3.4))
     const d = smooth.current
 
     if (intro.current < 1) intro.current = Math.min(1, intro.current + dt / 1.9)
-    const io = still ? 1 : easeOut(intro.current)
+    const io = snap ? 1 : easeOut(intro.current)
 
     if (group.current) {
       const tip = THREE.MathUtils.smoothstep(d, 0.015, 0.19)
@@ -279,7 +299,7 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
       /* Koreografija postaje. Cita se svaki frame jer se scroll i tako mijenja;
          izglada se prema cilju umjesto da skoci. */
       const st = getStage()
-      const k = still ? 1 : Math.min(1, dt * STAGE_EASE)
+      const k = snap ? 1 : Math.min(1, dt * STAGE_EASE)
       stageX.current = lerp(stageX.current, st.x, k)
       stageScale.current = lerp(stageScale.current, st.scale, k)
 
@@ -293,10 +313,7 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
       const halfW = state.viewport.width * 0.5
       const drift = THREE.MathUtils.clamp(stageX.current * halfW, -halfW * 0.7, halfW * 0.7)
       group.current.position.x = lerp(HERO_X, SINK_X, sink) + drift
-      // Amfora u vodi gotovo odmah dosegne terminalnu brzinu — blago
-      // ubrzanje (^1.15), ne slobodan pad.
-      const yTop = lerp(Y_TOP_NARROW, Y_TOP_WIDE, wide)
-      group.current.position.y = lerp(yTop, Y_REST, Math.pow(d, 1.15)) + (1 - io) * 0.55
+
       // desktop (wide=1) -> 1,45 · mobitel (wide~0,44) -> 1,45*0,61 = 0,88
       const sc =
         lerp(HERO_SCALE, SINK_SCALE, sink) *
@@ -304,6 +321,24 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
         lerp(0.31, 1, wide) *
         stageScale.current
       group.current.scale.setScalar(sc * SCALE)
+
+      /* Visina sjedanja se IZVODI iz stvarne skale, ne iz konstante.
+         Y_REST je bio fiksan i racunao s punim SCALE 3 — na desktopu je to
+         slucajno tocno (sc ≈ 1,02), ali na mobitelu je predmet 0,61x pa mu je
+         poluvisina 0,93 umjesto 1,53 i siljak je visio pola jedinice IZNAD
+         dna resetke. Amfora u lezistu mora dodirivati dno na svakoj sirini. */
+      const halfH = (sc * SCALE * MODEL_H) / 2
+      const yRest = CAGE.base + halfH - 0.05
+
+      // Amfora u vodi gotovo odmah dosegne terminalnu brzinu — blago
+      // ubrzanje (^1.15), ne slobodan pad.
+      const yTop = lerp(Y_TOP_NARROW, Y_TOP_WIDE, wide)
+      group.current.position.y = lerp(yTop, yRest, Math.pow(d, 1.15)) + (1 - io) * 0.55
+
+      /* Kavez se steze u sirini zajedno s predmetom. Visina mu se NE dira —
+         on stoji na dnu, a posidonija je posadena na CAGE.base. Bez ovoga je
+         na mobitelu mala amfora stajala u kavezu za desktopsku. */
+      cageWide.current = lerp(0.62, 1, wide)
 
       group.current.rotation.y = d * Math.PI * 1.5 + (1 - io) * -0.6
       group.current.rotation.z =
@@ -339,7 +374,12 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
     const cg = cage.current
     if (cg) {
       const show = THREE.MathUtils.smoothstep(d, 0.9, 1)
-      cg.visible = show > 0.01
+      cg.scale.set(cageWide.current, 1, cageWide.current)
+      /* NE `cg.visible = show > 0.01`: materijali se tada kompajliraju tek kad
+         se resetka prvi put pojavi — a to je na p 0,9, u sredini scrolla.
+         Izmjereno na throttlanom mobitelu: jedan zaglavljen frame od 1083 ms.
+         Instance su i tako skalirane s `show`, pa nulta skala nista ne rasterira
+         ali natjera kompilaciju u idle prozor gdje je cijena vec placena. */
       for (let i = 0; i < bars.length; i++) {
         const b = bars[i]
         _scale.copy(b.scale).multiplyScalar(show)
@@ -402,12 +442,22 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
 
       {/* Kavez: varena armaturna mreza s dna. NIJE dijete amfore — ne smije
           se skalirati i rotirati s njom. */}
-      <instancedMesh ref={cage} args={[barGeo, undefined, bars.length]} visible={false}>
+      {/* Bez `visible={false}`: mesh je vidljiv od montaze, a instance su
+          skalirane s `show` pa do p 0,9 imaju nultu skalu i nista ne rasteriraju.
+          Tako se materijal kompajlira u idle prozoru, a ne u sredini scrolla —
+          i kavez se stvarno pojavi. Kad sam skinuo `cg.visible` gate iz
+          useFramea, ovaj prop ga je tiho ostavio nevidljivim. */}
+      <instancedMesh ref={cage} args={[barGeo, undefined, bars.length]}>
+        {/* KALCIFICIRANA armatura, ne svjeza rdja. Na njihovim fotkama s dna
+            (`ispod-mora-02/05/07`, `UTS-02`) sipke su bijele od morskog
+            obrastaja, a rdja se vidi samo gdje je kora otpala. Cista rdja
+            `#7d4f33` je citala kao novo zeljezo koje je jucer spusteno.
+            envMapIntensity je vise jer baklja jaca s dubinom i kora je hvata. */}
         <meshStandardMaterial
-          color="#7d4f33"
-          roughness={0.95}
-          metalness={0.25}
-          envMapIntensity={0.5}
+          color="#7f7263"
+          roughness={0.9}
+          metalness={0.12}
+          envMapIntensity={0.6}
         />
       </instancedMesh>
 

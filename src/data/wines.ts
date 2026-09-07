@@ -51,7 +51,11 @@ export const WINES: Wine[] = [
     grapes: ['Plavac Mali'],
     abv: 14.5,
     volume: '3 × 0,75 l',
-    image: 'p-box',
+    /* p-box je plava kutija s JEDNOM bocom oznacenom EROS — stoji nad
+       „tri boce" i uz najvecu cijenu na stranici. Ispravnog kadra nema u
+       public/photo; do njega ide amfora, koja barem pokazuje Navis Mysterium.
+       Ceka klijenta: jedna snimka tri boce u kadru. */
+    image: 'p-amphora',
     featured: true,
     stockStatus: 'instock',
   },

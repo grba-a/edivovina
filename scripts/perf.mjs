@@ -16,24 +16,44 @@ for (const route of ROUTES) {
       'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
   })
   const page = await ctx.newPage()
-  const byType = {}
-  let total = 0
-  page.on('response', async (r) => {
-    try {
-      const h = r.headers()
-      const len = Number(h['content-length'] ?? 0)
-      if (!len) return
-      const ct = (h['content-type'] ?? '').split(';')[0]
-      const k = ct.includes('image') ? 'image' : ct.includes('javascript') ? 'js'
-        : ct.includes('css') ? 'css' : ct.includes('font') ? 'font'
-        : ct.includes('html') ? 'html' : 'other'
-      byType[k] = (byType[k] ?? 0) + len
-      total += len
-    } catch {}
-  })
 
   await page.goto(BASE + route, { waitUntil: 'domcontentloaded', timeout: 90000 })
   await page.waitForTimeout(4500)
+
+  /* Payload se cita iz PerformanceResourceTiming.transferSize, ne iz
+     `content-length` iz response headera.
+
+     Vercel servira JS, CSS i HTML brotli-streamano BEZ content-lengtha, pa je
+     prijasnje mjerenje te zahtjeve tiho preskakalo i prijavljivalo „js 4 KB"
+     na bundleu od preko 400 KB. Mjerilo kojem ne mozes vjerovati je gore od
+     nikakvog — po njemu je stranica godinama bila „unutar budzeta".
+
+     BUDZET, iskreno: 600 KB se NE moze ispuniti s WebGL predmetom na stranici
+     (js chunk za three je sam ~440 KB, glb 286 KB). Ono sto ima smisla mjeriti
+     je KRITICNI PUT — html + css + fontovi + slike koje se ucitavaju odmah —
+     dok se 3D racuna zasebno jer se montira nakon prvog painta.
+     Kriticni put: <= 600 KB · odgodeni 3D sloj: <= 800 KB. */
+  const { byType, total } = await page.evaluate(() => {
+    const nav = performance.getEntriesByType('navigation')[0]
+    const out = {}
+    let sum = nav?.transferSize ?? 0
+    if (sum) out.html = sum
+    for (const e of performance.getEntriesByType('resource')) {
+      const n = e.transferSize || 0
+      if (!n) continue
+      const u = e.name
+      const k =
+        /\.(webp|png|jpe?g|avif|svg)(\?|$)/i.test(u) ? 'image'
+        : /\.(js|mjs)(\?|$)/i.test(u) || e.initiatorType === 'script' ? 'js'
+        : /\.css(\?|$)/i.test(u) || e.initiatorType === 'css' ? 'css'
+        : /\.woff2?(\?|$)/i.test(u) ? 'font'
+        : /\.glb(\?|$)/i.test(u) ? 'model'
+        : 'other'
+      out[k] = (out[k] ?? 0) + n
+      sum += n
+    }
+    return { byType: out, total: sum }
+  })
 
   const vitals = await page.evaluate(
     () =>

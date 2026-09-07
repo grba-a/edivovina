@@ -9,17 +9,21 @@
    ========================================================================= */
 
 :root {
-  /* --- prostor: jedna geometrijska skala, nista izvan nje --------------- */
-  --s-1: 4px;
-  --s-2: 8px;
-  --s-3: 12px;
-  --s-4: 16px;
-  --s-5: 24px;
-  --s-6: 32px;
-  --s-7: 48px;
-  --s-8: 64px;
-  --s-9: 96px;
-  --s-10: 128px;
+  /* --- prostor: jedna geometrijska skala, nista izvan nje ---------------
+     U REM-ovima, ne pikselima. Ako korisnik digne velicinu teksta u
+     pregledniku, raspored mora rasti s njim — s fiksnim pikselima tekst
+     naraste a zljebovi ostanu, pa se sve stisne i pocne lomiti. Na
+     podrazumijevanih 16px vrijednosti su identicne prijasnjima. */
+  --s-1: 0.25rem;  /*  4px */
+  --s-2: 0.5rem;   /*  8px */
+  --s-3: 0.75rem;  /* 12px */
+  --s-4: 1rem;     /* 16px */
+  --s-5: 1.5rem;   /* 24px */
+  --s-6: 2rem;     /* 32px */
+  --s-7: 3rem;     /* 48px */
+  --s-8: 4rem;     /* 64px */
+  --s-9: 6rem;     /* 96px */
+  --s-10: 8rem;    /* 128px */
 
   /* Ritam sekcija su DVA tokena, ne devet vrijednosti razasutih po fileovima */
   --sec-y: var(--s-8);

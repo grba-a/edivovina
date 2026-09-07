@@ -19,7 +19,10 @@ export default function Press() {
       <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
-        <h2 id={`${S.id}-h`} className="sr-only">
+        {/* Naslov je bio `sr-only`, pa je vidljivi kupac vidio sest serifnih
+            rijeci u nizu i citao ih kao traku partnera. Najjaci tudi dokaz koji
+            imaju bio je neoznacen. */}
+        <h2 id={`${S.id}-h`} className="t-title mt-[var(--s-5)] text-ivory">
           Pisali su o nama
         </h2>
 
@@ -42,7 +45,7 @@ export default function Press() {
           >
             {`„${QUOTE.text}”`}
           </p>
-          <footer className="data-label mt-[var(--s-4)] text-ivory/45" style={{ fontSize: '0.5rem' }}>
+          <footer className="data-label-sm mt-[var(--s-4)] text-ivory/60">
             {QUOTE.who} · {QUOTE.where}
           </footer>
         </blockquote>
@@ -59,9 +62,9 @@ export default function Press() {
                 <span className="data-label text-gold">{st.outlet}</span>
                 <span>
                   <span className="t-title block text-ivory">{st.title}</span>
-                  <span className="t-field mt-[var(--s-2)] block text-ivory/55">{st.note}</span>
+                  <span className="t-field mt-[var(--s-2)] block text-ivory/65">{st.note}</span>
                 </span>
-                <span className="data-label tnum text-ivory/45 md:text-right" style={{ fontSize: '0.5rem' }}>
+                <span className="data-label-sm tnum text-ivory/60 md:text-right">
                   {st.year}
                 </span>
               </a>

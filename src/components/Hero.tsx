@@ -42,19 +42,19 @@ export default function Hero() {
       </div>
 
       <div className="ed-hero-in ed-in relative z-10 flex min-h-svh flex-col pb-[var(--s-8)] pt-[var(--s-10)]">
-        <p className="ed-fade data-label text-gold" style={{ animationDelay: '0.12s' }}>
+        <p className="ed-fade data-label text-gold">
           Pelješac · prva podmorska vinarija u Hrvatskoj
         </p>
 
         <div className="ed-hero-main">
           <h1 id={`${S.id}-h`} className="t-display text-ivory md:mt-[var(--s-5)]">
             <span className="ed-mask">
-              <span className="ed-line" style={{ animationDelay: '0.2s' }}>
+              <span className="ed-line">
                 Spustili smo
               </span>
-            </span>
+            </span>{' '}
             <span className="ed-mask">
-              <span className="ed-line" style={{ animationDelay: '0.3s' }}>
+              <span className="ed-line" style={{ animationDelay: '0.06s' }}>
                 vino na dno.
               </span>
             </span>
@@ -74,11 +74,17 @@ export default function Hero() {
             className="ed-fade mt-[var(--s-6)] flex gap-[var(--s-3)] md:mt-[var(--s-7)]"
             style={{ animationDelay: '0.62s' }}
           >
+{/* Glavni gumb vodi na URANJANJE, ne na cjenik. Prije je obecavao „od
+                €17,50" a vodio gdje je najjeftinije €117 — i usput preskakao
+                jedinu sekciju u kojoj stranica argumentira svoj proizvod.
+                Nosi i €382, pa mobitel prvi broj sretne uz predmet, a ne hladno
+                dva ekrana nize. Ime mu se vise ne poklapa s gumbom u headeru,
+                koji vodi na `/wines`. */}
             <Link
-              href="#shop"
+              href="#dive"
               className="data-label pressable bg-gold px-[var(--s-4)] py-[var(--s-4)] text-abyss md:px-[var(--s-5)]"
             >
-              Kupi bocu<span className="hidden md:inline"> — od €17,50</span>
+              Vidi amforu — €382
             </Link>
             <Link
               href="#seabed"
@@ -93,13 +99,14 @@ export default function Hero() {
           className="ed-fade mt-[var(--s-6)] flex items-center gap-[var(--s-4)] border-t border-ivory/14 pt-[var(--s-3)] md:mt-[var(--s-7)]"
           style={{ animationDelay: '0.76s' }}
         >
-          <span className="data-label text-ivory/40" style={{ fontSize: '0.5rem' }}>
+          <span className="data-label-sm text-ivory/60">
             Skrolaj i tonut ćeš
           </span>
           <span aria-hidden className="h-px flex-1 bg-ivory/14" />
-          <span className="data-label tnum text-ivory/40" style={{ fontSize: '0.5rem' }}>
-            0,0 m
-          </span>
+{/* Raspon, ne „0,0 m": dubinu na 0 m nosi velika brojka u margini, a ovaj
+              slot je jedina besplatna nekretnina na prvom ekranu. Bez njega je
+              mobitel prvi broj na stranici sretao kao €382, bez mjerila. */}
+          <span className="data-label-sm tnum text-ivory/85">€17,50 — €536</span>
         </div>
       </div>
     </Station>

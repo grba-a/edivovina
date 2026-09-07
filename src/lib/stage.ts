@@ -38,8 +38,15 @@ const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n)
 /**
  * Uski ekran nema bocnog prostora: predmet koji je na desktopu ISPRED naslova
  * ovdje bi legao na tekuci tekst. Zato na mobitelu nikad ne ide u prvi plan.
+ *
+ * BREAKPOINT_WIDE mora biti ISTI kao prag na kojem `.ed-dive-band` postaje
+ * trostupcani (descent.css). Bio je 900 dok je band bio 1000, i u tom prozoru
+ * od sto piksela predmet je bio `front` na `z: 20` nad JEDNOSTUPCANIM
+ * rasporedom — izmjereno na 960 px: prekrivao je 29 % odlomka o glini i
+ * fizicki presijecao dva od tri reda po sredini rijeci.
  */
-const isNarrow = () => window.innerWidth < 900
+export const BREAKPOINT_WIDE = 1000
+const isNarrow = () => window.innerWidth < BREAKPOINT_WIDE
 
 const publish = () => {
   raf = 0

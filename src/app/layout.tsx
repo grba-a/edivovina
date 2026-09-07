@@ -13,7 +13,10 @@ import './globals.css'
 const baskerville = Libre_Baskerville({
   subsets: ['latin', 'latin-ext'],
   weight: ['400'],
-  style: ['normal', 'italic'],
+  /* Bez italica: grep kroz cijeli src ne nalazi ni jednu upotrebu (tri
+     pojave „italic" su `not-italic` na <address>, sto gasi default a ne
+     trazi font). Dvije datoteke od sest, ~40 KB od 154 KB fontova. */
+  style: ['normal'],
   variable: '--font-baskerville',
   display: 'swap',
 })
@@ -37,7 +40,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${baskerville.variable} ${raleway.variable}`}>
+    /* Stranica je na hrvatskom. S lang="en" citac ekrana izgovara „Spustili smo
+         vino na dno" engleskom fonetikom i to je nerazumljivo. WCAG 3.1.1, razina A. */
+    <html lang="hr" className={`${baskerville.variable} ${raleway.variable}`}>
       <head>
         {/* Bez JS-a sve mora biti vidljivo. Klasu na <html> NE dodavati skriptom
             — to razbije hydration. */}
@@ -46,6 +51,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </noscript>
       </head>
       <body>
+        {/* Sest tab stopova u headeru prije sadrzaja. Link je vidljiv tek na
+            fokus — ne zauzima prostor, a korisniku tipkovnice daje izlaz. */}
+        <a href="#surface" className="ed-skip">
+          Na sadržaj
+        </a>
         <ScrollProvider />
         <Water />
         {children}

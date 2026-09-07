@@ -32,7 +32,18 @@
 
 /* --- vodeni stupac -------------------------------------------------------
    Tri sloja, ne color-mix: radi svugdje i monotono je po konstrukciji.
-   Baza je abis; nad njom se gase deep i shallow kako --descent raste.      */
+   Baza je abis; nad njom se gase deep i shallow kako --descent raste.
+
+   PRAGOVI SU IZMJERENI, ne pogodeni. Prije su bili 0,34 i 0,34→0,76 i rampa
+   se ispucala u prvoj trecini stranice: teal je bio mrtav na 6 m — gdje po
+   tekstu tek nestaje CRVENO — a od 22 m su tri sekcije bile jedna ista boja,
+   pa je spust prestao placati bas tamo gdje je najdublji.
+
+   Izmjereni --descent po postajama: 0 · 0,18 · 0,36 · 0,54 · 0,74 · 0,90 · 1
+   (0 · 3 · 6 · 12 · 18 · 22 · 25 m). Odatle: teal gine na 0,50 (≈11 m), navy
+   krece tek s 0,50 i gine na 1,0 (25 m). Iste tri boje, isti smjer, samo
+   rasporedene po cijeloj duzini — nijedne dvije susjedne postaje ne dijele
+   podlogu.                                                                 */
 
 .ed-water {
   position: fixed;
@@ -49,11 +60,11 @@
 }
 .ed-water::before {
   background: var(--ed-navy);
-  opacity: calc(1 - clamp(0, (var(--descent) - 0.34) / 0.42, 1));
+  opacity: calc(1 - clamp(0, (var(--descent) - 0.5) / 0.5, 1));
 }
 .ed-water::after {
   background: var(--ed-teal);
-  opacity: calc(1 - clamp(0, var(--descent) / 0.34, 1));
+  opacity: calc(1 - clamp(0, var(--descent) / 0.5, 1));
 }
 
 /* --- toplo svjetlo s povrsine -------------------------------------------
@@ -71,7 +82,9 @@
     rgba(229, 164, 92, 0.8),
     rgba(229, 164, 92, 0) 62%
   );
-  opacity: calc(1 - clamp(0, var(--descent) / 0.09, 1));
+  /* 0,28 ≈ 5 m po izmjerenom mapiranju. Na 0,09 je toplo umiralo na ~2 m,
+     dvije postaje prije nego tekst kaze da crveno odlazi. */
+  opacity: calc(1 - clamp(0, var(--descent) / 0.28, 1));
 }
 
 /* --- snopovi svjetla s povrsine -----------------------------------------
@@ -84,7 +97,10 @@
   height: 96vh;
   z-index: 1;
   pointer-events: none;
-  opacity: calc(clamp(0, 1 - var(--descent) * 1.85, 1));
+  /* Prije *1,85 = mrtvi na 0,54 (≈5,6 m). Snopovi s povrsine se u ovako
+     cistoj vodi vide i na desetak metara, a i kad rampa traje duze imaju
+     gdje umrijeti. */
+  opacity: calc(clamp(0, 1 - var(--descent) * 1.15, 1));
 }
 .ed-shaft {
   position: absolute;
@@ -183,7 +199,8 @@
 .ed-line {
   display: block;
   transform: translateY(104%);
-  animation: ed-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* 0,65s, ne 1,1s: ulaz je drzao ~700ms LCP-a na throttlanom mobitelu. */
+  animation: ed-rise 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes ed-rise {
   from { transform: translateY(104%); }
@@ -192,7 +209,7 @@
 
 .ed-fade {
   opacity: 0;
-  animation: ed-fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: ed-fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 @keyframes ed-fade-in {
   from { opacity: 0; transform: translateY(14px); }
@@ -424,4 +441,81 @@
   .ed-dive-nums { grid-column: 1; grid-row: 2; margin-top: 0; padding-right: var(--s-5); }
   .ed-dive-gap  { grid-column: 2; grid-row: 1 / span 2; min-height: 0; }
   .ed-dive-r    { grid-column: 3; grid-row: 1; padding-left: var(--s-5); }
+}
+
+
+/* --- B1: dno na mobitelu ------------------------------------------------
+   Na desktopu footer rezervira prazan grid stupac za predmet, pa amfora
+   sjeda u leziste u sredini a adrese stoje lijevo i desno od nje.
+
+   Na mobitelu se grid srusi u jedan stupac i nista je ne rezervira: amfora i
+   sipke kaveza crtale su se KROZ newsletter polje, kroz link „Facebook" i
+   kroz donju traku — i to na ekranu koji nosi telefonski broj, jedini kanal
+   koji danas moze uzeti novac.
+
+   Popravak je prostor, ne prozirnost: sadrzaj se digne, a donjih ~40svh
+   zadnjeg kadra ostaje mirna voda u koju predmet sjeda.                    */
+
+/* Cijeli padding zivi ovdje, ne kao inline style na sekciji: inline pobjeduje
+   klasu, pa je prvi pokusaj popravka tiho ostao bez ucinka. */
+.ed-seabed {
+  padding-top: var(--sec-y);
+  padding-bottom: var(--s-7);
+}
+
+@media (max-width: 767px) {
+  .ed-seabed { padding-bottom: 44svh; }
+}
+
+/* --- skip link ----------------------------------------------------------
+   Vidljiv tek na fokus. Ne pomice nista u rasporedu.                      */
+
+.ed-skip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transform: translateY(-120%);
+  background: var(--ed-gold);
+  color: #06141d;
+  font-family: var(--font-raleway), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  padding: 0.75rem 1rem;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.ed-skip:focus-visible {
+  transform: translateY(0);
+}
+
+/* --- bez JS-a ------------------------------------------------------------
+   --descent nikad ne izade iz 0, pa se cijeli spust od dvadeset pet metara
+   crta na plitkom tealu: footer u svijetloj tirkiznoj vodi, snopovi svjetla
+   preko nagrada, a header nikad ne postane solidan jer je `sunk` JS stanje —
+   pa kartice prolaze kroz wordmark i nav.
+
+   Cetiri linije cistog CSS-a rjesavaju i to i bljesak prije hidracije na
+   sporoj vezi. Prenosivo u Breakdance, bez ijedne linije JS-a.              */
+
+@media (scripting: none) {
+  :root { --descent: 0.58; }
+  /* Fotografija povrsine ostaje — bez nje je prvi ekran prazna voda. */
+  .ed-surface-shot { opacity: 1; }
+  header {
+    background: var(--color-abyss);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  }
+}
+
+/* --- vise kontrasta na zahtjev ------------------------------------------
+   Tekst ide na punu bjelinu, rubovi postaju vidljivi. Bez prozirnosti nemamo
+   sto solidificirati, pa prefers-reduced-transparency ne treba.            */
+
+@media (prefers-contrast: more) {
+  .ed-surface-scrim {
+    background:
+      linear-gradient(180deg, rgba(3, 20, 31, 0.72) 0%, rgba(3, 20, 31, 0.4) 40%, rgba(3, 20, 31, 0.2) 70%),
+      linear-gradient(90deg, rgba(3, 20, 31, 0.88) 0%, rgba(3, 20, 31, 0.5) 50%, rgba(3, 20, 31, 0.2) 82%);
+  }
+  .ed-depth-no { color: rgba(255, 255, 255, 0.16); }
 }

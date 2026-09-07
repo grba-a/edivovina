@@ -27,15 +27,22 @@ export default function Awards() {
       <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
-        <div className="mt-[var(--s-5)] flex flex-wrap items-end justify-between gap-[var(--s-4)]">
-          <h2 id={`${S.id}-h`} className="t-plate max-w-[18ch] text-ivory">
-            Nagrađeni kao predmet.
-          </h2>
-          <p className="t-field max-w-[34ch] text-ivory/55">
-            Sabatina im je dala prvaka <b className="font-normal text-ivory">za dizajn amfore</b>, ne
-            za vino u njoj. To nije slabija nagrada — to je točno ono što se prodaje.
-          </p>
-        </div>
+        {/* Bez `justify-between` zaglavlja s malim blokom desno — to je tocno
+            isti aparat koji otvara sekciju Boce, pa su dvije citale kao ista
+            ploca. Ovdje naslov stoji sam, a argument ide POD njega, u punoj
+            sirini i u tekucem tekstu.
+
+            To je ujedno i najhrabrija linija na stranici — jedini trenutak koji
+            kolekcionaru govori kao ravnome — a stajala je na `t-field`, 65 %
+            prozirnosti, u desnoj margini. To je postavljanje disclaimera. */}
+        <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[18ch] text-ivory">
+          Nagrađeni kao predmet.
+        </h2>
+
+        <p className="t-body mt-[var(--s-5)] text-ivory/80">
+          Sabatina im je dala prvaka <b className="font-normal text-ivory">za dizajn amfore</b>, ne
+          za vino u njoj. To nije slabija nagrada — to je točno ono što se prodaje.
+        </p>
 
         <ul className="mt-[var(--sec-y-tight)] grid grid-cols-2 gap-[var(--s-4)] sm:grid-cols-3 lg:grid-cols-5">
           {AWARDS.map((a) => (
@@ -57,16 +64,16 @@ export default function Awards() {
                 <span aria-hidden className="h-[4.5rem]" />
               )}
 
-              <p className="data-label mt-[var(--s-4)] text-gold" style={{ fontSize: '0.5rem' }}>
+              <p className="data-label-sm mt-[var(--s-4)] text-gold">
                 {a.medal}
-                <span className="text-ivory/35"> · {a.kind === 'vino' ? 'za vino' : 'za dizajn'}</span>
+                <span className="text-ivory/60"> · {a.kind === 'vino' ? 'za vino' : 'za dizajn'}</span>
               </p>
 
               <p className="t-title mt-[var(--s-2)] text-ivory">{a.body}</p>
 
-              <p className="t-field mt-auto pt-[var(--s-3)] text-ivory/50">{a.detail}</p>
+              <p className="t-field mt-auto pt-[var(--s-3)] text-ivory/65">{a.detail}</p>
 
-              <p className="data-label tnum mt-[var(--s-3)] text-ivory/40" style={{ fontSize: '0.5rem' }}>
+              <p className="data-label-sm tnum mt-[var(--s-3)] text-ivory/60">
                 {a.year}
               </p>
             </li>
@@ -77,7 +84,7 @@ export default function Awards() {
             u registru, a „prva na svijetu" ne stoji — baskijski Crusoe Treasure
             je na dnu od 2010. i patent za podmorsko starenje prijavljen je
             2007. „Prva u Hrvatskoj" stoji i potvrdena je u pet izvora. */}
-        <p className="t-field mt-[var(--s-6)] max-w-[52ch] text-ivory/40">
+        <p className="t-field mt-[var(--s-6)] max-w-[52ch] text-ivory/60">
           Prva podmorska vinarija u Hrvatskoj. Vino stari i prodaje se u zapečaćenoj glinenoj
           amfori izvađenoj s dna — to nitko drugi ne radi.
         </p>

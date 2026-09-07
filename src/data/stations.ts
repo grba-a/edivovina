@@ -80,7 +80,9 @@ export const STATIONS: Station[] = [
     id: 'dive',
     m: 3,
     name: 'Uranjanje',
-    light: 'Prvo nestane crveno',
+    /* Jedna tvrdnja o crvenom, na jednoj dubini. Prije je stajala i tu (3 m) i
+       u tijelu sekcije (5 m) i na vinariji (6 m) — tri broja za istu stvar. */
+    light: 'Crveno je već otišlo',
     act: 'front',
     x: 0,
     scale: 1.15,
@@ -92,7 +94,7 @@ export const STATIONS: Station[] = [
     id: 'winery',
     m: 6,
     name: 'Vinarija',
-    light: 'Na šest metara nestane crveno',
+    light: 'Na šest metara nema više crvene',
     act: 'hidden',
     x: 0,
     scale: 0.8,
@@ -103,6 +105,10 @@ export const STATIONS: Station[] = [
     name: 'Boce',
     light: 'Na dvanaest metara nestane narančasto',
     act: 'small',
+    /* PO SREDINI. Kratko sam ga pomaknuo u stranu (0,62) jer je iza neprozirnih
+       kartica mjerio 0,00–0,05 % ekrana — ali bocni drift od tri metra do dna
+       je citao kao nemir. Putanja je jedna: desni stupac u heru, pa sredina do
+       dna. Predmet se ovdje vidi u zljebovima iznad i ispod reda kartica. */
     x: 0,
     scale: 0.44,
   },

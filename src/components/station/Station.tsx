@@ -14,6 +14,7 @@ import type { Station as Data } from '@/data/stations'
  */
 export default function Station({
   data,
+  as: Tag = 'section',
   side = 'l',
   showDepth = true,
   children,
@@ -21,6 +22,12 @@ export default function Station({
   style,
 }: {
   data: Data
+  /**
+   * Zadnja postaja je DNO stranice, pa se renderira kao <footer> — inace
+   * stranica nema `contentinfo` landmark i citac ekrana nema kako preskociti
+   * na kontakt.
+   */
+  as?: 'section' | 'footer'
   side?: 'l' | 'r'
   /** Hero je nema: 0,0 m vec stoji u hairlineu, a brojka bi sjela na nav. */
   showDepth?: boolean
@@ -29,7 +36,7 @@ export default function Station({
   style?: React.CSSProperties
 }) {
   return (
-    <section
+    <Tag
       id={data.id}
       data-station={data.id}
       data-side={side}
@@ -44,6 +51,6 @@ export default function Station({
         </span>
       )}
       {children}
-    </section>
+    </Tag>
   )
 }

@@ -50,6 +50,10 @@
   :focus-visible {
     outline: 2px solid var(--color-gold);
     outline-offset: 3px;
+    /* Nav linkovi imaju `transition-colors`, sto obuhvaca i outline-color, pa
+       je prsten fokusa dolazio s 200ms kasnjenja. Indikator fokusa mora biti
+       trenutan. */
+    transition: none;
   }
 }
 
@@ -62,6 +66,28 @@
   text-transform: uppercase;
   letter-spacing: 0.19em;
   font-size: 0.6875rem;
+}
+
+/* Manja oznaka. Postoji jer je jedanaest mjesta rucno gazilo `data-label` na
+   0,5rem = 8 px, sto je 32 elementa u renderu — Raleway verzal na 0,19em
+   trackinga pri 8 px je ispod svake citljive granice, a znacilo je i da
+   deklarirana ljestvica iz system.css ne stoji.
+
+   Deset piksela je dno, i tracking se stisne: sto je slovo manje, to mu manje
+   razmaka treba da se cita kao verzal. */
+@utility data-label-sm {
+  font-family: var(--font-sans);
+  /* 500, ne 600: Raleway se ucitava samo u 400 i 500 (layout.tsx), pa bi 600
+     bio sinteticki bold — preglednik razmaze poteze i sitni verzal se raspline. */
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+  /* VISE trackinga od velike oznake, ne manje. Tracking je specifican za
+     velicinu: veliki display tekst hoce negativan, sitni tekst hoce blago
+     pozitivan jer mu treba zraka da se cita kao verzal. Prvo sam ga stisnuo
+     na 0,16em, sto je bilo naopako. */
+  letter-spacing: 0.2em;
+  font-size: 0.625rem;
 }
 
 @utility tnum {

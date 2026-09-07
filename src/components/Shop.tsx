@@ -1,4 +1,10 @@
 import Link from 'next/link'
+
+/* PRIVREMENO: `/wines` i `/wines/[slug]` jos ne postoje (podstranice su
+   sljedeci krug), a Next ih je prefetchao pa je svaki kupovni link na stranici
+   vracao 404 — pet od dvadeset pet tab stopova. Do ruta sve vodi na sekciju
+   Boce, koja je danas jedini stvarni katalog. Kad rute stignu, vraca se
+   `/wines/${w.slug}`. */
 import BottleSlot from '@/components/BottleSlot'
 import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
@@ -35,39 +41,30 @@ export default function Shop() {
           <h2 id={`${S.id}-h`} className="t-plate max-w-[16ch] text-ivory">
             Tri koje su bile dolje.
           </h2>
-          <p className="data-label text-ivory/40" style={{ fontSize: '0.5rem' }}>
+          <p className="data-label-sm text-ivory/60">
             {WINES.length} vina u ponudi · 4 s dna
           </p>
         </div>
 
         <ul className="mt-[var(--sec-y-tight)] grid grid-cols-1 gap-[var(--s-6)] sm:grid-cols-3">
-          {three.map((w, i) => (
+          {three.map((w) => (
             <li key={w.slug}>
-              <Link href={`/wines/${w.slug}`} className="pressable flex flex-col">
+              <Link href="#shop" className="pressable flex flex-col">
                 <BottleSlot
                   image={w.image}
                   alt={w.name}
-                  priority={i === 0}
                   sizes="(min-width: 640px) 30vw, 92vw"
                 />
                 <span className="mt-[var(--s-4)] flex items-baseline justify-between gap-[var(--s-3)] border-t border-ivory/16 pt-[var(--s-3)]">
                   <span className="t-title text-ivory">{w.name}</span>
                   <span className="t-title tnum shrink-0 text-ivory">{eur(w.price)}</span>
                 </span>
-                <span className="t-field mt-[var(--s-2)] block text-ivory/55">{NOTE[w.slug]}</span>
+                <span className="t-field mt-[var(--s-2)] block text-ivory/65">{NOTE[w.slug]}</span>
               </Link>
             </li>
           ))}
         </ul>
 
-        <Link
-          href="/wines"
-          /* py-3 digne hit area s 26 na 44 px; rub ostaje na istom mjestu jer
-             ga nosi span, ne sam link. */
-          className="data-label pressable mt-[var(--s-7)] inline-flex items-center py-[var(--s-3)] text-gold"
-        >
-          <span className="border-b border-gold/50 pb-[var(--s-2)]">Vidi svih {WINES.length} →</span>
-        </Link>
       </div>
     </Station>
   )

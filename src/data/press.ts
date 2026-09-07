@@ -25,7 +25,10 @@ export type Award = {
 
 export const AWARDS: Award[] = [
   {
-    year: 'godina se potvrđuje',
+    /* Godina se ne ceka: njihov vlastiti bedz (public/medal/decanter-silver.webp)
+       pise „2022 · Decanter World Wine Awards · Silver". Berba je i dalje
+       nepoznata i ostaje neizmisljena. */
+    year: '2022',
     body: 'Decanter World Wine Awards',
     medal: 'Srebro',
     detail: 'Dingač — kvaliteta vina',

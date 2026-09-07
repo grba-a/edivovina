@@ -49,7 +49,7 @@ export default function Winery() {
                     <span className="t-plate tnum block text-ivory" style={{ fontSize: 'clamp(1.6rem, 3.6vw, 2.8rem)' }}>
                       {f.n}
                     </span>
-                    <span className="data-label mt-[var(--s-2)] block leading-snug text-ivory/45" style={{ fontSize: '0.5rem' }}>
+                    <span className="data-label-sm mt-[var(--s-2)] block leading-snug text-ivory/60">
                       {f.l}
                     </span>
                   </dd>

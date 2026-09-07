@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const NAV = [
   { href: '#winery', label: 'Vinarija' },
@@ -22,6 +22,7 @@ const NAV = [
  */
 export default function Header() {
   const [open, setOpen] = useState(false)
+  const burger = useRef<HTMLButtonElement>(null)
   const [sunk, setSunk] = useState(false)
 
   useEffect(() => {
@@ -30,6 +31,20 @@ export default function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  /* Escape zatvara izbornik i vraca fokus na gumb koji ga je otvorio. Bez
+     ovoga je izbornik ostajao otvoren s aria-expanded="true", a korisnik
+     tipkovnice nije imao kako izaci. */
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setOpen(false)
+      burger.current?.focus()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
 
   /* Fragment link koji ne skrola drugi put: jedan delegirani slusac popravi
      sve, jer Lenis drzi svoj scroll i native skok ga rasklopi. */
@@ -72,19 +87,19 @@ export default function Header() {
             priority
             className="h-7 w-auto md:h-9"
           />
-          <span className="data-label hidden border-l border-ivory/20 pl-[var(--s-3)] text-ivory/45 sm:inline" style={{ fontSize: '0.5rem' }}>
+          <span className="data-label-sm hidden border-l border-ivory/20 pl-[var(--s-3)] text-ivory/60 sm:inline">
             Pelješac
           </span>
         </Link>
 
         <nav className="hidden items-center gap-[var(--s-7)] md:flex">
           {NAV.map((n) => (
-            <a key={n.href} href={n.href} className="data-label text-ivory/60 transition-colors duration-200 hover:text-gold">
+            <a key={n.href} href={n.href} className="data-label text-ivory/85 transition-colors duration-200 hover:text-gold">
               {n.label}
             </a>
           ))}
           <Link
-            href="/wines"
+            href="#shop"
             className="data-label pressable border border-gold/45 px-[var(--s-4)] py-[var(--s-2)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
           >
             Kupi bocu
@@ -92,9 +107,11 @@ export default function Header() {
         </nav>
 
         <button
+          ref={burger}
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
+          aria-controls="ed-menu"
           aria-label={open ? 'Zatvori izbornik' : 'Otvori izbornik'}
           className="-mr-2 flex h-11 w-11 items-center justify-center text-ivory/80 md:hidden"
         >
@@ -112,14 +129,14 @@ export default function Header() {
       </div>
 
       {open && (
-        <div className="relative border-t border-ivory/10 bg-abyss px-5 py-[var(--s-3)] md:hidden">
+        <div id="ed-menu" className="relative border-t border-ivory/10 bg-abyss px-5 py-[var(--s-3)] md:hidden">
           <nav className="flex flex-col">
             {NAV.map((n) => (
               <a key={n.href} href={n.href} className="data-label border-b border-ivory/10 py-[var(--s-4)] text-ivory/75 last:border-0">
                 {n.label}
               </a>
             ))}
-            <Link href="/wines" className="data-label mt-[var(--s-4)] border border-gold/45 px-[var(--s-4)] py-[var(--s-3)] text-center text-gold">
+            <Link href="#shop" className="data-label mt-[var(--s-4)] border border-gold/45 px-[var(--s-4)] py-[var(--s-4)] text-center text-gold">
               Kupi bocu
             </Link>
           </nav>
