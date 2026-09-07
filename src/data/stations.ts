@@ -34,10 +34,24 @@ export type Station = {
    */
   light: string
   act: Act
-  /** Horizontalni pomak u world unitima 3D scene. Pozitivno = desno. */
+  /**
+   * Horizontalni pomak kao RAZMJER vidljive polusirine kadra: 0 = sredina,
+   * 1 = desni rub. Ne world jedinice — one su na 1440 px davale desnu stranu,
+   * a na 2000 px istih 1,6 jedinica je vec bila sredina i amfora je sjela na
+   * naslov. Razmjer se drzi na svakoj sirini.
+   */
   x: number
   /** Mnozitelj velicine amfore u odnosu na osnovni spust. */
   scale: number
+  /**
+   * Vidljivost na uskom ekranu, ako se razlikuje od pravila.
+   *
+   * Pravilo je da na mobitelu predmet ide prigusen (0,42) jer tamo nema
+   * bocnog prostora i tekst mu lezi preko. Ali postaja koja je NAMJERNO
+   * slozena oko predmeta — prazan pojas, tekst iznad i ispod — ne treba to
+   * prigusenje; ondje je predmet subjekt i mora se vidjeti.
+   */
+  oNarrow?: number
 }
 
 export const MAX_M = 25
@@ -49,10 +63,30 @@ export const STATIONS: Station[] = [
     name: 'Površina',
     light: 'Sve boje su još tu',
     act: 'front',
-    /* Desno i manje nego osnovna putanja spusta: naslov drzi lijevu stranu, a
-       predmet mu presijeca samo rep. Vrijednosti su izmjerene na 1440 px. */
-    x: 1.6,
-    scale: 0.66,
+    /* Jedina postaja s pomakom u stranu. Naslov drzi lijevu stranu kadra, pa
+       predmet stoji u desnom stupcu i presijeca mu samo rep. Od uranjanja
+       nadalje tone po sredini — do samog dna. */
+    x: 0.5,
+    scale: 0.8,
+  },
+  {
+    /* Trenutak uranjanja. Postoji zato sto se na prijelazu s hera mora VIDJETI
+       da je predmet krenuo tonuti: na fotografiji tek udara u vodu, a odmah
+       ispod pada kroz sredinu kadra. Bez ove postaje amfora je nestajala na
+       vinariji i taj se trenutak nije citao.
+
+       x = 0 i najveca skala na cijelom spustu: ovdje je predmet subjekt, a
+       tekst se pomakao u dna kadra da mu ne stoji na putu. */
+    id: 'dive',
+    m: 3,
+    name: 'Uranjanje',
+    light: 'Prvo nestane crveno',
+    act: 'front',
+    x: 0,
+    scale: 1.15,
+    /* Mobilni raspored ove sekcije ima prazan pojas za predmet, pa nema sto
+       prigusivati — na 0,42 je izgledao kao mrlja u pozadini. */
+    oNarrow: 0.92,
   },
   {
     id: 'winery',
@@ -60,7 +94,7 @@ export const STATIONS: Station[] = [
     name: 'Vinarija',
     light: 'Na šest metara nestane crveno',
     act: 'hidden',
-    x: 1.4,
+    x: 0,
     scale: 0.8,
   },
   {
@@ -69,7 +103,7 @@ export const STATIONS: Station[] = [
     name: 'Boce',
     light: 'Na dvanaest metara nestane narančasto',
     act: 'small',
-    x: 1.9,
+    x: 0,
     scale: 0.44,
   },
   {
@@ -78,7 +112,7 @@ export const STATIONS: Station[] = [
     name: 'Pisali su',
     light: 'Na osamnaest metara ostaje samo plavo',
     act: 'hidden',
-    x: 1.5,
+    x: 0,
     scale: 0.5,
   },
   {
@@ -87,7 +121,7 @@ export const STATIONS: Station[] = [
     name: 'Nagrade',
     light: 'Na dvadeset dva metra svjetla više nema',
     act: 'small',
-    x: -1.7,
+    x: 0,
     scale: 0.46,
   },
   {
@@ -98,8 +132,25 @@ export const STATIONS: Station[] = [
     act: 'full',
     x: 0,
     scale: 1,
+    /* Sjedanje u leziste je nagrada cijelog spusta — na mobitelu se ne prigusuje. */
+    oNarrow: 0.9,
   },
 ]
+
+
+/**
+ * Postaja po ID-u. Komponente MORAJU koristiti ovo, ne STATIONS[n].
+ *
+ * Indeksi su me vec ugrizli: ubacivanje postaje „uranjanje" na mjesto 1
+ * pomaknulo je sve ostalo, pa su dvije komponente crtale istu postaju a
+ * `press` i `seabed` se prestali renderirati — bez ijedne greske u konzoli,
+ * jer je indeks i dalje bio valjan.
+ */
+export function station(id: string): Station {
+  const s = STATIONS.find((x) => x.id === id)
+  if (!s) throw new Error(`stations.ts: nema postaje „${id}"`)
+  return s
+}
 
 /** Sto koja uloga znaci za vidljivost i sloj. Jedno mjesto, bez iznimaka. */
 export const ACT: Record<Act, { o: number; z: number; label: string }> = {

@@ -170,38 +170,8 @@
      dno inace otvorilo dok se citaju nagrade. */
   height: calc(clamp(0, (var(--descent) - 0.88) / 0.12, 1) * 34vh);
   background: linear-gradient(to bottom, rgba(3, 20, 31, 0) 0%, #062033 44%, #041420 100%);
-  border-top: 1px solid rgba(208, 160, 96, calc(clamp(0, (var(--descent) - 0.78) / 0.22, 1) * 0.4));
-}
-
-/* --- dubinomjer (traka; brojku pise JS) --------------------------------- */
-
-.ed-gauge-track {
-  position: relative;
-  width: 1px;
-  /* ODREDENA visina, ne 100%. S height:100% na auto-visokom roditelju
-     procentualna visina .ed-gauge-fill se srusi na 0 i traka tiho ostane
-     prazna — snimka to ne pokaze, mehanicka provjera pokaze. */
-  height: var(--ed-gauge-h, 13rem);
-  background: rgba(255, 255, 255, 0.16);
-}
-.ed-gauge-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  /* Po metrima, ne po sirovom scrollu: vidi komentar u src/lib/stage.ts. */
-  height: calc(var(--depth-m, 0) / 25 * 100%);
-  background: var(--ed-gold);
-}
-.ed-gauge-fill::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: -2px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--ed-gold);
+  /* Bez zlatnog hairlinea: presijecao je footer po sredini i nije imao sto
+     oznacavati — dno se dovoljno cita gradijentom i posidonijom. */
 }
 
 /* --- ulazna animacija hera ----------------------------------------------
@@ -347,11 +317,6 @@
     linear-gradient(90deg, rgba(3, 20, 31, 0.74) 0%, rgba(3, 20, 31, 0.26) 46%, rgba(3, 20, 31, 0) 76%);
 }
 
-/* Naslov drzi lijevu stranu: amfora tada presijeca samo rep zadnjeg reda, a
-   tekuci tekst nikad ne dira. */
-@media (min-width: 1000px) {
-  .ed-hero-copy { max-width: 64%; }
-}
 
 /* Kadar koji probija rub EKRANA, a ne rub svog stupca.
    `margin-right: calc(50% - 50vw)` ovdje ne radi: 50% je pola stupca, ne pola
@@ -396,4 +361,67 @@
 @media (prefers-reduced-motion: reduce) {
   .ed-slot img { transition: none; }
   a:hover > .ed-slot img { transform: none; }
+}
+
+/* --- unutarnji omotac ---------------------------------------------------
+   Jedno mjesto za sirinu i zljebove sadrzaja. Bio je ponovljen kao Tailwind
+   niz u svakoj sekciji i vec je poceo driftati.
+
+   Bio je ponovljen kao Tailwind niz u svakoj sekciji i vec je poceo driftati. */
+
+.ed-in {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .ed-in { padding-inline: 2rem; }
+}
+/* Rezervacija za bocnu traku dubine je maknuta: trake vise nema, dubina zivi
+   uz naslov svake postaje (vidi station/DepthMark.tsx). Sadrzaj sad koristi
+   punu sirinu omotaca. */
+
+/* --- hero: dva rasporeda, ne jedan stisnuti -----------------------------
+   Mobitel: nadnaslov ostaje na vrhu, naslov i akcije padnu na dno, a sredina
+   kadra ostaje slobodna — tamo se vidi kako amfora ulazi u more.
+   Desktop: sve se pakira na dno, pa nadnaslov sjedi tocno nad naslovom.     */
+
+.ed-hero-main { margin-top: auto; }
+
+@media (min-width: 768px) {
+  .ed-hero-in { justify-content: flex-end; }
+  .ed-hero-main { margin-top: 0; }
+}
+
+/* --- uranjanje: tekst oko predmeta --------------------------------------
+   Desktop: tri stupca, a sredisnji je prazan jer u njemu pada amfora. Sirina
+   sredine je izmjerena: predmet je na toj postaji ~2 world jedinice sirok, sto
+   je oko 26rem u kadru od 1440px.
+
+   Mobitel: bocnog prostora nema, pa ista ideja ide vertikalno — gornji blok,
+   prazan pojas u kojem se predmet vidi, donji blok s akcijom.               */
+
+.ed-dive-band {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-6);
+}
+.ed-dive-gap { min-height: 46svh; }
+
+@media (min-width: 1000px) {
+  .ed-dive-band {
+    grid-template-columns: 1fr minmax(0, 26rem) 1fr;
+    grid-template-rows: auto auto;
+    /* start, ne center: stupci su razlicite duzine pa ih je centriranje
+       razmaklo po vertikali i red je izgledao slucajno. */
+    align-items: start;
+    gap: var(--s-7);
+  }
+  /* Mjere skacu iz redoslijeda dokumenta natrag pod lijevi stupac. DOM slijed
+     (proza, pojas, mjere, more) je mobilni; ovdje se rasporeduje eksplicitno. */
+  .ed-dive-l    { grid-column: 1; grid-row: 1; padding-right: var(--s-5); }
+  .ed-dive-nums { grid-column: 1; grid-row: 2; margin-top: 0; padding-right: var(--s-5); }
+  .ed-dive-gap  { grid-column: 2; grid-row: 1 / span 2; min-height: 0; }
+  .ed-dive-r    { grid-column: 3; grid-row: 1; padding-left: var(--s-5); }
 }

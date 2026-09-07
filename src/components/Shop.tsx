@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import BottleSlot from '@/components/BottleSlot'
 import Station from '@/components/station/Station'
-import { STATIONS } from '@/data/stations'
+import { station } from '@/data/stations'
 import { WINES, featured } from '@/data/wines'
 
-const S = STATIONS[2]
+const S = station('shop')
 
 const eur = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','))
 
@@ -28,7 +28,7 @@ export default function Shop() {
 
   return (
     <Station data={S} side="r" style={{ paddingBlock: 'var(--sec-y)' }}>
-      <div className="relative z-10 mx-auto w-full max-w-[var(--wrap)] px-5 md:px-8">
+      <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
         <div className="mt-[var(--s-5)] flex flex-wrap items-end justify-between gap-[var(--s-4)]">

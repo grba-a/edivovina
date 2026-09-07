@@ -13,24 +13,11 @@
  * se razisle s onim sto je stvarno na ekranu cim se doda jedna recenica.
  */
 
-import { STATIONS, ACT, MAX_M, type Act } from '@/data/stations'
+import { STATIONS, ACT, type Act } from '@/data/stations'
 
 export type Stage = {
   /** indeks trenutne postaje */
   i: number
-  /**
-   * Dubina u metrima. NIJE `--descent * 25`.
-   *
-   * Sirovi scroll-progress i nominalne dubine postaja se razilaze: kad je
-   * sekcija „−12 m" u sredini ekrana, scroll je na 0,39 pa bi brojac pokazivao
-   * −9,8 m. Citalo se kao kvar, i jest kvar: nadnaslov te sekcije doslovno
-   * kaze „na dvanaest metara".
-   *
-   * Zato je dubina IZMJERENA koordinata: scroll se mapira po dijelovima na
-   * nominalne dubine postaja. Kad si na postaji, brojac pokazuje njezinu
-   * dubinu — i traka desno i tekst govore isto.
-   */
-  m: number
   /** uloga koja se upravo cita (ukljucujuci prijelaz prema sljedecoj) */
   act: Act
   /** horizontalni pomak u world unitima */
@@ -39,21 +26,11 @@ export type Stage = {
   scale: number
 }
 
-const state: Stage = { i: 0, m: 0, act: 'front', x: 0, scale: 1 }
+const state: Stage = { i: 0, act: 'front', x: 0, scale: 1 }
 let raf = 0
 let started = false
 
 export const getStage = (): Stage => state
-
-/* Snapshot se mijenja samo kad se dubina promijeni za >=0,05 m — inace bi
-   useSyncExternalStore rerenderirao traku 60x u sekundi. */
-let snapshot = 0
-const subs = new Set<() => void>()
-export const getDepthM = () => snapshot
-export function subscribeDepth(cb: () => void) {
-  subs.add(cb)
-  return () => subs.delete(cb)
-}
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n)
@@ -87,35 +64,6 @@ const publish = () => {
     within = 1
   }
 
-  /* Sidro postaje = scroll na kojem je ta postaja u sredini ekrana. To je ista
-     mjera koju cita i brojac, pa se tocka na traci poklopi s oznakom. */
-  const max = document.documentElement.scrollHeight - window.innerHeight
-  let m = 0
-  if (max > 0) {
-    const y = window.scrollY
-    let lo = 0
-    let hi = nodes.length - 1
-    /* Sidro se ograniceva na stvarni doseg scrolla. Zadnja postaja se ne moze
-       centrirati — ispod nje nema stranice — pa bi bez clampa dno stranice
-       citalo 24,4 m umjesto 25,0. */
-    const anchorOf = (el: HTMLElement) =>
-      Math.min(max, Math.max(0, el.offsetTop + el.offsetHeight / 2 - window.innerHeight / 2))
-
-    for (let k = 0; k < nodes.length; k++) {
-      const anchor = anchorOf(nodes[k])
-      if (anchor <= y) lo = k
-      if (anchor > y) { hi = k; break }
-    }
-    if (hi <= lo) hi = Math.min(nodes.length - 1, lo + 1)
-    const aLo = anchorOf(nodes[lo])
-    const aHi = anchorOf(nodes[hi])
-    const span = aHi - aLo
-    const f = span > 0 ? clamp01((y - aLo) / span) : lo === 0 ? clamp01(y / Math.max(1, aLo || 1)) : 1
-    const mLo = STATIONS[lo]?.m ?? 0
-    const mHi = STATIONS[hi]?.m ?? MAX_M
-    m = lo === 0 && y < aLo ? lerp(0, mLo, clamp01(aLo > 0 ? y / aLo : 1)) : lerp(mLo, mHi, f)
-  }
-
   const cur = STATIONS[i] ?? STATIONS[0]
   const nxt = STATIONS[Math.min(STATIONS.length - 1, i + 1)]
 
@@ -128,7 +76,13 @@ const publish = () => {
   const b = ACT[nxt.act]
   const narrow = isNarrow()
 
-  const o = lerp(a.o, b.o, t) * (narrow ? 0.42 : 1)
+  /* Prigusenje na uskom ekranu je PRAVILO, ne zakon: postaja koja je slozena
+     oko predmeta ga pregazi kroz `oNarrow`. Zato se vidljivost racuna po
+     postaji pa se onda mijesa — a ne mijesa i onda mnozi. */
+  const oFor = (st: typeof cur, act: typeof a) =>
+    narrow ? (st.oNarrow ?? act.o * 0.42) : act.o
+
+  const o = lerp(oFor(cur, a), oFor(nxt, b), t)
   const z = (t > 0.5 ? b.z : a.z) === 20 && !narrow ? 20 : 2
 
   state.i = i
@@ -136,20 +90,10 @@ const publish = () => {
   state.x = lerp(cur.x, nxt.x, t) * (narrow ? 0.55 : 1)
   state.scale = lerp(cur.scale, nxt.scale, t)
 
-  state.m = m
-
   const root = document.documentElement
   root.style.setProperty('--amph-o', o.toFixed(3))
   root.style.setProperty('--amph-z', String(z))
   root.style.setProperty('--station', String(i))
-  /* Traka dubine se puni po METRIMA, ne po sirovom scrollu — inace se tocka ne
-     poklapa s oznakom postaje na koju si upravo skrolao. */
-  root.style.setProperty('--depth-m', m.toFixed(2))
-
-  if (Math.abs(m - snapshot) >= 0.05) {
-    snapshot = m
-    subs.forEach((cb) => cb())
-  }
 }
 
 const schedule = () => {

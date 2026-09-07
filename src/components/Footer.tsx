@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Station from '@/components/station/Station'
-import { STATIONS } from '@/data/stations'
+import { station } from '@/data/stations'
 
-const S = STATIONS[5]
+const S = station('seabed')
 
 /**
  * 25 METARA — DNO. Amfora sjeda u leziste.
@@ -18,7 +18,7 @@ const S = STATIONS[5]
 export default function Footer() {
   return (
     <Station data={S} side="l" style={{ paddingBlock: 'var(--sec-y) var(--s-7)' }} className="mt-auto">
-      <div className="relative z-10 mx-auto w-full max-w-[var(--wrap)] px-5 md:px-8">
+      <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
         <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[14ch] text-ivory">

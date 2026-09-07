@@ -1,7 +1,7 @@
 import Bottle from '@/components/bottle'
 import Header from '@/components/Header'
-import DepthRail from '@/components/DepthRail'
 import Hero from '@/components/Hero'
+import Dive from '@/components/Dive'
 import Winery from '@/components/Winery'
 import Shop from '@/components/Shop'
 import Press from '@/components/Press'
@@ -15,6 +15,7 @@ import Footer from '@/components/Footer'
  * (src/data/stations.ts). Redoslijed je Petrov:
  *
  *    0 m  povrsina    fotografija iznad vode, amfora ISPRED naslova
+ *    3 m  uranjanje   predmet je subjekt: pada kroz sredinu praznog kadra
  *    6 m  vinarija    cista tipografija, amfore nema
  *   12 m  boce        tri featured, amfora smanjena i tone pokraj
  *   18 m  pisali su   dokaz, amfore nema
@@ -31,9 +32,9 @@ export default function Home() {
     <>
       <Bottle />
       <Header />
-      <DepthRail />
       <main className="relative z-10 flex min-h-svh flex-col">
         <Hero />
+        <Dive />
         <Winery />
         <Shop />
         <Press />

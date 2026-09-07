@@ -1,8 +1,8 @@
 import Frame from '@/components/ui/Frame'
 import Station from '@/components/station/Station'
-import { STATIONS } from '@/data/stations'
+import { station } from '@/data/stations'
 
-const S = STATIONS[1]
+const S = station('winery')
 
 /**
  * 6 METARA — VINARIJA. Amfore nema.
@@ -23,7 +23,7 @@ const FIGURES = [
 export default function Winery() {
   return (
     <Station data={S} side="l" style={{ paddingBlock: 'var(--sec-y)' }}>
-      <div className="relative z-10 mx-auto w-full max-w-[var(--wrap)] px-5 md:px-8">
+      <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
         <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[15ch] text-ivory">

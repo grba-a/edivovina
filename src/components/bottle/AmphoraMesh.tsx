@@ -40,7 +40,9 @@ const SCALE = 3
 /* Pocetna visina u heru ovisi o kadru:
    desktop je centriran (0,05), a na mobitelu amfora stoji VISE (0,86) jer
    inace sjedne na naslov. Ista formula kao za scale — narrow^2. */
-const Y_TOP_WIDE = 0.45
+/* Spustena blize sredini kadra: na 0,45 je sjedila visoko i „lebdjela" nad
+   naslovom umjesto da stoji u desnom stupcu uz njega. */
+const Y_TOP_WIDE = 0.1
 const Y_TOP_NARROW = 1.5
 /* Amfora sjedne UNUTAR kaveza: gornja resetka prolazi kroz donji dio tijela,
    kao na fotkama s dna. Izvedeno iz CAGE-a da odnos ostane istinit i kad se
@@ -285,11 +287,11 @@ export default function AmphoraMesh({ rich, still }: { rich: boolean; still: boo
       // narrow^2 je namjerno: linearni lerp ne moze istovremeno dati vecu
       // amforu na desktopu i ostaviti mobilnu velicinu netaknutom.
       const wide = narrow * narrow
-      /* Osnovna putanja + skretanje postaje, ograniceno stvarnom polusirinom
-         kadra: na 390 px je vidljiva sirina svega ~2,9 world unita, pa bi
-         fiksni pomak izbacio amforu izvan ekrana. */
+      /* Pomak postaje je RAZMJER polusirine kadra, pa je „desni stupac" isti
+         potez na 390 px i na 2560 px. S apsolutnim jedinicama je amfora na
+         sirokom ekranu sjedala natrag u sredinu, preko naslova. */
       const halfW = state.viewport.width * 0.5
-      const drift = THREE.MathUtils.clamp(stageX.current, -halfW * 0.62, halfW * 0.62)
+      const drift = THREE.MathUtils.clamp(stageX.current * halfW, -halfW * 0.7, halfW * 0.7)
       group.current.position.x = lerp(HERO_X, SINK_X, sink) + drift
       // Amfora u vodi gotovo odmah dosegne terminalnu brzinu — blago
       // ubrzanje (^1.15), ne slobodan pad.

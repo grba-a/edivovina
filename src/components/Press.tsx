@@ -1,8 +1,8 @@
 import Station from '@/components/station/Station'
-import { STATIONS } from '@/data/stations'
+import { station } from '@/data/stations'
 import { MARKS, STORIES, QUOTE } from '@/data/press'
 
-const S = STATIONS[3]
+const S = station('press')
 
 /**
  * 18 METARA — PISALI SU. Amfore nema.
@@ -16,7 +16,7 @@ const S = STATIONS[3]
 export default function Press() {
   return (
     <Station data={S} side="l" style={{ paddingBlock: 'var(--sec-y)' }}>
-      <div className="relative z-10 mx-auto w-full max-w-[var(--wrap)] px-5 md:px-8">
+      <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
         <h2 id={`${S.id}-h`} className="sr-only">
@@ -31,8 +31,15 @@ export default function Press() {
           ))}
         </ul>
 
-        <blockquote className="mt-[var(--sec-y-tight)] max-w-[20ch]">
-          <p className="t-plate text-ivory" style={{ fontSize: 'clamp(1.4rem, 3.4vw, 2.5rem)', lineHeight: 1.22 }}>
+        {/* max-width ide na <p>, ne na <blockquote>: `ch` se mjeri u fontu
+            ELEMENTA na kojem stoji. Na blockquoteu je to Raleway 1rem, pa je
+            20ch ispalo 196 px — a sadrzaj je Baskerville 40 px i citat se
+            slomio u stupac od jedne rijeci po redu. */}
+        <blockquote className="mt-[var(--sec-y-tight)]">
+          <p
+            className="t-plate max-w-[30ch] text-ivory"
+            style={{ fontSize: 'clamp(1.4rem, 3.4vw, 2.5rem)', lineHeight: 1.22 }}
+          >
             {`„${QUOTE.text}”`}
           </p>
           <footer className="data-label mt-[var(--s-4)] text-ivory/45" style={{ fontSize: '0.5rem' }}>
@@ -47,7 +54,7 @@ export default function Press() {
                 href={st.href}
                 target="_blank"
                 rel="noreferrer"
-                className="grid gap-x-[var(--s-6)] gap-y-[var(--s-2)] border-t border-ivory/16 py-[var(--s-5)] transition-opacity duration-200 hover:opacity-70 md:grid-cols-[13rem_1fr_5rem] md:items-baseline"
+                className="grid gap-x-[var(--s-6)] gap-y-[var(--s-2)] border-t border-ivory/16 py-[var(--s-5)] transition-opacity duration-200 hover:opacity-70 md:grid-cols-[15rem_1fr_5rem] md:items-baseline"
               >
                 <span className="data-label text-gold">{st.outlet}</span>
                 <span>
