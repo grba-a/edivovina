@@ -1,18 +1,12 @@
 import Link from 'next/link'
 
-/* PRIVREMENO: `/wines` i `/wines/[slug]` jos ne postoje (podstranice su
-   sljedeci krug), a Next ih je prefetchao pa je svaki kupovni link na stranici
-   vracao 404 — pet od dvadeset pet tab stopova. Do ruta sve vodi na sekciju
-   Boce, koja je danas jedini stvarni katalog. Kad rute stignu, vraca se
-   `/wines/${w.slug}`. */
 import BottleSlot from '@/components/BottleSlot'
 import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
-import { WINES, featured } from '@/data/wines'
+import { WINES, featured, undersea } from '@/data/wines'
+import { eur } from '@/lib/money'
 
 const S = station('shop')
-
-const eur = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','))
 
 /**
  * 12 METARA — BOCE. Amfora je smanjena i tone pokraj.
@@ -24,9 +18,10 @@ const eur = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixed(
  * tri su ista vrsta dokaza; razlikuje ih samo koliko je more bilo ukljuceno.
  */
 const NOTE: Record<string, string> = {
-  'navis-mysterium-tris': 'Tri boce: podrum, more u staklu, more u glini. Jedini način da se čuje razlika.',
-  'navis-mysterium-amphora': '700 dana u zapečaćenoj glini.',
-  'navis-mysterium-sea-bottle': '700 dana u staklu, na istom dnu.',
+  'navis-mysterium-tris':
+    'Three bottles: cellar, sea in glass, sea in clay. The only way to hear the difference.',
+  'navis-mysterium-undersea-amphora': '700 days in sealed clay.',
+  'navis-mysterium-undersea-bottle': '700 days in glass, on the same seabed.',
 }
 
 export default function Shop() {
@@ -39,17 +34,17 @@ export default function Shop() {
 
         <div className="mt-[var(--s-5)] flex flex-wrap items-end justify-between gap-[var(--s-4)]">
           <h2 id={`${S.id}-h`} className="t-plate max-w-[16ch] text-ivory">
-            Tri koje su bile dolje.
+            Three that have been down.
           </h2>
           <p className="data-label-sm text-ivory/60">
-            {WINES.length} vina u ponudi · 4 s dna
+            {WINES.length} wines · {undersea().length} from the seabed
           </p>
         </div>
 
         <ul className="mt-[var(--sec-y-tight)] grid grid-cols-1 gap-[var(--s-6)] sm:grid-cols-3">
           {three.map((w) => (
             <li key={w.slug}>
-              <Link href="#shop" className="pressable flex flex-col">
+              <Link href={`/product/${w.slug}`} className="pressable flex flex-col">
                 <BottleSlot
                   image={w.image}
                   alt={w.name}
@@ -65,6 +60,18 @@ export default function Shop() {
           ))}
         </ul>
 
+        {/* Grid je najava, ne katalog — deset vina zivi na /wines. */}
+        <div className="mt-[var(--s-6)] flex flex-wrap items-center gap-[var(--s-4)]">
+          <Link
+            href="/wines"
+            className="data-label pressable border border-gold/45 px-[var(--s-5)] py-[var(--s-4)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
+          >
+            All {WINES.length} wines
+          </Link>
+          <p className="t-field max-w-[32ch] text-ivory/60">
+            Including the €39 bottle that never left the cellar.
+          </p>
+        </div>
       </div>
     </Station>
   )

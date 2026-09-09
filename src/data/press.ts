@@ -20,7 +20,7 @@ export type Award = {
   icon?: string
   /** Za sto je nagrada stvarno dana. Dizajn nije slabija nagrada — ovdje je
       predmet ono sto se prodaje — ali ne smije se predstaviti kao vinska. */
-  kind: 'vino' | 'dizajn'
+  kind: 'wine' | 'design'
 }
 
 export const AWARDS: Award[] = [
@@ -30,42 +30,42 @@ export const AWARDS: Award[] = [
        nepoznata i ostaje neizmisljena. */
     year: '2022',
     body: 'Decanter World Wine Awards',
-    medal: 'Srebro',
-    detail: 'Dingač — kvaliteta vina',
+    medal: 'Silver',
+    detail: 'Dingač — wine quality',
     icon: 'decanter-silver',
-    kind: 'vino',
+    kind: 'wine',
   },
   {
     year: '2021',
     body: 'America Wine Awards',
-    medal: 'Dva zlata',
-    detail: 'Navis Mysterium Amphora 2013 i Navis Mysterium Bottle 2013',
+    medal: 'Two golds',
+    detail: 'Navis Mysterium Amphora 2013 and Navis Mysterium Bottle 2013',
     icon: 'america-gold',
-    kind: 'vino',
+    kind: 'wine',
   },
   {
     year: '2017',
     body: 'Sabatina',
-    medal: 'Prvak',
-    detail: 'Navis Mysterium Amphora 2012 — prvenstvo za dizajn',
+    medal: 'Champion',
+    detail: 'Navis Mysterium Amphora 2012 — championship for design',
     icon: 'sabatina-gold',
-    kind: 'dizajn',
+    kind: 'design',
   },
   {
     year: '2016',
     body: 'Sabatina',
-    medal: 'Viceprvak',
-    detail: 'Navis Mysterium Bottle 2012 — dizajn proizvoda, uz zlato za kvalitetu',
+    medal: 'Vice-champion',
+    detail: 'Navis Mysterium Bottle 2012 — product design, plus gold for wine quality',
     icon: 'sabatina-silver',
-    kind: 'dizajn',
+    kind: 'design',
   },
   {
     year: '2015',
     body: 'Sabatina',
-    medal: 'Srebro',
-    detail: 'Edivo Plavac 2015 — kvaliteta vina',
+    medal: 'Silver',
+    detail: 'Edivo Plavac 2015 — wine quality',
     icon: 'sabatina-silver',
-    kind: 'vino',
+    kind: 'wine',
   },
 ]
 
@@ -91,36 +91,36 @@ export type Story = {
 export const STORIES: Story[] = [
   {
     outlet: 'PBS',
-    title: 'Travel Detective — prilog o Edivu u „Hidden Gems of Dubrovnik"',
-    note: 'Američka javna televizija, petnaest minuta na licu mjesta.',
+    title: 'Travel Detective — Edivo in “Hidden Gems of Dubrovnik”',
+    note: 'American public television, fifteen minutes on site.',
     year: '2022',
     href: 'https://www.pbs.org/video/hidden-gems-of-dubrovnik-ekfddp',
   },
   {
     outlet: 'National Geographic Traveller',
     title: 'A Land of Stories',
-    note: 'Tiskano izdanje UK, listopad 2023., stranice 98–100.',
+    note: 'UK print edition, October 2023, pages 98–100.',
     year: '2023',
     href: 'https://www.edivovina.hr/wp-content/uploads/2023/09/A-Land-of-Stories-Nat-Geo-Traveller-Oct-2023.pdf',
   },
   {
     outlet: 'Euronews',
     title: 'The ultimate wine tour is in Croatia, 20 metres under the sea',
-    note: 'Kako se do amfora uopće dolazi i tko ih vadi.',
+    note: 'How the amphorae are reached, and who brings them up.',
     year: '2021',
     href: 'https://www.euronews.com/travel/2021/01/17/the-ultimate-wine-tour-is-in-croatia-20-metres-under-the-sea',
   },
   {
     outlet: 'Forbes',
     title: 'The Underwater Wine Cellars Of Croatia Beneath The Adriatic Sea',
-    note: 'Jim Dobson o podmorskim podrumima na Jadranu.',
+    note: 'Jim Dobson on the underwater cellars of the Adriatic.',
     year: '2020',
     href: 'https://www.forbes.com/sites/jimdobson/2020/06/22/the-underwater-wine-cellars-of-croatia-beneath-the-adriatic-sea/',
   },
   {
     outlet: 'Atlas Obscura',
     title: 'Edivo Vina Winery in Drače',
-    note: 'Gastro Obscura, Luke Fater — koncept i kako je nastao.',
+    note: 'Gastro Obscura, Luke Fater — the concept and how it began.',
     year: '2020',
     href: 'https://www.atlasobscura.com/places/edivo-vina-underwater-winery',
   },

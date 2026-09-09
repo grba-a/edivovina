@@ -11,9 +11,11 @@ import { startStage } from '@/lib/stage'
  * spusta stepenicasto trza na trackpadu. Izoliran je u jednu konstantu —
  * ENABLE_LENIS = false vraca nativan scroll bez ijedne druge izmjene.
  *
- * NAPOMENA za kasnije: kad se vrate podstranice, spust tamo treba stajati na
- * fiksnoj srednjoj vodi (--descent: 0.52). Scroll kroz kontakt ne smije
- * korisnika odvesti na 25 m. Sada postoji samo naslovnica, pa spust ide uvijek.
+ * PODSTRANICE: spust se NE gasi ovdje i ovaj se efekt ne vezuje na `usePathname`
+ * — to bi rusilo i ponovno stvaralo Lenis instancu na svakoj navigaciji. Raspon
+ * spusta drzi `descent.ts` (`setRange`), a svaka podstranica ga deklarira kroz
+ * <Depth m={…} /> u svojem `children`. Naslovnica ne renderira nista i time
+ * dobiva default: cijeli zaron, base 0 / span 1.
  */
 const ENABLE_LENIS = true
 

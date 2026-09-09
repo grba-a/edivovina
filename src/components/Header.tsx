@@ -2,14 +2,11 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { NAV } from '@/data/nav'
 import { useEffect, useRef, useState } from 'react'
 
-const NAV = [
-  { href: '#winery', label: 'Vinarija' },
-  { href: '#shop', label: 'Boce' },
-  { href: '#press', label: 'Pisali su' },
-  { href: '#seabed', label: 'Kontakt' },
-]
+
 
 /**
  * Traka je prozirna SAMO na samom vrhu, gdje stoji nad fotografijom povrsine.
@@ -21,6 +18,7 @@ const NAV = [
  * cijela stranica.
  */
 export default function Header() {
+  const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const burger = useRef<HTMLButtonElement>(null)
   const [sunk, setSunk] = useState(false)
@@ -78,7 +76,7 @@ export default function Header() {
       )}
 
       <div className="relative mx-auto flex max-w-[var(--wrap)] items-center justify-between px-5 py-[var(--s-3)] md:px-8 md:py-[var(--s-4)]">
-        <Link href="#surface" aria-label="Edivo Vina — na površinu" className="flex items-center gap-[var(--s-3)] py-[var(--s-2)]">
+        <Link href="/" aria-label="Edivo Vina — home" className="flex items-center gap-[var(--s-3)] py-[var(--s-2)]">
           <Image
             src="/brand/edivo-wordmark.png"
             alt="Edivo Vina"
@@ -92,17 +90,29 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-[var(--s-7)] md:flex">
-          {NAV.map((n) => (
-            <a key={n.href} href={n.href} className="data-label text-ivory/85 transition-colors duration-200 hover:text-gold">
-              {n.label}
-            </a>
-          ))}
+        {/* gap-[var(--s-5)] a ne s-7: sest linkova + CTA na 1024px se s vecim
+            razmakom lomilo pod wordmark. */}
+        <nav className="hidden items-center gap-[var(--s-5)] lg:flex">
+          {NAV.map((n) => {
+            const active = pathname === n.href || pathname.startsWith(n.href + '/')
+            return (
+              <Link
+                key={n.href}
+                href={n.href}
+                aria-current={active ? 'page' : undefined}
+                className={`data-label transition-colors duration-200 hover:text-gold ${
+                  active ? 'text-gold' : 'text-ivory/85'
+                }`}
+              >
+                {n.label}
+              </Link>
+            )
+          })}
           <Link
-            href="#shop"
+            href="/wines"
             className="data-label pressable border border-gold/45 px-[var(--s-4)] py-[var(--s-2)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
           >
-            Kupi bocu
+            Buy a bottle
           </Link>
         </nav>
 
@@ -112,8 +122,8 @@ export default function Header() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="ed-menu"
-          aria-label={open ? 'Zatvori izbornik' : 'Otvori izbornik'}
-          className="-mr-2 flex h-11 w-11 items-center justify-center text-ivory/80 md:hidden"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          className="-mr-2 flex h-11 w-11 items-center justify-center text-ivory/80 lg:hidden"
         >
           <span className="relative block h-3 w-5">
             <span
@@ -129,15 +139,30 @@ export default function Header() {
       </div>
 
       {open && (
-        <div id="ed-menu" className="relative border-t border-ivory/10 bg-abyss px-5 py-[var(--s-3)] md:hidden">
+        <div id="ed-menu" className="relative border-t border-ivory/10 bg-abyss px-5 py-[var(--s-3)] lg:hidden">
           <nav className="flex flex-col">
-            {NAV.map((n) => (
-              <a key={n.href} href={n.href} className="data-label border-b border-ivory/10 py-[var(--s-4)] text-ivory/75 last:border-0">
-                {n.label}
-              </a>
-            ))}
-            <Link href="#shop" className="data-label mt-[var(--s-4)] border border-gold/45 px-[var(--s-4)] py-[var(--s-4)] text-center text-gold">
-              Kupi bocu
+            {NAV.map((n) => {
+              const active = pathname === n.href || pathname.startsWith(n.href + '/')
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  aria-current={active ? 'page' : undefined}
+                  onClick={() => setOpen(false)}
+                  className={`data-label border-b border-ivory/10 py-[var(--s-4)] last:border-0 ${
+                    active ? 'text-gold' : 'text-ivory/75'
+                  }`}
+                >
+                  {n.label}
+                </Link>
+              )
+            })}
+            <Link
+              href="/wines"
+              onClick={() => setOpen(false)}
+              className="data-label mt-[var(--s-4)] border border-gold/45 px-[var(--s-4)] py-[var(--s-4)] text-center text-gold"
+            >
+              Buy a bottle
             </Link>
           </nav>
         </div>

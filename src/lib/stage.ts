@@ -13,7 +13,7 @@
  * se razisle s onim sto je stvarno na ekranu cim se doda jedna recenica.
  */
 
-import { STATIONS, ACT, type Act } from '@/data/stations'
+import { ACT, stationOrNull, type Act, type Station } from '@/data/stations'
 
 export type Stage = {
   /** indeks trenutne postaje */
@@ -51,15 +51,35 @@ const isNarrow = () => window.innerWidth < BREAKPOINT_WIDE
 const publish = () => {
   raf = 0
 
-  const nodes = document.querySelectorAll<HTMLElement>('[data-station]')
-  if (!nodes.length) return
+  /* Postaja se cita IZ ELEMENTA, ne iz rednog broja u STATIONS.
+     Indeksiranje po DOM redu je vec jednom razvalilo koreografiju (vidi
+     stations.ts), a s podstranicama je bilo jos gore: stranica koja renderira
+     samo <Footer/> ima tocno jedan [data-station] node — „seabed" — a
+     STATIONS[0] je „surface", pa se footer glumio kao povrsina i mijesao prema
+     „dive": front, z 20, scale 1,15. Najagresivnija poza cijelog spusta, na
+     kontakt footeru, bez ijedne greske u konzoli. */
+  const marks: { el: HTMLElement; st: Station }[] = []
+  for (const el of document.querySelectorAll<HTMLElement>('[data-station]')) {
+    const st = stationOrNull(el.dataset.station)
+    if (st) marks.push({ el, st })
+  }
+
+  if (!marks.length) {
+    /* Podstranica bez postaja: predmet nema sto glumiti, a canvas ionako nije
+       mount-an. Prije se ovdje radio puki `return`, pa je inline vrijednost s
+       naslovnice ostajala na <html> preko client-side navigacije. */
+    const root = document.documentElement
+    root.style.setProperty('--amph-o', '0')
+    root.style.setProperty('--amph-z', '2')
+    return
+  }
 
   const mid = window.innerHeight * 0.5
   let i = 0
   let within = 0
 
-  for (let k = 0; k < nodes.length; k++) {
-    const r = nodes[k].getBoundingClientRect()
+  for (let k = 0; k < marks.length; k++) {
+    const r = marks[k].el.getBoundingClientRect()
     if (r.top <= mid && r.bottom >= mid) {
       i = k
       within = clamp01((mid - r.top) / Math.max(1, r.height))
@@ -71,8 +91,8 @@ const publish = () => {
     within = 1
   }
 
-  const cur = STATIONS[i] ?? STATIONS[0]
-  const nxt = STATIONS[Math.min(STATIONS.length - 1, i + 1)]
+  const cur = marks[i].st
+  const nxt = marks[Math.min(marks.length - 1, i + 1)].st
 
   /* Mijesanje krece tek u zadnjoj trecini postaje: predmet mirno stoji dok se
      sekcija cita, pa se tek onda priprema za sljedecu. Bez ovoga bi se micao
@@ -105,6 +125,18 @@ const publish = () => {
 
 const schedule = () => {
   if (!raf) raf = requestAnimationFrame(publish)
+}
+
+/**
+ * Prisili ponovni izracun pozornice.
+ *
+ * Treba na CLIENT-SIDE navigaciji: `publish` visi na scroll/resize eventima, a
+ * route change ne emitira ni jedan. Bez ovoga inline `--amph-o` s naslovnice
+ * ostaje na <html> preko cijele podstranice — izmjereno: 1.000 na /about,
+ * /wines, /news, /gallery i /contact, gdje canvas nije ni mount-an.
+ */
+export function syncStage() {
+  schedule()
 }
 
 export function startStage() {

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
 import { MARKS, STORIES, QUOTE } from '@/data/press'
@@ -23,7 +24,7 @@ export default function Press() {
             rijeci u nizu i citao ih kao traku partnera. Najjaci tudi dokaz koji
             imaju bio je neoznacen. */}
         <h2 id={`${S.id}-h`} className="t-title mt-[var(--s-5)] text-ivory">
-          Pisali su o nama
+          In the press
         </h2>
 
         <ul className="mt-[var(--s-5)] flex flex-wrap items-baseline gap-x-[var(--s-7)] gap-y-[var(--s-3)]">
@@ -43,7 +44,7 @@ export default function Press() {
             className="t-plate max-w-[30ch] text-ivory"
             style={{ fontSize: 'clamp(1.4rem, 3.4vw, 2.5rem)', lineHeight: 1.22 }}
           >
-            {`„${QUOTE.text}”`}
+            {`“${QUOTE.text}”`}
           </p>
           <footer className="data-label-sm mt-[var(--s-4)] text-ivory/60">
             {QUOTE.who} · {QUOTE.where}
@@ -71,6 +72,24 @@ export default function Press() {
             </li>
           ))}
         </ul>
+
+        {/* Petrov zahtjev. Ujedno rjesava mjereni nalaz da press sekcija nosi
+            pet linkova koji SVI otvaraju novi tab — jedina izlazna vrata
+            stranice, neposredno nakon cijene — a nijedan ulazni. */}
+        <div className="mt-[var(--s-6)] flex flex-wrap items-center gap-[var(--s-4)] border-t border-ivory/16 pt-[var(--s-5)]">
+          <Link
+            href="/news"
+            className="data-label pressable border border-gold/45 px-[var(--s-5)] py-[var(--s-4)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
+          >
+            View more stories
+          </Link>
+          <Link
+            href="/wines"
+            className="data-label ml-auto inline-flex min-h-11 items-center text-ivory/70 transition-colors duration-200 hover:text-gold"
+          >
+            Buy a bottle →
+          </Link>
+        </div>
       </div>
     </Station>
   )

@@ -2,10 +2,9 @@ import Link from 'next/link'
 import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
 import { bySlug } from '@/data/wines'
+import { eur } from '@/lib/money'
 
 const S = station('dive')
-
-const eur = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixed(2).replace('.', ','))
 
 /**
  * 3 METRA — URANJANJE. Jedina sekcija u kojoj je predmet subjekt.
@@ -25,35 +24,35 @@ const eur = (n: number) => '€' + (Number.isInteger(n) ? String(n) : n.toFixed(
  * cinjenica, a ne tvrdnja. Oba dolaze iz kataloga pa ne mogu driftati.
  */
 export default function Dive() {
-  const amphora = bySlug('navis-mysterium-amphora')!
-  const control = bySlug('navis-mysterium-cellar')!
+  const amphora = bySlug('navis-mysterium-undersea-amphora')!
+  const control = bySlug('navis-mysterium-regular-bottle')!
 
   const FIELDS: [string, string][] = [
-    ['Visina', '300 mm'],
-    ['Promjer', '108 mm'],
-    ['Volumen', amphora.volume],
+    ['Height', '300 mm'],
+    ['Diameter', '108 mm'],
+    ['Volume', amphora.volume],
     /* Oskudnost je svojstvo predmeta kao i mjere, pa stoji uz njih. Prije je
        bila fusnota uz gumb, na 8 px i 40 % prozirnosti. */
-    ['Serija', '1–4000'],
-    ['Berba', String(amphora.vintage)],
+    ['Batch', '1–4000'],
+    ['Vintage', String(amphora.vintage)],
   ]
 
   return (
     <Station data={S} side="l" className="ed-dive">
       <div className="ed-in relative z-10 flex flex-col pb-[var(--sec-y)] pt-[var(--s-9)] ed-dive-in">
-        {/* Samo „Uranjanje": rečenica o svjetlu je naslov ove sekcije. */}
-        <p className="data-label text-gold">Uranjanje</p>
+        {/* Samo ime postaje: recenica o svjetlu je naslov ove sekcije. */}
+        <p className="data-label text-gold">{S.name}</p>
 
         <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[13ch] text-ivory">
-          Crveno nestaje prvo.
+          Red disappears first.
         </h2>
 
         <div className="ed-dive-band mt-[var(--s-8)]">
           <div className="ed-dive-l">
-            <p className="data-label text-gold">Glina</p>
+            <p className="data-label text-gold">Clay</p>
             <p className="t-body mt-[var(--s-4)] text-ivory/72">
-              Izbačena iz petrinjske gline, začepljena plutom i zapečaćena dvama slojevima gume.
-              Trebalo je godinu dana neuspjelih brtvi prije nego je morska voda ostala vani.
+              Thrown from Petrinja clay, corked, and sealed with two layers of rubber. It took a
+              year of failed seals before the sea finally stayed outside.
             </p>
           </div>
 
@@ -75,23 +74,22 @@ export default function Dive() {
           </dl>
 
           <div className="ed-dive-r">
-            <p className="data-label text-gold">More</p>
+            <p className="data-label text-gold">Sea</p>
             <p className="t-body mt-[var(--s-4)] text-ivory/72">
-              Sedamsto dana bez svjetla i bez vibracije, na dvostrukom pritisku površine. Svaka se
-              vrati noseći nešto drugo — kamenice, koralinu, oblik kaveza u kojem je visjela.
-              Ne čistimo to.
+              Seven hundred days with no light and no vibration, at twice the pressure of the
+              surface. Each one comes back carrying something different — oysters, coralline, the
+              shape of the cage it hung in. We do not clean it off.
             </p>
             <p className="t-body mt-[var(--s-4)] text-ivory/72">
-              Gore dođe u borovoj kutiji, u kovanom ležištu u kojem je visjela na dnu.
+              It arrives in a pinewood box, in the wrought-iron cradle it hung in on the seabed.
             </p>
 
             <div className="mt-[var(--s-6)]">
               <Link
-                /* v. napomena o rutama u Shop.tsx */
-                href="#shop"
+                href={`/product/${amphora.slug}`}
                 className="data-label pressable inline-block bg-gold px-[var(--s-5)] py-[var(--s-4)] text-abyss"
               >
-                Uzmi jednu — {eur(amphora.price)}
+                Take one — {eur(amphora.price)}
               </Link>
 
               {/* Recenice s brojem, ne tabela. Kao <dl> je `shrink-0` na dugom
@@ -99,11 +97,12 @@ export default function Dive() {
                   360 px — tekst koji se moze lomiti nikad ne smije biti
                   shrink-0. */}
               <p className="t-field mt-[var(--s-4)] max-w-[34ch] text-ivory/65">
-                {control.name}, ista bačva, nikad nije sišla:{' '}
+                {control.name} — same wine, same barrel, never went down:{' '}
                 <b className="tnum font-normal text-ivory/85">{eur(control.price)}</b>
               </p>
               <p className="t-field mt-[var(--s-2)] max-w-[34ch] text-ivory/65">
-                Šaljemo iz Janjine — UPS, DPD ili DHL; carinu plaća kupac.
+                Shipped from Janjina by UPS, DPD or DHL, dispatched within 24 hours. Customs
+                is paid by the buyer.
               </p>
             </div>
           </div>

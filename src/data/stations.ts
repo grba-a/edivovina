@@ -60,8 +60,8 @@ export const STATIONS: Station[] = [
   {
     id: 'surface',
     m: 0,
-    name: 'Površina',
-    light: 'Sve boje su još tu',
+    name: 'Surface',
+    light: 'Every colour is still here',
     act: 'front',
     /* Jedina postaja s pomakom u stranu. Naslov drzi lijevu stranu kadra, pa
        predmet stoji u desnom stupcu i presijeca mu samo rep. Od uranjanja
@@ -79,10 +79,10 @@ export const STATIONS: Station[] = [
        tekst se pomakao u dna kadra da mu ne stoji na putu. */
     id: 'dive',
     m: 3,
-    name: 'Uranjanje',
+    name: 'Immersion',
     /* Jedna tvrdnja o crvenom, na jednoj dubini. Prije je stajala i tu (3 m) i
        u tijelu sekcije (5 m) i na vinariji (6 m) — tri broja za istu stvar. */
-    light: 'Crveno je već otišlo',
+    light: 'Red has already gone',
     act: 'front',
     x: 0,
     scale: 1.15,
@@ -93,8 +93,8 @@ export const STATIONS: Station[] = [
   {
     id: 'winery',
     m: 6,
-    name: 'Vinarija',
-    light: 'Na šest metara nema više crvene',
+    name: 'The winery',
+    light: 'At six metres there is no red left',
     act: 'hidden',
     x: 0,
     scale: 0.8,
@@ -102,8 +102,8 @@ export const STATIONS: Station[] = [
   {
     id: 'shop',
     m: 12,
-    name: 'Boce',
-    light: 'Na dvanaest metara nestane narančasto',
+    name: 'The bottles',
+    light: 'At twelve metres orange disappears',
     act: 'small',
     /* PO SREDINI. Kratko sam ga pomaknuo u stranu (0,62) jer je iza neprozirnih
        kartica mjerio 0,00–0,05 % ekrana — ali bocni drift od tri metra do dna
@@ -115,8 +115,8 @@ export const STATIONS: Station[] = [
   {
     id: 'press',
     m: 18,
-    name: 'Pisali su',
-    light: 'Na osamnaest metara ostaje samo plavo',
+    name: 'In print',
+    light: 'At eighteen metres only blue is left',
     act: 'hidden',
     x: 0,
     scale: 0.5,
@@ -124,8 +124,8 @@ export const STATIONS: Station[] = [
   {
     id: 'awards',
     m: 22,
-    name: 'Nagrade',
-    light: 'Na dvadeset dva metra svjetla više nema',
+    name: 'Awards',
+    light: 'At twenty-two metres there is no light at all',
     act: 'small',
     x: 0,
     scale: 0.46,
@@ -133,8 +133,8 @@ export const STATIONS: Station[] = [
   {
     id: 'seabed',
     m: 25,
-    name: 'Dno',
-    light: 'Ovdje amfora sjeda u ležište',
+    name: 'The seabed',
+    light: 'Here the amphora settles into its cradle',
     act: 'full',
     x: 0,
     scale: 1,
@@ -158,13 +158,25 @@ export function station(id: string): Station {
   return s
 }
 
-/** Sto koja uloga znaci za vidljivost i sloj. Jedno mjesto, bez iznimaka. */
-export const ACT: Record<Act, { o: number; z: number; label: string }> = {
-  front: { o: 1, z: 20, label: 'ispred teksta' },
-  small: { o: 0.55, z: 2, label: 'smanjena, iza sadržaja' },
-  hidden: { o: 0, z: 2, label: 'sakrivena' },
-  full: { o: 1, z: 2, label: 'sjeda u ležište' },
+/**
+ * Kao `station`, ali vraca null umjesto da puca.
+ *
+ * Postoji samo za rAF petlje (`stage.ts`): tamo se ID cita iz DOM-a, pa nepoznata
+ * vrijednost ne smije baciti gresku sezdeset puta u sekundi. Komponente i dalje
+ * MORAJU koristiti `station()`, koje puca glasno i odmah.
+ */
+export function stationOrNull(id: string | undefined): Station | null {
+  if (!id) return null
+  return STATIONS.find((x) => x.id === id) ?? null
 }
 
-/** „12,5" — europski zarez, rucno. Kroz Intl bi ovisilo o CLDR-u runtimea. */
-export const metres = (p: number) => (p * MAX_M).toFixed(1).replace('.', ',')
+/** Sto koja uloga znaci za vidljivost i sloj. Jedno mjesto, bez iznimaka. */
+export const ACT: Record<Act, { o: number; z: number; label: string }> = {
+  front: { o: 1, z: 20, label: 'in front of the text' },
+  small: { o: 0.55, z: 2, label: 'small, behind the content' },
+  hidden: { o: 0, z: 2, label: 'hidden' },
+  full: { o: 1, z: 2, label: 'settling into the cradle' },
+}
+
+/** „12.5" — engleska tocka, rucno. Kroz Intl bi ovisilo o CLDR-u runtimea. */
+export const metres = (p: number) => (p * MAX_M).toFixed(1)

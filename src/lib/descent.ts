@@ -16,14 +16,39 @@ let p = 0
 let raf = 0
 let started = false
 
+/**
+ * RASPON. Scroll-progress stranice (0..1) mapira se na `base + t * span`.
+ *
+ * Naslovnica je cijeli zaron: base 0, span 1. Podstranica stoji na SVOJOJ dubini i
+ * plovi jos ~2 m — npr. Wines je 12 m, dakle base 0,48 i span 0,08.
+ *
+ * Bez ovoga je `--descent` bio puki scroll cijelog dokumenta, pa je kratka
+ * kontakt stranica stiskala cijelih 25 metara u dva ekrana: toplo svjetlo umre na
+ * 0,28, snopovi na 0,87, a dno se otvori na 0,88 — sve unutar jednog flika misa.
+ */
+let base = 0
+let span = 1
+/** Prvi publish nakon promjene raspona mora proci kroz prag od 0,0002. */
+let dirty = true
+
 export const getDescent = () => p
+
+export function setRange(nextBase: number, nextSpan: number) {
+  if (nextBase === base && nextSpan === span) return
+  base = nextBase
+  span = nextSpan
+  dirty = true
+  schedule()
+}
 
 const publish = () => {
   raf = 0
   const doc = document.documentElement
   const max = doc.scrollHeight - window.innerHeight
-  const next = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0
-  if (Math.abs(next - p) < 0.0002) return
+  const t = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0
+  const next = Math.min(1, Math.max(0, base + t * span))
+  if (!dirty && Math.abs(next - p) < 0.0002) return
+  dirty = false
   p = next
   doc.style.setProperty('--descent', p.toFixed(5))
   window.dispatchEvent(new CustomEvent<DescentDetail>('descent', { detail: { p } }))

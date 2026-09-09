@@ -2,28 +2,63 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
+import { NAV } from '@/data/nav'
 
 const S = station('seabed')
 
 /**
- * 25 METARA — DNO. Amfora sjeda u leziste.
+ * DNO. Konstanta cijelog weba — SADRZAJ je identican na svakoj stranici
+ * (adrese, kontakt, drustvene, newsletter), po Petrovoj odluci.
  *
- * Footer je i zavrsna postaja i konstanta cijelog weba: identican je na svakoj
- * stranici. Zato je i pisan kao samostalna komponenta, ne kao dio naslovnice.
+ * `seabed` je jedina razlika. Na naslovnici je true: footer JE postaja na 25 m,
+ * nosi koordinatu, `.ed-seabed` rezervu prostora i amfora mu sjeda u leziste.
+ * To je nagrada cijelog zarona i ne troši se na sest drugih stranica.
  *
- * Sadrzaj po Petrovoj odluci: adrese i kontakt, drustvene mreze, newsletter.
+ * Na podstranicama je false: isti sadrzaj, ali bez koordinate i bez seabed
+ * tretmana — dubina te stranice stoji u NJENOM signature headeru, i tako se
+ * koordinata po stranici pojavi tocno jednom. Uz to `stage={false}` znaci da
+ * footer ne ulazi u koreografiju: inace bi bio jedini [data-station] node na
+ * stranici i `stage.ts` bi ga glumio kao povrsinu.
+ *
  * Radno vrijeme NAMJERNO nema — njihov web ga nigdje ne objavljuje, a lazno
  * vrijeme je gore od nikakvog (vidi PRODUCT.md).
  */
-export default function Footer() {
+export default function Footer({ seabed = true }: { seabed?: boolean }) {
   return (
-    <Station data={S} as="footer" side="l" className="ed-seabed mt-auto">
+    <Station
+      data={S}
+      as="footer"
+      side="l"
+      stage={seabed}
+      showDepth={seabed}
+      className={`mt-auto ${seabed ? 'ed-seabed' : ''}`}
+      style={seabed ? undefined : { paddingBlock: 'var(--sec-y)' }}
+    >
       <div className="ed-in relative z-10">
-        <p className="data-label text-gold">{S.light}</p>
+        <p className="data-label text-gold">{seabed ? S.light : 'Pelješac, Croatia'}</p>
 
         <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[14ch] text-ivory">
-          Otvori jednu sam.
+          Open one alone.
         </h2>
+
+        {/* Samo na naslovnici: na podstranici je ovo vec footer ispod sadrzaja
+            koji je i sam imao svoj CTA, pa bi bio treci gumb u istom kadru. */}
+        {seabed && (
+          <div className="mt-[var(--s-6)] flex flex-wrap items-center gap-[var(--s-4)]">
+            <Link
+              href="/wines"
+              className="data-label pressable bg-gold px-[var(--s-5)] py-[var(--s-4)] text-abyss"
+            >
+              Buy a bottle
+            </Link>
+            <Link
+              href="/contact"
+              className="data-label border border-ivory/28 px-[var(--s-5)] py-[var(--s-4)] text-ivory/88 transition-colors duration-200 hover:border-gold hover:text-gold"
+            >
+              Get in touch
+            </Link>
+          </div>
+        )}
 
         {/* Sredina reda ostaje PRAZNA: amfora sjeda u leziste tocno tu, a
             fiksni canvas je uvijek u sredini kadra. Cetiri stupca preko cijele
@@ -39,37 +74,48 @@ export default function Footer() {
               className="h-7 w-auto"
             />
             <p className="t-field mt-[var(--s-4)] max-w-[28ch] text-ivory/65">
-              Podmorski podrum kod Janjine, vinski bar u Draču.
+              An underwater cellar off Janjina, a wine bar in Drače.
             </p>
           </div>
 
           <div className="md:col-start-2">
-            <h3 className="data-label text-gold">Vinarija</h3>
+            <h3 className="data-label text-gold">Winery</h3>
             <address className="t-field mt-[var(--s-3)] not-italic leading-loose text-ivory/60">
               Janjina 62
               <br />
               20246 Janjina
               <br />
-              Pelješac
+              Pelješac, Croatia
             </address>
           </div>
 
           <div className="md:col-start-4">
-            <h3 className="data-label text-gold">Vinski bar</h3>
+            <h3 className="data-label text-gold">Wine bar</h3>
             <address className="t-field mt-[var(--s-3)] not-italic leading-loose text-ivory/60">
               Drače 18
               <br />
               20246 Drače
               <br />
-              Pelješac
+              Pelješac, Croatia
             </address>
           </div>
 
           <div className="md:col-start-5">
-            <h3 className="data-label text-gold">Ostanimo u vezi</h3>
+            <h3 className="data-label text-gold">Stay in touch</h3>
             <address className="t-field mt-[var(--s-3)] not-italic leading-loose text-ivory/60">
+              {/* Na edivovina.hr taj broj nije `tel:` nego wa.me — WhatsApp je
+                  kanal kojim stvarno odgovaraju. Dajemo oboje: `tel:` zove s
+                  mobitela, WhatsApp radi s desktopa. */}
               <a href="tel:+385916127229" className="block py-[var(--s-3)] hover:text-gold">
                 +385 91 6127 229
+              </a>
+              <a
+                href="https://wa.me/385916127229"
+                target="_blank"
+                rel="noreferrer"
+                className="block py-[var(--s-3)] hover:text-gold"
+              >
+                WhatsApp
               </a>
               <a href="mailto:info@edivovina.hr" className="block py-[var(--s-3)] hover:text-gold">
                 info@edivovina.hr
@@ -101,13 +147,13 @@ export default function Footer() {
                 adresu i skakalo na vrh stranice. */}
             <form className="mt-[var(--s-4)] flex gap-[var(--s-2)]">
               <label htmlFor="nl" className="sr-only">
-                Email za newsletter
+                Email for the newsletter
               </label>
               <input
                 id="nl"
                 name="email"
                 type="email"
-                placeholder="tvoj@mail.com"
+                placeholder="you@email.com"
                 autoComplete="email"
                 disabled
                 /* Bez `outline-none`: ono je gasilo globalni :focus-visible i ovo
@@ -119,22 +165,43 @@ export default function Footer() {
                 disabled
                 className="data-label bg-gold px-[var(--s-4)] text-abyss disabled:opacity-60"
               >
-                Prijavi me
+                Sign me up
               </button>
             </form>
           </div>
         </div>
 
-        <div className="mt-[var(--s-8)] flex items-center gap-[var(--s-4)] border-t border-ivory/14 pt-[var(--s-3)]">
+        {/* Izbornik po DUBINI, isti redoslijed kao u headeru i kao sekcije na
+            naslovnici: povrsina prvo, dno zadnje. Jedan izvor istine je
+            src/data/nav.ts, pa se traka i footer ne mogu razici. */}
+        <nav aria-label="Pages" className="mt-[var(--s-8)] border-t border-ivory/14 pt-[var(--s-5)]">
+          <ul className="flex flex-wrap gap-x-[var(--s-6)] gap-y-[var(--s-3)]">
+            {NAV.map((n) => (
+              <li key={n.href}>
+                <Link
+                  href={n.href}
+                  className="data-label inline-flex min-h-11 items-center text-ivory/70 transition-colors duration-200 hover:text-gold"
+                >
+                  {n.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="mt-[var(--s-5)] flex items-center gap-[var(--s-4)] border-t border-ivory/14 pt-[var(--s-3)]">
           <span className="data-label-sm text-ivory/60">
             © Edivo Vina
           </span>
           <span aria-hidden className="h-px flex-1 bg-ivory/14" />
+          {/* Na naslovnici fragment (Lenis ga glatko odskrola); na podstranici
+              prava ruta — `#surface` tamo ne postoji, pa je delegirani listener
+              u Headeru pretvarao u mrtav klik. */}
           <Link
-            href="#surface"
+            href={seabed ? '#surface' : '/#surface'}
             className="data-label-sm inline-flex min-h-11 items-center text-ivory/60 hover:text-gold"
           >
-            Natrag na površinu ↑
+            Back to the surface ↑
           </Link>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
 import { AWARDS } from '@/data/press'
@@ -36,12 +37,13 @@ export default function Awards() {
             kolekcionaru govori kao ravnome — a stajala je na `t-field`, 65 %
             prozirnosti, u desnoj margini. To je postavljanje disclaimera. */}
         <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[18ch] text-ivory">
-          Nagrađeni kao predmet.
+          Awarded as an object.
         </h2>
 
         <p className="t-body mt-[var(--s-5)] text-ivory/80">
-          Sabatina im je dala prvaka <b className="font-normal text-ivory">za dizajn amfore</b>, ne
-          za vino u njoj. To nije slabija nagrada — to je točno ono što se prodaje.
+          Sabatina made them champion <b className="font-normal text-ivory">for the design of the
+          amphora</b>, not for the wine inside it. That is not the lesser award — it is exactly
+          what is being sold.
         </p>
 
         <ul className="mt-[var(--sec-y-tight)] grid grid-cols-2 gap-[var(--s-4)] sm:grid-cols-3 lg:grid-cols-5">
@@ -66,7 +68,7 @@ export default function Awards() {
 
               <p className="data-label-sm mt-[var(--s-4)] text-gold">
                 {a.medal}
-                <span className="text-ivory/60"> · {a.kind === 'vino' ? 'za vino' : 'za dizajn'}</span>
+                <span className="text-ivory/60"> · {a.kind === 'wine' ? 'for the wine' : 'for the design'}</span>
               </p>
 
               <p className="t-title mt-[var(--s-2)] text-ivory">{a.body}</p>
@@ -83,11 +85,34 @@ export default function Awards() {
         {/* Svjetski patent je izostavljen namjerno: nema broja prijave ni unosa
             u registru, a „prva na svijetu" ne stoji — baskijski Crusoe Treasure
             je na dnu od 2010. i patent za podmorsko starenje prijavljen je
-            2007. „Prva u Hrvatskoj" stoji i potvrdena je u pet izvora. */}
+            2007. „Prva u Hrvatskoj" stoji i potvrdena je u pet izvora.
+
+            NB: PRODUCT.md i njihov vlastiti web tvrde „first in the world", a
+            njihov YouTube opis to ponavlja. Ne prenosimo — ovdje istrazena
+            cinjenica pobjeduje brief, i klijenta se time cuva od tvrdnje koju
+            konkurent moze oboriti jednom recenicom. Cijeli web nosi hrvatsku
+            verziju, uklj. metadata. */}
         <p className="t-field mt-[var(--s-6)] max-w-[52ch] text-ivory/60">
-          Prva podmorska vinarija u Hrvatskoj. Vino stari i prodaje se u zapečaćenoj glinenoj
-          amfori izvađenoj s dna — to nitko drugi ne radi.
+          The first underwater winery in Croatia. The wine is aged and sold inside a sealed clay
+          amphora lifted off the seabed — nobody else does that.
         </p>
+
+        {/* Galerija stoji na istoj dubini (22 m) i pokazuje ono sto medalje
+            tvrde — obrastene amfore kakve dodju gore. */}
+        <div className="mt-[var(--s-6)] flex flex-wrap items-center gap-[var(--s-4)]">
+          <Link
+            href="/gallery"
+            className="data-label pressable border border-gold/45 px-[var(--s-5)] py-[var(--s-4)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
+          >
+            See them come up
+          </Link>
+          <Link
+            href="/news"
+            className="data-label inline-flex min-h-11 items-center text-ivory/70 transition-colors duration-200 hover:text-gold"
+          >
+            News &amp; stories →
+          </Link>
+        </div>
       </div>
     </Station>
   )

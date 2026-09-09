@@ -2,11 +2,24 @@
  * Katalog. Oblik je namjerno mapiran na WooCommerce polja da se prijenos svede
  * na prepisivanje vrijednosti, ne na preradu strukture.
  *
- *   sku -> _sku            price -> _regular_price      volume/abv/vintage -> product attributes
- *   slug -> post_name      shortDescription -> post_excerpt
+ *   sku -> _sku              price -> _regular_price    volume/abv/vintage -> pa_* atributi
+ *   slug -> post_name        shortDescription -> post_excerpt
+ *   description -> post_content                 categories -> product_cat
+ *   tags -> product_tag      rating -> _wc_average_rating  menuOrder -> menu_order
  *
- * Cijene su s edivovina.hr (rujan 2026). Cijene degustacija NISU ovdje - one su
- * na winetraveleru u pretkonverzijskim kunama i cekaju potvrdu klijenta.
+ * Cijene su s edivovina.hr (rujan 2026) i sve deset se poklapaju do centa.
+ * Cijene degustacija NISU ovdje - one su na winetraveleru u pretkonverzijskim
+ * kunama i cekaju potvrdu klijenta.
+ *
+ * SLUG JE post_name i zato je poravnan s njihovim ZIVIM proizvodima, ne s onim
+ * kako bi nama zvucalo bolje. Cetiri su se razlikovala; prikazna imena smo
+ * zadrzali svoja gdje su bolja (post_title je u WordPressu trivijalna izmjena,
+ * post_name nije).
+ *
+ * `categories` su njihova stvarna Woo taksonomija, procitana s klasa na
+ * li.product. Vazno: kategorija `undersea` ima TOCNO CETIRI proizvoda i Eros
+ * NIJE u njoj — sto se poklapa s tim da mu opis nikad ne tvrdi da je bio pod
+ * morem. Zato se "s dna" broji iz kategorije, ne iz `daysUnderSea`.
  */
 
 export type Aging = 'cellar' | 'sea-bottle' | 'amphora' | 'set'
@@ -20,6 +33,12 @@ export type Wine = {
   /** Dvije-tri recenice za product stranicu. */
   description: string
   price: number
+  /**
+   * _sale_price. Nijedno vino trenutno nije na snizenju i to je istina — polje
+   * postoji zato da skeleta podrzava `.onsale` bedz i `<del>/<ins>`, koje svaki
+   * pravi Woo shop ima. Ne popunjavati izmisljenim snizenjem.
+   */
+  salePrice?: number
   currency: 'EUR'
   aging: Aging
   /** Dani pod morem. 0 = nikad nije bilo dolje. */
@@ -33,6 +52,20 @@ export type Wine = {
   image: string
   featured?: boolean
   stockStatus: 'instock' | 'outofstock'
+  /** product_cat. Njihova stvarna taksonomija: 'wines' i/ili 'undersea'. */
+  categories: string[]
+  /** product_tag. Kod njih samo linija Navis Mysterium ih ima. */
+  tags: string[]
+  /** _wc_average_rating. Samo gdje ga stvarno imaju — sest od deset nosi 5.00. */
+  rating?: number
+  /** menu_order — njihov stvarni redoslijed u shopu. Drzi "Default sorting". */
+  menuOrder: number
+  /**
+   * post_date. PROVIZORNO: izvedeno iz putanje njihove medijske biblioteke
+   * (2021/04 za izvornih sedam, 2026/05 za Navis Q, Eros i Rose). WordPress
+   * drzi pravi datum; ovdje stoji samo da "Sort by latest" nije mrtav.
+   */
+  dateCreated: string
 }
 
 export const WINES: Wine[] = [
@@ -50,7 +83,7 @@ export const WINES: Wine[] = [
     colour: 'red',
     grapes: ['Plavac Mali'],
     abv: 14.5,
-    volume: '3 × 0,75 l',
+    volume: '3 × 0.75 l',
     /* p-box je plava kutija s JEDNOM bocom oznacenom EROS — stoji nad
        „tri boce" i uz najvecu cijenu na stranici. Ispravnog kadra nema u
        public/photo; do njega ide amfora, koja barem pokazuje Navis Mysterium.
@@ -58,10 +91,15 @@ export const WINES: Wine[] = [
     image: 'p-amphora',
     featured: true,
     stockStatus: 'instock',
+    categories: ['undersea', 'wines'],
+    tags: ['mysterium', 'navis'],
+    rating: 5,
+    menuOrder: 5,
+    dateCreated: '2021-04-01',
   },
   {
     sku: 'NM-AMPH',
-    slug: 'navis-mysterium-amphora',
+    slug: 'navis-mysterium-undersea-amphora',
     name: 'Navis Mysterium Amphora',
     shortDescription: 'Sealed in Petrinja clay. Opened by you, not by us.',
     description:
@@ -74,14 +112,19 @@ export const WINES: Wine[] = [
     grapes: ['Plavac Mali'],
     vintage: 2013,
     abv: 14.5,
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-amphora',
     featured: true,
     stockStatus: 'instock',
+    categories: ['wines', 'undersea'],
+    tags: ['mysterium', 'navis'],
+    rating: 5,
+    menuOrder: 1,
+    dateCreated: '2021-04-01',
   },
   {
     sku: 'NM-SEA',
-    slug: 'navis-mysterium-sea-bottle',
+    slug: 'navis-mysterium-undersea-bottle',
     name: 'Navis Mysterium Sea Bottle',
     shortDescription: 'Plavac Mali that spent 700 days at fourteen degrees.',
     description:
@@ -93,10 +136,15 @@ export const WINES: Wine[] = [
     colour: 'red',
     grapes: ['Plavac Mali'],
     abv: 14.5,
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-navis',
     featured: true,
     stockStatus: 'instock',
+    categories: ['undersea', 'wines'],
+    tags: ['mysterium', 'navis'],
+    rating: 5,
+    menuOrder: 2,
+    dateCreated: '2021-04-01',
   },
   {
     sku: 'NQ-SEA',
@@ -111,13 +159,17 @@ export const WINES: Wine[] = [
     daysUnderSea: 700,
     colour: 'white',
     grapes: ['Pošip', 'Rukatac', 'Chardonnay'],
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-sea-bottle',
     stockStatus: 'instock',
+    categories: ['wines', 'undersea'],
+    tags: [],
+    menuOrder: 3,
+    dateCreated: '2026-05-01',
   },
   {
     sku: 'EROS-SEA',
-    slug: 'eros-sparkling-sea-bottle',
+    slug: 'eros-sparkling-wine-sea-bottle',
     name: 'Eros Sparkling Sea Bottle',
     shortDescription: 'Bubbles that held their nerve under two atmospheres.',
     description:
@@ -128,13 +180,17 @@ export const WINES: Wine[] = [
     daysUnderSea: 700,
     colour: 'sparkling',
     grapes: ['Pošip', 'Chardonnay'],
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-eros-sea',
     stockStatus: 'instock',
+    categories: ['wines'],
+    tags: [],
+    menuOrder: 4,
+    dateCreated: '2026-05-01',
   },
   {
     sku: 'NM-REG',
-    slug: 'navis-mysterium-cellar',
+    slug: 'navis-mysterium-regular-bottle',
     name: 'Navis Mysterium Cellar',
     shortDescription: 'The control. Same wine, never left the building.',
     description:
@@ -146,9 +202,14 @@ export const WINES: Wine[] = [
     colour: 'red',
     grapes: ['Plavac Mali'],
     abv: 14.5,
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-cellar',
     stockStatus: 'instock',
+    categories: ['wines'],
+    tags: ['mysterium', 'navis'],
+    rating: 5,
+    menuOrder: 6,
+    dateCreated: '2021-04-01',
   },
   {
     sku: 'DING',
@@ -163,9 +224,14 @@ export const WINES: Wine[] = [
     daysUnderSea: 0,
     colour: 'red',
     grapes: ['Plavac Mali'],
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-dingac',
     stockStatus: 'instock',
+    categories: ['wines'],
+    tags: [],
+    rating: 5,
+    menuOrder: 10,
+    dateCreated: '2021-04-01',
   },
   {
     sku: 'Q-EDIVO',
@@ -180,9 +246,14 @@ export const WINES: Wine[] = [
     daysUnderSea: 0,
     colour: 'white',
     grapes: ['Pošip', 'Rukatac', 'Chardonnay'],
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-q-white',
     stockStatus: 'instock',
+    categories: ['wines'],
+    tags: [],
+    rating: 5,
+    menuOrder: 7,
+    dateCreated: '2021-04-01',
   },
   {
     sku: 'PLAVAC',
@@ -197,9 +268,13 @@ export const WINES: Wine[] = [
     daysUnderSea: 0,
     colour: 'red',
     grapes: ['Plavac Mali'],
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-plavac-red',
     stockStatus: 'instock',
+    categories: ['wines'],
+    tags: [],
+    menuOrder: 9,
+    dateCreated: '2021-04-01',
   },
   {
     sku: 'ROSE',
@@ -214,16 +289,36 @@ export const WINES: Wine[] = [
     daysUnderSea: 0,
     colour: 'rose',
     grapes: ['Plavac Mali'],
-    volume: '0,75 l',
+    volume: '0.75 l',
     image: 'p-rose',
     stockStatus: 'instock',
+    categories: ['wines'],
+    tags: [],
+    menuOrder: 8,
+    dateCreated: '2026-05-01',
   },
 ]
 
 export const bySlug = (slug: string) => WINES.find((w) => w.slug === slug)
 export const featured = () => WINES.filter((w) => w.featured)
-export const undersea = () => WINES.filter((w) => w.daysUnderSea > 0)
-export const cellar = () => WINES.filter((w) => w.daysUnderSea === 0)
+
+/**
+ * "S dna" po NJIHOVOJ taksonomiji, ne po nasem `daysUnderSea`.
+ *
+ * Njihova kategorija /wines/undersea ima cetiri proizvoda: Amphora, Undersea
+ * Bottle, Navis Q i TRIS. Eros nije u njoj iako se zove "Sea Bottle" — i njegov
+ * opis nikad ne tvrdi da je bio pod morem, dok mu nas `daysUnderSea: 700` to
+ * pripisuje. Do potvrde klijenta broji se ono sto je provjerljivo.
+ */
+export const undersea = () => WINES.filter((w) => w.categories.includes('undersea'))
+export const cellar = () => WINES.filter((w) => !w.categories.includes('undersea'))
+
+/** Njihov redoslijed u shopu — "Default sorting". */
+export const byMenuOrder = () => [...WINES].sort((a, b) => a.menuOrder - b.menuOrder)
 
 /** Tri boce iz TRIS-a, u redu u kojem se piju. */
-export const THE_THREE = ['navis-mysterium-cellar', 'navis-mysterium-sea-bottle', 'navis-mysterium-amphora'] as const
+export const THE_THREE = [
+  'navis-mysterium-regular-bottle',
+  'navis-mysterium-undersea-bottle',
+  'navis-mysterium-undersea-amphora',
+] as const

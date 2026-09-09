@@ -29,8 +29,12 @@ const raleway = Raleway({
 
 export const metadata: Metadata = {
   title: 'Edivo Vina — Two years underwater',
+  /* „The first underwater winery in the world" je skinuto: Crusoe Treasure je na
+     dnu od 2010. i patent za podmorsko starenje prijavljen je 2007. Stranica
+     nosi „first in Croatia" (potvrdeno u pet izvora), pa metadata mora isto —
+     inace web tvrdi dvije razlicite stvari o istoj cinjenici. */
   description:
-    'Plavac Mali sealed in clay and left in a sunken ship off Pelješac for 700 days. The first underwater winery in the world.',
+    'Plavac Mali sealed in clay and left in a sunken fishing boat off Pelješac for 700 days, 18 to 25 metres down. The first underwater winery in Croatia.',
   openGraph: {
     title: 'Edivo Vina — Two years underwater',
     description: 'Plavac Mali, sealed in clay and aged on the seabed off Pelješac, Croatia.',
@@ -40,9 +44,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    /* Stranica je na hrvatskom. S lang="en" citac ekrana izgovara „Spustili smo
-         vino na dno" engleskom fonetikom i to je nerazumljivo. WCAG 3.1.1, razina A. */
-    <html lang="hr" className={`${baskerville.variable} ${raleway.variable}`}>
+    /* Cijeli web je na engleskom — i to nije nasa odluka nego njihova: na
+         edivovina.hr engleski JE root locale, hrvatski stoji na /hr/. Prije je
+         ovdje bio lang="hr" jer je stranica bila hrvatska; s pogresnim jezikom
+         citac ekrana izgovara tekst tudom fonetikom. WCAG 3.1.1, razina A. */
+    <html lang="en" className={`${baskerville.variable} ${raleway.variable}`}>
       <head>
         {/* Bez JS-a sve mora biti vidljivo. Klasu na <html> NE dodavati skriptom
             — to razbije hydration. */}
@@ -54,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Sest tab stopova u headeru prije sadrzaja. Link je vidljiv tek na
             fokus — ne zauzima prostor, a korisniku tipkovnice daje izlaz. */}
         <a href="#surface" className="ed-skip">
-          Na sadržaj
+          Skip to content
         </a>
         <ScrollProvider />
         <Water />

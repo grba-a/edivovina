@@ -33,5 +33,5 @@ export const chapterAt = (p: number): Chapter => {
 }
 
 /** Europski format, rucno. Kroz Intl bi izgled ovisio o CLDR podacima runtimea. */
-export const depthLabel = (p: number) => `${(p * MAX_DEPTH).toFixed(1).replace('.', ',')} m`
+export const depthLabel = (p: number) => `${(p * MAX_DEPTH).toFixed(1)} m`
 export const daysLabel = (p: number) => Math.round(p * MAX_DAYS)

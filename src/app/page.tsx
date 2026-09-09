@@ -1,4 +1,5 @@
 import Bottle from '@/components/bottle'
+import Depth from '@/components/Depth'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import Dive from '@/components/Dive'
@@ -7,6 +8,7 @@ import Shop from '@/components/Shop'
 import Press from '@/components/Press'
 import Awards from '@/components/Awards'
 import Footer from '@/components/Footer'
+import { MAX_M } from '@/data/stations'
 
 /**
  * NASLOVNICA — zaron od povrsine do 25 metara.
@@ -30,6 +32,11 @@ import Footer from '@/components/Footer'
 export default function Home() {
   return (
     <>
+      {/* Naslovnica je JEDINA stranica koja vozi cijeli zaron. Deklarira ga
+          eksplicitno, kao i svaka podstranica svoju dubinu — implicitni default
+          u descent.ts je znacio da se naslovnica ponasa drukcije od svih
+          ostalih, a to je razlika koju netko kasnije ne bi ocekivao. */}
+      <Depth m={0} drift={MAX_M} />
       <Bottle />
       <Header />
       <main className="relative z-10 flex min-h-svh flex-col">

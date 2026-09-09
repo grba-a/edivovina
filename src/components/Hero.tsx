@@ -1,9 +1,19 @@
 import Link from 'next/link'
 import Frame from '@/components/ui/Frame'
 import Station from '@/components/station/Station'
+import { WINES, bySlug } from '@/data/wines'
+import { eur } from '@/lib/money'
 import { station } from '@/data/stations'
 
 const S = station('surface')
+
+/* Cijene se ne pisu rukom. Prije su ovdje stajale tri zakovane vrijednosti
+   (€382 i raspon €17,50 — €536) i svaka je bila jedna izmjena kataloga daleko
+   od lazi. */
+const AMPHORA = bySlug('navis-mysterium-undersea-amphora')!
+const PRICES = WINES.map((w) => w.price)
+const CHEAPEST = Math.min(...PRICES)
+const DEAREST = Math.max(...PRICES)
 
 /**
  * 0 METARA — POVRSINA. Prvi ekran, puna visina kadra.
@@ -43,19 +53,27 @@ export default function Hero() {
 
       <div className="ed-hero-in ed-in relative z-10 flex min-h-svh flex-col pb-[var(--s-8)] pt-[var(--s-10)]">
         <p className="ed-fade data-label text-gold">
-          Pelješac · prva podmorska vinarija u Hrvatskoj
+          Pelješac · the first underwater winery in Croatia
         </p>
 
         <div className="ed-hero-main">
+          {/* NASLOV IMA IZMJEREN PRORACUN: 919 px na 1440 px.
+              3D amfora stoji u desnom stupcu i njen lijevi rub je na 951 px, a
+              naslov pocinje na 32 px. Hrvatski „Spustili smo / vino na dno."
+              trazio je 669 px i stajao je; prvi engleski prijevod („We lowered
+              the wine") trazi 1125 px i amfora mu je pojela rijec „wine".
+              Dizajn je zasticen, pa se tekst prilagodava kadru — ne obrnuto.
+              Mjereno diffom dva screenshota (canvas vidljiv / skriven), jer
+              WebGL canvas ima preserveDrawingBuffer: false i ne da se citati. */}
           <h1 id={`${S.id}-h`} className="t-display text-ivory md:mt-[var(--s-5)]">
             <span className="ed-mask">
               <span className="ed-line">
-                Spustili smo
+                We sent wine
               </span>
             </span>{' '}
             <span className="ed-mask">
               <span className="ed-line" style={{ animationDelay: '0.06s' }}>
-                vino na dno.
+                to the seabed.
               </span>
             </span>
           </h1>
@@ -65,9 +83,9 @@ export default function Hero() {
             className="ed-fade t-body mt-[var(--s-6)] hidden text-ivory/72 md:block"
             style={{ animationDelay: '0.5s' }}
           >
-            Plavac Mali zapečaćen u petrinjskoj glini, spušten na oko dvadeset metara i ostavljen
-            sedamsto dana na četrnaest stupnjeva. Ono što se vrati gore nosi na sebi more — i to se
-            ne čisti.
+            Plavac Mali sealed in Petrinja clay, lowered to eighteen to twenty-five metres and
+            left there seven hundred days at fourteen degrees. What comes back up is wearing the
+            sea — and we do not clean it off.
           </p>
 
           <div
@@ -77,20 +95,19 @@ export default function Hero() {
 {/* Glavni gumb vodi na URANJANJE, ne na cjenik. Prije je obecavao „od
                 €17,50" a vodio gdje je najjeftinije €117 — i usput preskakao
                 jedinu sekciju u kojoj stranica argumentira svoj proizvod.
-                Nosi i €382, pa mobitel prvi broj sretne uz predmet, a ne hladno
-                dva ekrana nize. Ime mu se vise ne poklapa s gumbom u headeru,
-                koji vodi na `/wines`. */}
+                Nosi i cijenu amfore, pa mobitel prvi broj sretne uz predmet, a
+                ne hladno dva ekrana nize. */}
             <Link
               href="#dive"
               className="data-label pressable bg-gold px-[var(--s-4)] py-[var(--s-4)] text-abyss md:px-[var(--s-5)]"
             >
-              Vidi amforu — €382
+              See the amphora — {eur(AMPHORA.price)}
             </Link>
             <Link
-              href="#seabed"
+              href="/visit"
               className="data-label pressable border border-ivory/28 px-[var(--s-4)] py-[var(--s-4)] text-ivory/88 transition-colors duration-200 hover:border-gold hover:text-gold md:px-[var(--s-5)]"
             >
-              Kušaj u Draču
+              Taste it in Drače
             </Link>
           </div>
         </div>
@@ -100,13 +117,15 @@ export default function Hero() {
           style={{ animationDelay: '0.76s' }}
         >
           <span className="data-label-sm text-ivory/60">
-            Skrolaj i tonut ćeš
+            Scroll and you sink
           </span>
           <span aria-hidden className="h-px flex-1 bg-ivory/14" />
 {/* Raspon, ne „0,0 m": dubinu na 0 m nosi velika brojka u margini, a ovaj
               slot je jedina besplatna nekretnina na prvom ekranu. Bez njega je
               mobitel prvi broj na stranici sretao kao €382, bez mjerila. */}
-          <span className="data-label-sm tnum text-ivory/85">€17,50 — €536</span>
+          <span className="data-label-sm tnum text-ivory/85">
+            {eur(CHEAPEST)} — {eur(DEAREST)}
+          </span>
         </div>
       </div>
     </Station>
