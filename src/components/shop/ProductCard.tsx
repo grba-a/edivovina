@@ -18,24 +18,31 @@ import type { Wine } from '@/data/wines'
  */
 export default function ProductCard({ w, sizes }: { w: Wine; sizes: string }) {
   return (
-    <li className={`${productClass(w)} flex flex-col`}>
+    /* `h-full` + `mt-auto` na gumbu: bez toga naslov od dva reda pomakne
+       ocjenu, biljesku I gumb, pa se u redu od tri kartice nista ne poklapa —
+       izmjereno, gumb trece kartice stajao je 30 px vise od prve. To je bio
+       najveci craft kvar u mrezi. */
+    <li className={`${productClass(w)} flex h-full flex-col`}>
       <Link
         href={`/product/${w.slug}`}
-        className="woocommerce-LoopProduct-link woocommerce-loop-product__link pressable group flex flex-col"
+        className="woocommerce-LoopProduct-link woocommerce-loop-product__link pressable group flex flex-1 flex-col"
       >
         <BottleSlot image={w.image} alt={w.name} sizes={sizes} />
 
-        <span className="mt-[var(--s-4)] flex items-baseline justify-between gap-[var(--s-3)] border-t border-ivory/16 pt-[var(--s-3)]">
+        {/* Dva reda rezervirana: imena su od jedne do tri rijeci i bez ovoga
+            se cijena u redu ne poravna. */}
+        <span className="mt-[var(--s-4)] flex min-h-[3.4rem] items-baseline justify-between gap-[var(--s-3)] border-t border-ivory/16 pt-[var(--s-3)]">
           <span className="woocommerce-loop-product__title t-title text-ivory">{w.name}</span>
           <Price value={w.price} sale={w.salePrice} className="t-title tnum shrink-0 text-ivory" />
         </span>
 
-        <span className="mt-[var(--s-2)] flex items-center gap-[var(--s-3)]">
+        {/* Red uvijek postoji, i kad ocjene nema — inace biljeska skoci gore. */}
+        <span className="mt-[var(--s-1)] flex min-h-[1.1rem] items-center gap-[var(--s-3)]">
           <StarRating rating={w.rating} />
           <span className="data-label-sm text-ivory/50">{w.volume}</span>
         </span>
 
-        <span className="t-field mt-[var(--s-2)] block max-w-[34ch] text-ivory/65">
+        <span className="t-field mt-[var(--s-3)] block max-w-[34ch] text-ivory/65">
           {w.shortDescription}
         </span>
       </Link>
@@ -50,7 +57,7 @@ export default function ProductCard({ w, sizes }: { w: Wine; sizes: string }) {
         disabled
         aria-label={`Add “${w.name}” to your cart`}
         title="The cart is wired in WooCommerce"
-        className="button product_type_simple add_to_cart_button data-label mt-[var(--s-4)] w-full border border-ivory/25 px-[var(--s-4)] py-[var(--s-3)] text-ivory/70 disabled:opacity-60"
+        className="button product_type_simple add_to_cart_button data-label mt-auto w-full border border-ivory/25 px-[var(--s-4)] pt-[var(--s-4)] pb-[var(--s-3)] text-ivory/70 disabled:opacity-60"
       >
         Add to cart
       </button>

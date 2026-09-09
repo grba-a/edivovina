@@ -51,29 +51,33 @@ export default function Lightbox({
     }
   }, [open, close, step])
 
-  const wide = (i: number) => i % 7 === 0
+  /* Prva plocica u grupi je dvostruko siroka, ostale su kvadrati. Prije je
+     uzorak bio `i % 7 === 0 || i % 11 === 5` — dva pravila koja se prekrivaju
+     i daju red bez logike. Jedan sirok kadar po grupi je ritam; sahovnica
+     jednakih kvadrata cita se kao upload folder. */
+  const wide = (i: number) => i === 0
 
   return (
     <>
       <ul className="grid grid-cols-2 gap-[var(--s-3)] sm:grid-cols-3 lg:grid-cols-4">
         {names.map((n, i) => (
-          <li key={n} className={wide(i) ? 'col-span-2' : ''}>
+          <li key={n} className={wide(i) ? 'col-span-2 row-span-2' : ''}>
             <button
               type="button"
               onClick={() => setOpen(i)}
-              aria-label={`Open: ${caption}`}
-              className="pressable group block w-full border border-ivory/12 bg-surface text-left"
+              aria-label={`Open image ${i + 1} of ${names.length}: ${caption}`}
+              /* `ed-plate` je grade: bez njega su svijetli dnevni kadrovi
+                 vristali preko abisa. Natpisa po plocici NEMA — bio je isti
+                 tekst osam puta ispod svake fotke u grupi, sto je sum. */
+              className="ed-plate pressable group block h-full w-full border border-ivory/12"
             >
               <Frame
                 name={n}
                 alt={caption}
                 sizes={wide(i) ? '(min-width: 1024px) 46vw, 92vw' : '(min-width: 1024px) 23vw, 46vw'}
-                ratio={wide(i) ? 16 / 10 : 1}
-                className="w-full"
+                ratio={1}
+                className="h-full w-full"
               />
-              <span className="data-label-sm block px-[var(--s-3)] py-[var(--s-2)] text-ivory/55 group-hover:text-gold">
-                {caption}
-              </span>
             </button>
           </li>
         ))}

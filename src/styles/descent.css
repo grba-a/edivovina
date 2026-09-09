@@ -372,6 +372,54 @@
   mix-blend-mode: multiply;
 }
 
+/* --- gradirana ploca -----------------------------------------------------
+   Isti grade kao `.ed-slot`, ali za bilo koji odnos i bilo koji kadar.
+
+   Postoji zato sto su podstranice prvo dobile GOLE fotografije: svijetli
+   dnevni kadrovi iz svibanjskog shoota vristali su preko abisa, a sustav koji
+   ih spusta na dubinu sekcije vec je postojao i nije bio upotrijebljen. Na
+   naslovnici nijedna fotka ne ide na stranicu bez ovoga.                    */
+
+.ed-plate {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: #0a2532;
+}
+.ed-plate img { filter: saturate(0.66) brightness(0.8) contrast(1.06); }
+.ed-plate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(18, 119, 122, 0.34), rgba(9, 51, 78, 0.62));
+  mix-blend-mode: multiply;
+}
+
+/* --- red mjerenja --------------------------------------------------------
+   Naslovnicin uzorak: oznaka lijevo, vlas po sredini, vrijednost desno. Ovo
+   zamjenjuje uokvirene kartice svugdje gdje je sadrzaj MJEREN ili je popis —
+   kartica je lijeni kontejner i sest stranica njih je ono sto je ovaj web
+   izgledalo kao sklopljeno, a ne dizajnirano.                              */
+
+/* PRAVILO: `.ed-row` je SAMO za mjerene vrijednosti — cijenu, koordinatu,
+   mjesto, brojku. Vrijednost nosi `shrink-0` da vlas moze rasti, a `shrink-0`
+   na tekstu koji se MOZE LOMITI izbacuje red izvan kadra: u `Dive.tsx` je tako
+   izletjela cijena 17 px na 360 px, a na /visit je recenica dala 362 > 360 u
+   WebKitu. Za oznaku + recenicu ide oznaka NAD vrijednoscu, ne ovaj red.    */
+.ed-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-block: var(--s-3);
+}
+.ed-row > .ed-rule {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
 @media (hover: hover) and (pointer: fine) {
   a:hover > .ed-slot img { transform: scale(1.035); }
 }

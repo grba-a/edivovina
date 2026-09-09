@@ -12,12 +12,14 @@ const S = station('winery')
  * lijevi rub. Predmet se vraca tek na dvanaest metara.
  *
  * Brojke su samo one koje su provjerene kroz nezavisne izvore: dubina ide kao
- * Dubina je NJIHOVA brojka: /about-us i callout na dnu iste stranice oba pisu
- * „18-25 meters". Prije je ovdje stajalo „≈20" jer se izvori nisu slagali —
- * sad se ne moramo pogadati. Trajanje i temperatura su potvrdeni u vise izvora.
+ * Dubina je „≈20" NAMJERNO, i to je odluka koja se ne mijenja: njihov vlastiti
+ * web si protuslovi (About pise 18–25 m, Visit Us pise 14 m), pa se NI JEDNA od
+ * te dvije objavljene brojke ne koristi. Kratko sam bio stavio 18–25 jer sam ju
+ * nasao na njihovom About-u — to je bilo pogadanje jedne strane spora, ne
+ * potvrda. Trajanje i temperatura su potvrdeni u vise izvora.
  */
 const FIGURES = [
-  { n: '18–25', l: 'metres down' },
+  { n: '≈20', l: 'metres down' },
   { n: '700', l: 'days below' },
   { n: '14–16', l: 'degrees, all year' },
 ]

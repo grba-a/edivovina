@@ -170,8 +170,8 @@ export default function Anatomy() {
             className="h-auto w-full"
           >
             <title id="col-t">
-              Cross-section of the water column: an amphora lowered on a line to the seabed between
-              18 and 25 metres
+              Cross-section of the water column: an amphora lowered on a line to the seabed at
+              around twenty metres
             </title>
 
             {/* povrsina */}
@@ -256,7 +256,7 @@ export default function Anatomy() {
                 className="fill-gold"
                 style={{ fontFamily: 'var(--font-display)', fontSize: 17 }}
               >
-                18–25 m
+                ≈20 m
               </text>
               <text
                 x="626"
@@ -367,7 +367,7 @@ export default function Anatomy() {
                 istoj stranici „two layers of RUBBER". Drzimo gumu, jer je to
                 tekst a ne slika — ali je na listi za klijenta. */}
             <p className="data-label-sm text-ivory/55">
-              Stored under the sea at 18–25 metres · sealed · never opened until you open it
+              Stored under the sea at around twenty metres · sealed · never opened until you open it
             </p>
           </figcaption>
         </figure>

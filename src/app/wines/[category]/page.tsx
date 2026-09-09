@@ -29,7 +29,7 @@ export async function generateMetadata({
   return {
     title: `${label} — Edivo Vina`,
     description:
-      'The wines that spent 700 days on the seabed off Pelješac, 18 to 25 metres down.',
+      'The wines that spent 700 days on the seabed off Pelješac, around twenty metres down.',
   }
 }
 

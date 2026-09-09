@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import PageShell from '@/components/page/PageShell'
-import PageHead from '@/components/page/PageHead'
+import PageOpen from '@/components/page/PageOpen'
 import WooLoop from '@/components/shop/WooLoop'
+import Station from '@/components/station/Station'
+import Frame from '@/components/ui/Frame'
 import { station } from '@/data/stations'
 import { WINES, undersea, byMenuOrder, bySlug, THE_THREE } from '@/data/wines'
 import { eur } from '@/lib/money'
@@ -12,72 +14,95 @@ const S = station('shop')
 export const metadata: Metadata = {
   title: 'Wines — Edivo Vina',
   description:
-    'Ten wines from Janjina on the Pelješac peninsula. Four of them spent 700 days on the seabed, 18 to 25 metres down.',
+    'Ten wines from Janjina on the Pelješac peninsula. Four of them spent 700 days on the seabed.',
 }
 
 const PRICES = WINES.map((w) => w.price)
+const STEP = ['Cellar', 'Sea, in glass', 'Sea, in clay']
 
 /**
- * /wines — WooCommerce arhiva na 12 m.
+ * /wines — WooCommerce arhiva na 12 m, postaja `shop`.
  *
- * Dubina je postaja `shop` s naslovnice, ista na kojoj su tamo tri boce: „na
- * dvanaest metara nestane narancasto". Podstranica je prosirena verzija svoje
- * postaje, pa nista novo ne treba izmisliti.
+ * Tri sekcije, i to je sve: otvaranje, argument, katalog.
  *
- * RUTE: arhiva je /wines, kategorija /wines/undersea, a proizvodi /product/[slug]
- * — tocno njihova ziva struktura. Dvorazinski /wines/[slug] bi se zabio u
- * /wines/undersea, koja je njihova stvarna Woo kategorija.
+ * Argument je naslovnicina potpisna kompozicija — proza lijevo, kadar koji
+ * probija rub ekrana desno — a nosi CJENOVNU LJESTVICU. Prije su tu stajale
+ * tri jednake uokvirene kutije s €39 / €117 / €382 u istoj velicini, bez
+ * ijedne fotografije: tri pravokutnika koja tvrde da su jednako vazna, dok je
+ * cijela poanta razlika izmedu njih. Ljestvica na vlasovnim linijama pokazuje
+ * skok; kartica ga skriva.
  */
 export default function WinesPage() {
   const three = THE_THREE.map((slug) => bySlug(slug)!)
+  const amphora = three[2]
 
   return (
     <PageShell data={S}>
-      <PageHead
+      <PageOpen
         data={S}
-        side="r"
-        lines={[`${WINES.length} wines.`, `${undersea().length} went down.`]}
-        intro="One wine, three lives — the cellar, the sea in glass, the sea in clay. The rest of the list is Pelješac as it has always been."
-        readout={`${eur(Math.min(...PRICES))} — ${eur(Math.max(...PRICES))}`}
+        side="l"
+        title={`${WINES.length} wines. ${undersea().length} went down.`}
+        lead="One wine, three lives — the cellar, the sea in glass, the sea in clay. The rest of the list is Pelješac as it has always been."
+        meta={`${eur(Math.min(...PRICES))} — ${eur(Math.max(...PRICES))}`}
       />
 
-      {/* TRI — argument prije cjenika. Isti redoslijed u kojem se piju, i tri
-          cijene u jednom kadru: bez €39 kontrole €382 nema s cime usporediti. */}
-      <section aria-labelledby="three-h" style={{ paddingBlock: 'var(--sec-y-tight)' }}>
-        <div className="ed-in">
-          <h2 id="three-h" className="t-title text-ivory">
-            The same wine, three ways
-          </h2>
-          <ol className="mt-[var(--s-5)] grid gap-[var(--s-4)] sm:grid-cols-3">
-            {three.map((w, i) => (
-              <li
-                key={w.slug}
-                className="flex flex-col border border-ivory/14 bg-surface p-[var(--s-4)]"
+      {/* Koordinata dubine zivi OVDJE, na prvoj sadrzajnoj sekciji — na
+          otvaranju je ulazila pod fiksni header. */}
+      <Station data={S} side="r" stage={false} style={{ paddingTop: 'var(--sec-y-tight)', paddingBottom: 'var(--sec-y)' }}>
+        <div className="ed-in relative z-10">
+          <div className="grid gap-[var(--s-7)] md:grid-cols-[1fr_0.9fr] md:items-end md:gap-[var(--s-8)]">
+            <div>
+              <h2 className="t-plate max-w-[15ch] text-ivory">Three bottles, one barrel.</h2>
+              <p className="t-body mt-[var(--s-5)] text-ivory/72">
+                The same wine, the same vintage, the same barrel, split three ways. One stayed in
+                the cellar. One went into the sea in glass. One went into clay, then into the sea.
+                The only variable is the water.
+              </p>
+              {/* Umjerena fotografija u stupcu — 26rem, ne kadar preko ekrana. */}
+              <div className="ed-plate mt-[var(--s-6)] max-w-[26rem]">
+                <Frame
+                  name="lift-water"
+                  alt="An amphora lifted clear of the sea after two years, still wearing its oysters"
+                  sizes="(min-width: 768px) 26rem, 92vw"
+                  ratio={3 / 2}
+                  position="50% 38%"
+                  className="w-full"
+                />
+              </div>
+
+            </div>
+
+            {/* Ljestvica: skok od kontrole do predmeta u tri reda. Prije su ovdje
+                stajale tri jednake uokvirene kutije s cijenama u istoj velicini —
+                tri pravokutnika koja tvrde da su jednako vazna, a cijela poanta je
+                razlika. */}
+            <div>
+              <dl>
+                {three.map((w, i) => (
+                  <div key={w.slug} className="ed-row">
+                    <dt className="data-label shrink-0 text-gold">{STEP[i]}</dt>
+                    <span aria-hidden className="ed-rule" />
+                    <dd className="t-title tnum shrink-0 text-ivory">{eur(w.price)}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="t-field mt-[var(--s-4)] max-w-[34ch] text-ivory/60">
+                Ten times the price of the control, and nothing about the wine was changed.
+              </p>
+              <Link
+                href={`/product/${amphora.slug}`}
+                className="data-label pressable mt-[var(--s-5)] inline-block bg-gold px-[var(--s-5)] py-[var(--s-4)] text-abyss transition-colors duration-200 hover:bg-ivory"
               >
-                <span className="data-label-sm text-gold">
-                  {['Cellar', 'Sea, in glass', 'Sea, in clay'][i]}
-                </span>
-                <Link
-                  href={`/product/${w.slug}`}
-                  className="t-title mt-[var(--s-3)] inline-flex min-h-11 items-center text-ivory hover:text-gold"
-                >
-                  {w.name}
-                </Link>
-                <span className="t-field mt-auto pt-[var(--s-4)] text-ivory/65">
-                  {w.daysUnderSea ? `${w.daysUnderSea} days below` : 'Never left the building'}
-                </span>
-                <span className="t-title tnum mt-[var(--s-2)] text-ivory">{eur(w.price)}</span>
-              </li>
-            ))}
-          </ol>
+                See the amphora — {eur(amphora.price)}
+              </Link>
+            </div>
+          </div>
         </div>
-      </section>
+      </Station>
 
       <section aria-label="Product catalogue" style={{ paddingBottom: 'var(--sec-y)' }}>
         <div className="ed-in">
-          {/* `woocommerce_archive_description` + kategorije. Njihove dvije Woo
-              kategorije, s njihovim H1 imenima. */}
-          <nav aria-label="Product categories" className="mb-[var(--s-5)] flex gap-[var(--s-4)]">
+          <nav aria-label="Product categories" className="mb-[var(--s-4)] flex gap-[var(--s-5)]">
             <span aria-current="page" className="data-label inline-flex min-h-11 items-center border-b border-gold text-gold">
               All wines
             </span>

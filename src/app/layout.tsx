@@ -34,7 +34,7 @@ export const metadata: Metadata = {
      nosi „first in Croatia" (potvrdeno u pet izvora), pa metadata mora isto —
      inace web tvrdi dvije razlicite stvari o istoj cinjenici. */
   description:
-    'Plavac Mali sealed in clay and left in a sunken fishing boat off Pelješac for 700 days, 18 to 25 metres down. The first underwater winery in Croatia.',
+    'Plavac Mali sealed in clay and left in a sunken fishing boat off Pelješac for 700 days, around twenty metres down. The first underwater winery in Croatia.',
   openGraph: {
     title: 'Edivo Vina — Two years underwater',
     description: 'Plavac Mali, sealed in clay and aged on the seabed off Pelješac, Croatia.',

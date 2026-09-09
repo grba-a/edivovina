@@ -44,7 +44,7 @@ function attributes(w: Wine): [string, string][] {
   if (w.abv) rows.push(['Alcohol', `${w.abv}%`])
   rows.push([
     'Ageing',
-    w.daysUnderSea ? `${w.daysUnderSea} days on the seabed, 18–25 m` : 'Cellar in Janjina',
+    w.daysUnderSea ? `${w.daysUnderSea} days on the seabed, around 20 m` : 'Cellar in Janjina',
   ])
   return rows
 }

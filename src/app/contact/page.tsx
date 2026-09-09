@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import PageShell from '@/components/page/PageShell'
-import PageHead from '@/components/page/PageHead'
+import PageOpen from '@/components/page/PageOpen'
+import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
 import { QUOTE } from '@/data/press'
 
@@ -12,202 +13,211 @@ export const metadata: Metadata = {
     'Edivo Winery, Janjina 62. Edivo wine bar, Drače 18, Pelješac. +385 91 6127 229 · info@edivovina.hr',
 }
 
-/** Tri kanala, jer to nisu isti kupci — kod njih svi padaju u istu kutiju. */
-const CHANNELS = [
-  { label: 'Orders & shipping', to: 'sales@edivovina.hr', note: 'UPS, DPD or DHL. Dispatched within 24 hours.' },
-  { label: 'Visits & tastings', to: 'info@edivovina.hr', note: 'The wine bar in Drače, and the cellar itself.' },
-  { label: 'Press & wholesale', to: 'info@edivovina.hr', note: 'Images, samples, distribution.' },
+const FIND: [string, string][] = [
+  ['The winery', 'Janjina 62, 20246 Janjina'],
+  ['The wine bar', 'Drače 18, 20246 Drače'],
+  ['By car', 'One hour from Dubrovnik'],
+  ['By boat', 'Drače has a jetty'],
+  ['Coordinates', '42°55′N 17°28′E'],
+]
+
+const CHANNELS: [string, string][] = [
+  ['Orders & shipping', 'sales@edivovina.hr'],
+  ['Visits & tastings', 'info@edivovina.hr'],
+  ['Press & wholesale', 'info@edivovina.hr'],
 ]
 
 const SUBJECTS = ['An order', 'A visit or tasting', 'Wholesale & distribution', 'Press']
 
 /**
- * /contact — 25 m, postaja `seabed`. Dno stranice je dno mora.
+ * /contact — 25 m, postaja `seabed`. Otvaranje, pa DVA STUPCA: forma i podaci.
  *
- * Njihova forma ima tocno cetiri polja (name, email, message, consent) i
- * NISTA drugo u tijelu stranice — bez adrese, bez telefona, bez uvodne
- * recenice. Dodajemo `subject`, jer narudzba, posjet i press nisu isti kupac,
- * a sada im svi padnu u istu kutiju.
+ * Prva verzija je bila najgora na webu: pet praznih uokvirenih pravokutnika,
+ * dvije kartice s adresama UZ ruled listu (dva sustava u istom stupcu), forma
+ * u trecoj sekciji preko cijele sirine, i ni jedne fotografije na abisu.
  *
- * Consent tekst je NJIHOV, verbatim.
+ * Forma sada stoji u SOLIDNOM panelu s podvucenim poljima — pet obrubljenih
+ * kutija na tamnom citalo se kao skelet, a podvucena polja su i ljepsa i
+ * mirnija. Panel je neprozirni `bg-surface`: poluprozirni bi propustio vodu i
+ * marine snow kroz sebe.
  *
- * Forma je ONEMOGUCENA, ne `action="#"` — tako je polje tiho jelo adresu i
- * skakalo na vrh stranice. Spaja se u WordPressu.
+ * Njihova /contact ima tocno cetiri polja i NISTA drugo u tijelu: bez adrese,
+ * bez telefona, bez uvodne recenice. Dodajemo `subject`, jer narudzba, posjet
+ * i press nisu isti kupac a sada im svi padnu u istu kutiju. Consent tekst je
+ * NJIHOV, verbatim.
+ *
+ * ONEMOGUCENA je, ne `action="#"` — tako je polje tiho jelo adresu i skakalo
+ * na vrh stranice. Spaja se u WordPressu.
  */
 export default function ContactPage() {
+  const field =
+    'w-full border-0 border-b border-ivory/25 bg-transparent px-0 py-[var(--s-3)] text-ivory placeholder:text-ivory/30 transition-colors focus:border-gold disabled:opacity-80'
+
   return (
     <PageShell data={S}>
-      <PageHead
+      <PageOpen
         data={S}
-        side="r"
-        lines={['A phone call', 'is faster.']}
-        intro="Whatsapp and the phone are the same number, and somebody actually answers it. The form works too — it just takes longer."
-        readout="+385 91 6127 229"
+        side="l"
+        title="A phone call is faster."
+        lead="The number is a phone and WhatsApp, and somebody actually answers it. The form works too — it just takes longer."
+        meta="+385 91 6127 229"
       />
 
-      {/* Njihov citat o pozivima iz cijelog svijeta — na stranici gdje ih se zove.
-          Najbolje mjesto za tu recenicu na cijelom webu. */}
-      <section aria-label="A word from the winery" style={{ paddingBlock: 'var(--sec-y-tight)' }}>
-        <div className="ed-in">
-          <blockquote>
-            <p
-              className="t-plate max-w-[28ch] text-ivory"
-              style={{ fontSize: 'clamp(1.3rem, 3.2vw, 2.3rem)', lineHeight: 1.24 }}
-            >
-              {`“${QUOTE.text}”`}
-            </p>
-            <footer className="data-label-sm mt-[var(--s-4)] text-ivory/60">
-              {QUOTE.who} · {QUOTE.where}
-            </footer>
-          </blockquote>
-        </div>
-      </section>
+      <Station
+        data={S}
+        side="r"
+        stage={false}
+        style={{ paddingTop: 'var(--sec-y-tight)', paddingBottom: 'var(--sec-y)' }}
+      >
+        <div className="ed-in relative z-10">
+          <div className="grid gap-[var(--s-7)] md:grid-cols-[1.05fr_0.95fr] md:items-start md:gap-[var(--s-8)]">
+            {/* --- stupac 1: forma --- */}
+            <div className="border border-ivory/14 bg-surface p-[var(--s-5)] md:p-[var(--s-6)]">
+              <div className="flex flex-wrap items-baseline justify-between gap-[var(--s-3)]">
+                <h2 className="t-title text-ivory">Write to us</h2>
+                <p className="data-label-sm text-ivory/40">Wired in WordPress</p>
+              </div>
 
-      <section aria-labelledby="form-h" style={{ paddingBottom: 'var(--sec-y)' }}>
-        <div className="ed-in grid gap-[var(--s-8)] md:grid-cols-[1.05fr_0.95fr]">
-          {/* --- forma --- */}
-          <div>
-            <h2 id="form-h" className="t-title text-ivory">
-              Write to us
-            </h2>
+              <form className="mt-[var(--s-5)] flex flex-col gap-[var(--s-5)]">
+                {[
+                  { id: 'c-name', label: 'Name', type: 'text', ph: 'Your name', ac: 'name' },
+                  { id: 'c-email', label: 'Email', type: 'email', ph: 'you@email.com', ac: 'email' },
+                ].map((f) => (
+                  <p key={f.id} className="flex flex-col gap-[var(--s-1)]">
+                    <label htmlFor={f.id} className="data-label-sm text-gold/85">
+                      {f.label}
+                    </label>
+                    <input
+                      id={f.id}
+                      name={f.id.slice(2)}
+                      type={f.type}
+                      placeholder={f.ph}
+                      autoComplete={f.ac}
+                      disabled
+                      className={field}
+                    />
+                  </p>
+                ))}
 
-            <form className="mt-[var(--s-5)] flex flex-col gap-[var(--s-4)]">
-              {[
-                { id: 'c-name', label: 'Name', type: 'text', autoComplete: 'name' },
-                { id: 'c-email', label: 'Email', type: 'email', autoComplete: 'email' },
-              ].map((f) => (
-                <p key={f.id} className="flex flex-col gap-[var(--s-2)]">
-                  <label htmlFor={f.id} className="data-label text-ivory/70">
-                    {f.label}
+                <p className="relative flex flex-col gap-[var(--s-1)]">
+                  <label htmlFor="c-subject" className="data-label-sm text-gold/85">
+                    What is it about
                   </label>
-                  <input
-                    id={f.id}
-                    name={f.id.slice(2)}
-                    type={f.type}
-                    autoComplete={f.autoComplete}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute bottom-[var(--s-4)] right-0 text-gold/70"
+                  >
+                    <svg viewBox="0 0 12 8" className="h-[6px] w-[10px]" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <path d="M1 1l5 5 5-5" />
+                    </svg>
+                  </span>
+                  <select
+                    id="c-subject"
+                    name="subject"
                     disabled
-                    className="border border-ivory/22 bg-transparent px-[var(--s-3)] py-[var(--s-3)] text-ivory transition-colors focus:border-gold disabled:opacity-60"
+                    className={`${field} appearance-none pr-[var(--s-6)]`}
+                  >
+                    {SUBJECTS.map((x) => (
+                      <option key={x}>{x}</option>
+                    ))}
+                  </select>
+                </p>
+
+                <p className="flex flex-col gap-[var(--s-1)]">
+                  <label htmlFor="c-message" className="data-label-sm text-gold/85">
+                    Message
+                  </label>
+                  <textarea
+                    id="c-message"
+                    name="message"
+                    rows={3}
+                    placeholder="Which wine, how many, and where to?"
+                    disabled
+                    className={`${field} resize-none`}
                   />
                 </p>
-              ))}
 
-              <p className="flex flex-col gap-[var(--s-2)]">
-                <label htmlFor="c-subject" className="data-label text-ivory/70">
-                  What is it about
-                </label>
-                <select
-                  id="c-subject"
-                  name="subject"
+                <p className="flex items-start gap-[var(--s-3)]">
+                  <input
+                    id="c-consent"
+                    name="consent"
+                    type="checkbox"
+                    disabled
+                    className="mt-[3px] h-4 w-4 shrink-0 accent-[var(--color-gold)] disabled:opacity-70"
+                  />
+                  {/* Njihov consent tekst, verbatim. */}
+                  <label htmlFor="c-consent" className="t-field text-ivory/60">
+                    I consent to having this website store my submitted information so they can
+                    respond to my inquiry.
+                  </label>
+                </p>
+
+                <button
+                  type="submit"
                   disabled
-                  className="border border-ivory/22 bg-surface px-[var(--s-3)] py-[var(--s-3)] text-ivory disabled:opacity-60"
+                  className="data-label pressable w-full bg-gold py-[var(--s-4)] text-abyss disabled:opacity-80"
                 >
-                  {SUBJECTS.map((s) => (
-                    <option key={s}>{s}</option>
-                  ))}
-                </select>
-              </p>
-
-              <p className="flex flex-col gap-[var(--s-2)]">
-                <label htmlFor="c-message" className="data-label text-ivory/70">
-                  Message
-                </label>
-                <textarea
-                  id="c-message"
-                  name="message"
-                  rows={4}
-                  disabled
-                  className="border border-ivory/22 bg-transparent px-[var(--s-3)] py-[var(--s-3)] text-ivory transition-colors focus:border-gold disabled:opacity-60"
-                />
-              </p>
-
-              <p className="flex items-start gap-[var(--s-3)]">
-                <input
-                  id="c-consent"
-                  name="consent"
-                  type="checkbox"
-                  disabled
-                  className="mt-[3px] h-4 w-4 shrink-0 accent-[var(--color-gold)] disabled:opacity-60"
-                />
-                {/* Njihov consent tekst, verbatim. */}
-                <label htmlFor="c-consent" className="t-field text-ivory/65">
-                  I consent to having this website store my submitted information so they can
-                  respond to my inquiry.
-                </label>
-              </p>
-
-              <button
-                type="submit"
-                disabled
-                title="The form is wired in WordPress"
-                className="data-label pressable mt-[var(--s-2)] self-start bg-gold px-[var(--s-5)] py-[var(--s-4)] text-abyss disabled:opacity-60"
-              >
-                Send
-              </button>
-            </form>
-          </div>
-
-          {/* --- kako do njih --- */}
-          <div>
-            <h2 className="t-title text-ivory">How to find us</h2>
-
-            <div className="mt-[var(--s-5)] grid gap-[var(--s-5)] sm:grid-cols-2">
-              <div className="border border-ivory/14 bg-surface p-[var(--s-4)]">
-                <h3 className="data-label text-gold">Edivo Winery</h3>
-                <address className="t-field mt-[var(--s-3)] not-italic leading-loose text-ivory/70">
-                  Janjina 62
-                  <br />
-                  20246 Janjina
-                  <br />
-                  Pelješac, Croatia
-                </address>
-              </div>
-              <div className="border border-ivory/14 bg-surface p-[var(--s-4)]">
-                <h3 className="data-label text-gold">Edivo wine bar</h3>
-                <address className="t-field mt-[var(--s-3)] not-italic leading-loose text-ivory/70">
-                  Drače 18
-                  <br />
-                  20246 Drače
-                  <br />
-                  Pelješac, Croatia
-                </address>
-              </div>
+                  Send
+                </button>
+              </form>
             </div>
 
-            <dl className="mt-[var(--s-6)]">
-              {[
-                ['By car', 'One hour north-west of Dubrovnik along the coast, then onto the peninsula.'],
-                ['By boat', 'Drače has a jetty. The wine bar is on the water.'],
-                ['Coordinates', '42°55′N 17°28′E'],
-              ].map(([k, v]) => (
-                <div key={k} className="border-t border-ivory/12 py-[var(--s-3)]">
-                  <dt className="data-label text-ivory/60">{k}</dt>
-                  <dd className="t-field mt-[var(--s-1)] max-w-[38ch] text-ivory/80">{v}</dd>
-                </div>
-              ))}
-            </dl>
+            {/* --- stupac 2: gdje smo i komu se pise --- */}
+            <div>
+              <h2 className="t-plate max-w-[14ch] text-ivory">Where we are.</h2>
 
-            <ul className="mt-[var(--s-6)]">
-              {CHANNELS.map((c) => (
-                <li key={c.label} className="border-t border-ivory/12 py-[var(--s-4)]">
-                  <p className="data-label text-gold">{c.label}</p>
-                  <a
-                    href={`mailto:${c.to}`}
-                    className="t-field mt-[var(--s-2)] inline-flex min-h-11 items-center text-ivory/85 hover:text-gold"
-                  >
-                    {c.to}
-                  </a>
-                  <p className="t-field mt-[var(--s-1)] max-w-[38ch] text-ivory/60">{c.note}</p>
-                </li>
-              ))}
-            </ul>
+              <dl className="mt-[var(--s-5)]">
+                {FIND.map(([k, v]) => (
+                  <div key={k} className="ed-row">
+                    <dt className="data-label shrink-0 text-ivory/60">{k}</dt>
+                    <span aria-hidden className="ed-rule" />
+                    <dd className="t-field shrink-0 text-ivory/85">{v}</dd>
+                  </div>
+                ))}
+              </dl>
 
-            {/* Radno vrijeme NAMJERNO nema — njihov web ga nigdje ne objavljuje. */}
-            <p className="t-field mt-[var(--s-5)] max-w-[38ch] text-ivory/55">
-              Opening hours are seasonal. Call or message before you set off.
-            </p>
+              <dl className="mt-[var(--s-6)]">
+                {CHANNELS.map(([label, to]) => (
+                  <div key={label} className="ed-row">
+                    <dt className="data-label shrink-0 text-gold">{label}</dt>
+                    <span aria-hidden className="ed-rule" />
+                    <dd className="shrink-0">
+                      {/* Negativna margina: prst dobiva 44 px, a red ne naraste
+                          — s `min-h-11` je svaki kanal bio 69 px visok i vlas
+                          je visjela u praznini iznad maila. */}
+                      <a
+                        href={`mailto:${to}`}
+                        className="t-field -my-[var(--s-3)] inline-flex min-h-11 items-center text-ivory/85 hover:text-gold"
+                      >
+                        {to}
+                      </a>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+
+              {/* Njihov citat o pozivima iz cijelog svijeta — na stranici gdje
+                  ih se zove. Najbolje mjesto za tu recenicu na cijelom webu. */}
+              <blockquote className="mt-[var(--s-7)] border-t border-ivory/16 pt-[var(--s-6)]">
+                <p
+                  className="t-plate max-w-[26ch] text-ivory"
+                  style={{ fontSize: 'clamp(1.2rem, 2.4vw, 1.7rem)', lineHeight: 1.26 }}
+                >
+                  {`“${QUOTE.text}”`}
+                </p>
+                <footer className="data-label-sm mt-[var(--s-4)] text-ivory/55">
+                  {QUOTE.who} · {QUOTE.where}
+                </footer>
+              </blockquote>
+
+              {/* Radno vrijeme NAMJERNO nema — njihov web ga nigdje ne objavljuje. */}
+              <p className="t-field mt-[var(--s-6)] max-w-[38ch] text-ivory/55">
+                Opening hours are seasonal. Call or message before you set off.
+              </p>
+            </div>
           </div>
         </div>
-      </section>
+      </Station>
     </PageShell>
   )
 }

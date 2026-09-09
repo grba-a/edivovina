@@ -83,9 +83,9 @@ export default function Hero() {
             className="ed-fade t-body mt-[var(--s-6)] hidden text-ivory/72 md:block"
             style={{ animationDelay: '0.5s' }}
           >
-            Plavac Mali sealed in Petrinja clay, lowered to eighteen to twenty-five metres and
-            left there seven hundred days at fourteen degrees. What comes back up is wearing the
-            sea — and we do not clean it off.
+            Plavac Mali sealed in Petrinja clay, lowered to around twenty metres and left there
+            seven hundred days at fourteen degrees. What comes back up is wearing the sea — and we
+            do not clean it off.
           </p>
 
           <div

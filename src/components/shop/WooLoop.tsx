@@ -31,14 +31,29 @@ export default function WooLoop({ wines }: { wines: Wine[] }) {
           {resultCount(sorted.length, wines.length)}
         </p>
 
-        <form className="woocommerce-ordering" method="get" onSubmit={(e) => e.preventDefault()}>
+        {/* Nativni select je na ovoj stranici stajao kao sivi sistemski gumb —
+            stock kontrola unutar posvecene forme. `appearance-none` + nacrtan
+            chevron; strelica je SVG, ne unicode glif. */}
+        <form
+          className="woocommerce-ordering relative"
+          method="get"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <label htmlFor="woocommerce-orderby" className="sr-only">
             Shop order
           </label>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute right-[var(--s-3)] top-1/2 -translate-y-1/2 text-gold"
+          >
+            <svg viewBox="0 0 12 8" className="h-[6px] w-[10px]" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <path d="M1 1l5 5 5-5" />
+            </svg>
+          </span>
           <select
             name="orderby"
             id="woocommerce-orderby"
-            className="orderby data-label-sm cursor-pointer border border-ivory/25 bg-surface px-[var(--s-3)] py-[var(--s-2)] text-ivory/85"
+            className="orderby data-label-sm cursor-pointer appearance-none border border-ivory/25 bg-surface py-[var(--s-3)] pl-[var(--s-4)] pr-[var(--s-8)] text-ivory/85 transition-colors hover:border-gold/60"
             value={orderby}
             onChange={(e) => setOrderby(e.target.value as Orderby)}
           >
