@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import PageShell from '@/components/page/PageShell'
-import PageHead from '@/components/page/PageHead'
+import PageOpen from '@/components/page/PageOpen'
 import WooLoop from '@/components/shop/WooLoop'
+import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
 import { WINES, byMenuOrder, undersea } from '@/data/wines'
 import { CATEGORY_LABEL } from '@/lib/woo'
@@ -53,31 +54,39 @@ export default async function CategoryPage({
 
   return (
     <PageShell data={S}>
-      <PageHead
+      <PageOpen
         data={S}
-        side="r"
-        lines={['Undersea.', `${list.length} of ten.`]}
-        intro="Seven hundred days with no light and no vibration, at twice the pressure of the surface. Each one comes back carrying something different."
-        readout={`${eur(Math.min(...prices))} — ${eur(Math.max(...prices))}`}
+        side="l"
+        title={`Undersea. ${list.length} of ten.`}
+        lead="Seven hundred days with no light and no vibration, at twice the pressure of the surface. Each one comes back carrying something different."
+        meta={`${eur(Math.min(...prices))} — ${eur(Math.max(...prices))}`}
       />
 
-      <section aria-label="Product catalogue" style={{ paddingBottom: 'var(--sec-y)' }}>
-        <div className="ed-in">
-          <nav aria-label="Product categories" className="mb-[var(--s-5)] flex gap-[var(--s-4)]">
+      <Station
+        data={S}
+        side="r"
+        stage={false}
+        style={{ paddingTop: 'var(--sec-y-tight)', paddingBottom: 'var(--sec-y)' }}
+      >
+        <div className="ed-in relative z-10">
+          <nav aria-label="Product categories" className="mb-[var(--s-4)] flex gap-[var(--s-5)]">
             <Link
               href="/wines"
               className="data-label inline-flex min-h-11 items-center border-b border-transparent text-ivory/70 hover:text-gold"
             >
               All wines ({WINES.length})
             </Link>
-            <span aria-current="page" className="data-label inline-flex min-h-11 items-center border-b border-gold text-gold">
+            <span
+              aria-current="page"
+              className="data-label inline-flex min-h-11 items-center border-b border-gold text-gold"
+            >
               Undersea ({undersea().length})
             </span>
           </nav>
 
           <WooLoop wines={list} />
         </div>
-      </section>
+      </Station>
     </PageShell>
   )
 }

@@ -7,18 +7,18 @@ import { NAV } from '@/data/nav'
 const S = station('seabed')
 
 /**
- * DNO. Konstanta cijelog weba — SADRZAJ je identican na svakoj stranici
- * (adrese, kontakt, drustvene, newsletter), po Petrovoj odluci.
+ * DNO. Konstanta cijelog weba: SADRZAJ je isti na svakoj stranici — adrese,
+ * kontakt, drustvene, izbornik, newsletter, copyright.
  *
- * `seabed` je jedina razlika. Na naslovnici je true: footer JE postaja na 25 m,
- * nosi koordinatu, `.ed-seabed` rezervu prostora i amfora mu sjeda u leziste.
- * To je nagrada cijelog zarona i ne troši se na sest drugih stranica.
+ * `seabed` je razlika, i Petrova odluka. Na naslovnici je true: footer JE
+ * postaja na 25 m, nosi koordinatu, kupovni CTA, `.ed-seabed` ritam i
+ * `.ed-cradle-room` rezervu u koju amfora sjeda u leziste. To je nagrada
+ * cijelog zarona.
  *
- * Na podstranicama je false: isti sadrzaj, ali bez koordinate i bez seabed
- * tretmana — dubina te stranice stoji u NJENOM signature headeru, i tako se
- * koordinata po stranici pojavi tocno jednom. Uz to `stage={false}` znaci da
- * footer ne ulazi u koreografiju: inace bi bio jedini [data-station] node na
- * stranici i `stage.ts` bi ga glumio kao povrsinu.
+ * Na podstranicama je false: isti sadrzaj, ali bez koordinate, bez CTA-a i bez
+ * seabed tretmana — dubina te stranice stoji u NJENOM otvaranju. Uz to
+ * `stage={false}` znaci da footer ne ulazi u koreografiju; inace bi bio jedini
+ * [data-station] node na stranici i pozornica bi ga citala kao postaju.
  *
  * Radno vrijeme NAMJERNO nema — njihov web ga nigdje ne objavljuje, a lazno
  * vrijeme je gore od nikakvog (vidi PRODUCT.md).
@@ -31,7 +31,7 @@ export default function Footer({ seabed = true }: { seabed?: boolean }) {
       side="l"
       stage={seabed}
       showDepth={seabed}
-      className={`mt-auto ${seabed ? 'ed-seabed' : ''}`}
+      className={`mt-auto ${seabed ? 'ed-seabed ed-cradle-room' : ''}`}
       style={seabed ? undefined : { paddingBlock: 'var(--sec-y)' }}
     >
       <div className="ed-in relative z-10">
@@ -41,8 +41,8 @@ export default function Footer({ seabed = true }: { seabed?: boolean }) {
           Open one alone.
         </h2>
 
-        {/* Samo na naslovnici: na podstranici je ovo vec footer ispod sadrzaja
-            koji je i sam imao svoj CTA, pa bi bio treci gumb u istom kadru. */}
+        {/* Samo na naslovnici: na podstranici je footer ispod sadrzaja koji je
+            i sam imao svoj CTA, pa bi ovo bio treci gumb u istom kadru. */}
         {seabed && (
           <div className="mt-[var(--s-6)] flex flex-wrap items-center gap-[var(--s-4)]">
             <Link

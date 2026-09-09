@@ -512,7 +512,11 @@
 }
 
 @media (max-width: 767px) {
-  .ed-seabed { padding-bottom: 44svh; }
+  /* 44svh je REZERVA ZA 3D PREDMET, ne dio footera: amfora sjeda u leziste
+     tocno tu i bez toga se crta kroz telefonski broj. Nosi ju samo stranica
+     koja stvarno mount-a canvas — na podstranici bi to bio pola ekrana
+     praznine. Footer je inace IDENTICAN na svim stranicama. */
+  .ed-cradle-room { padding-bottom: 44svh; }
 }
 
 /* --- skip link ----------------------------------------------------------
