@@ -34,7 +34,7 @@ export default function Shop() {
 
         <div className="mt-[var(--s-5)] flex flex-wrap items-end justify-between gap-[var(--s-4)]">
           <h2 id={`${S.id}-h`} className="t-plate max-w-[16ch] text-ivory">
-            Three that have been down.
+            Shop
           </h2>
           <p className="data-label-sm text-ivory/60">
             {WINES.length} wines · {undersea().length} from the seabed

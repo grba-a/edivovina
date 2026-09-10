@@ -11,6 +11,7 @@
  */
 
 export type Award = {
+  /** Prazno kad je klijent nije dao — Decanter kod njih stoji bez godine. */
   year: string
   body: string
   medal: string
@@ -25,20 +26,24 @@ export type Award = {
 
 export const AWARDS: Award[] = [
   {
-    /* Godina se ne ceka: njihov vlastiti bedz (public/medal/decanter-silver.webp)
-       pise „2022 · Decanter World Wine Awards · Silver". Berba je i dalje
-       nepoznata i ostaje neizmisljena. */
-    year: '2022',
+    /* Bez godine — tocno kako stoji na NJIHOVOM homepageu („Decanter World
+       Wine Awards / Dingač has been awarded a Silver medal"). Njihov bedz u
+       public/medal/ pise 2022, ali ni njihov web ni klijent to nisu potvrdili,
+       pa se godina ne izgovara. */
+    year: '',
     body: 'Decanter World Wine Awards',
     medal: 'Silver',
-    detail: 'Dingač — wine quality',
+    detail: 'Dingač has been awarded a Silver medal',
     icon: 'decanter-silver',
     kind: 'wine',
   },
   {
     year: '2021',
+    /* Njihov homepage pise „America Wines Awards" — natjecanje se zove America
+       Wine Awards. Ime nagrade je cinjenica, pa ide ispravno. */
     body: 'America Wine Awards',
-    medal: 'Two golds',
+    medal: 'Golden medal',
+    /* Njihov tekst pise „Mystrium" dva puta. Ime vina ide ispravno. */
     detail: 'Navis Mysterium Amphora 2013 and Navis Mysterium Bottle 2013',
     icon: 'america-gold',
     kind: 'wine',
@@ -47,7 +52,7 @@ export const AWARDS: Award[] = [
     year: '2017',
     body: 'Sabatina',
     medal: 'Champion',
-    detail: 'Navis Mysterium Amphora 2012 — championship for design',
+    detail: 'Navis Mysterium amphora 2012 — championship for design · Edivo Dingač 2014',
     icon: 'sabatina-gold',
     kind: 'design',
   },
@@ -55,7 +60,8 @@ export const AWARDS: Award[] = [
     year: '2016',
     body: 'Sabatina',
     medal: 'Vice-champion',
-    detail: 'Navis Mysterium Bottle 2012 — product design, plus gold for wine quality',
+    detail:
+      'Navis Mysterium bottle 2012 — vice-champion for product design, and golden medal for wine quality',
     icon: 'sabatina-silver',
     kind: 'design',
   },
@@ -63,7 +69,7 @@ export const AWARDS: Award[] = [
     year: '2015',
     body: 'Sabatina',
     medal: 'Silver',
-    detail: 'Edivo Plavac 2015 — wine quality',
+    detail: 'Edivo Plavac 2015 — silver medal for wine quality',
     icon: 'sabatina-silver',
     kind: 'wine',
   },

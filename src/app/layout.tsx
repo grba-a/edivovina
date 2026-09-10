@@ -28,16 +28,15 @@ const raleway = Raleway({
 })
 
 export const metadata: Metadata = {
-  title: 'Edivo Vina — Two years underwater',
-  /* „The first underwater winery in the world" je skinuto: Crusoe Treasure je na
-     dnu od 2010. i patent za podmorsko starenje prijavljen je 2007. Stranica
-     nosi „first in Croatia" (potvrdeno u pet izvora), pa metadata mora isto —
-     inace web tvrdi dvije razlicite stvari o istoj cinjenici. */
+  title: 'Underwater Wine | Navis Mysterium — Edivo Vina',
+  /* Naslov i opis su NJIHOVI, s edivovina.hr. Njihov meta description je
+     fragment („is the result of…"), pa je dopunjen u recenicu njihovim
+     vlastitim rijecima iz hera — nista dodano. */
   description:
-    'Plavac Mali sealed in clay and left in a sunken fishing boat off Pelješac for 700 days, around twenty metres down. The first underwater winery in Croatia.',
+    'Navis Mysterium is the result of intelligent effort with the touch of tradition. The unique essence of the Adriatic sea.',
   openGraph: {
-    title: 'Edivo Vina — Two years underwater',
-    description: 'Plavac Mali, sealed in clay and aged on the seabed off Pelješac, Croatia.',
+    title: 'Underwater Wine | Navis Mysterium — Edivo Vina',
+    description: 'The unique essence of the Adriatic sea. We store it in the depths for more than 700 days.',
     type: 'website',
   },
 }

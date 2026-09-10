@@ -53,7 +53,7 @@ export default function Hero() {
 
       <div className="ed-hero-in ed-in relative z-10 flex min-h-svh flex-col pb-[var(--s-8)] pt-[var(--s-10)]">
         <p className="ed-fade data-label text-gold">
-          Pelješac · the first underwater winery in Croatia
+          The unique essence of the Adriatic sea
         </p>
 
         <div className="ed-hero-main">
@@ -68,12 +68,12 @@ export default function Hero() {
           <h1 id={`${S.id}-h`} className="t-display text-ivory md:mt-[var(--s-5)]">
             <span className="ed-mask">
               <span className="ed-line">
-                We sent wine
+                Navis
               </span>
             </span>{' '}
             <span className="ed-mask">
               <span className="ed-line" style={{ animationDelay: '0.06s' }}>
-                to the seabed.
+                Mysterium
               </span>
             </span>
           </h1>
@@ -83,9 +83,7 @@ export default function Hero() {
             className="ed-fade t-body mt-[var(--s-6)] hidden text-ivory/72 md:block"
             style={{ animationDelay: '0.5s' }}
           >
-            Plavac Mali sealed in Petrinja clay, lowered to around twenty metres and left there
-            seven hundred days at fourteen degrees. What comes back up is wearing the sea — and we
-            do not clean it off.
+            is the result of intelligent effort with the touch of tradition.
           </p>
 
           <div
@@ -97,17 +95,23 @@ export default function Hero() {
                 jedinu sekciju u kojoj stranica argumentira svoj proizvod.
                 Nosi i cijenu amfore, pa mobitel prvi broj sretne uz predmet, a
                 ne hladno dva ekrana nize. */}
+            {/* Dva gumba u redu na 360 px: izmjereno, „See the amphora — €382"
+                lomilo se u dva reda na svim trima sirinama (360/390/430), pa je
+                cijena skrivena do md i oznake su krace na mobitelu. `nowrap`
+                jer se gumb nikad ne smije lomiti. */}
             <Link
               href="#dive"
-              className="data-label pressable bg-gold px-[var(--s-4)] py-[var(--s-4)] text-abyss md:px-[var(--s-5)]"
+              className="data-label pressable whitespace-nowrap bg-gold px-[var(--s-4)] py-[var(--s-4)] text-abyss md:px-[var(--s-5)]"
             >
-              See the amphora — {eur(AMPHORA.price)}
+              See the amphora
+              <span className="hidden md:inline"> — {eur(AMPHORA.price)}</span>
             </Link>
             <Link
               href="/visit"
-              className="data-label pressable border border-ivory/28 px-[var(--s-4)] py-[var(--s-4)] text-ivory/88 transition-colors duration-200 hover:border-gold hover:text-gold md:px-[var(--s-5)]"
+              className="data-label pressable whitespace-nowrap border border-ivory/28 px-[var(--s-4)] py-[var(--s-4)] text-ivory/88 transition-colors duration-200 hover:border-gold hover:text-gold md:px-[var(--s-5)]"
             >
-              Taste it in Drače
+              <span className="md:hidden">Visit us</span>
+              <span className="hidden md:inline">Taste it in Drače</span>
             </Link>
           </div>
         </div>

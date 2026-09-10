@@ -37,7 +37,7 @@ export default function Awards() {
             kolekcionaru govori kao ravnome — a stajala je na `t-field`, 65 %
             prozirnosti, u desnoj margini. To je postavljanje disclaimera. */}
         <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[18ch] text-ivory">
-          Awarded as an object.
+          Wine trophies
         </h2>
 
         <p className="t-body mt-[var(--s-5)] text-ivory/80">
@@ -75,7 +75,10 @@ export default function Awards() {
 
               <p className="t-field mt-auto pt-[var(--s-3)] text-ivory/65">{a.detail}</p>
 
-              <p className="data-label-sm tnum mt-[var(--s-3)] text-ivory/60">
+              {/* Red se REZERVIRA i kad godine nema — Decanter kod njih stoji bez
+                  godine, pa je bez ovoga njegova kartica zavrsavala 26 px vise
+                  od ostalih cetiri i red je izgledao neporavnan. */}
+              <p className="data-label-sm tnum mt-[var(--s-3)] min-h-[0.9rem] text-ivory/60">
                 {a.year}
               </p>
             </li>

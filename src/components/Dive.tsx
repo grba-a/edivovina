@@ -40,19 +40,31 @@ export default function Dive() {
   return (
     <Station data={S} side="l" className="ed-dive">
       <div className="ed-in relative z-10 flex flex-col pb-[var(--sec-y)] pt-[var(--s-9)] ed-dive-in">
+        {/* NASLOV IMA IZMJEREN PRORACUN: 566 px na 1440 px.
+            Amfora je na ovoj postaji u SREDINI kadra (x: 0, scale 1,15) i njen
+            lijevi rub je na 598 px. Njihova recenica „Our mission is to make top
+            quality wines, but also to make them unique." trazila je na tom
+            rasponu sest redova naslova, pa stoji u tijelu — a naslov nosi
+            njihovu vlastitu kratku frazu. Isti razred kvara kao u heru.
+            Mjereno diffom dva screenshota uz ZAMRZNUT snijeg i snopove: bez
+            toga diff lovi ambijent koji se krece, ne predmet. */}
         {/* Samo ime postaje: recenica o svjetlu je naslov ove sekcije. */}
         <p className="data-label text-gold">{S.name}</p>
 
-        <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[13ch] text-ivory">
-          Red disappears first.
+        <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[11ch] text-ivory">
+          The Sea Mystery.
         </h2>
 
         <div className="ed-dive-band mt-[var(--s-8)]">
           <div className="ed-dive-l">
-            <p className="data-label text-gold">Clay</p>
+            <p className="data-label text-gold">The mission</p>
             <p className="t-body mt-[var(--s-4)] text-ivory/72">
-              Thrown from Petrinja clay, corked, and sealed with two layers of rubber. It took a
-              year of failed seals before the sea finally stayed outside.
+              Our mission is to make top quality wines, but also to make them unique.
+            </p>
+            <p className="t-body mt-[var(--s-4)] text-ivory/72">
+              To realise our mission statement, we decided to combine the best of what nature gave
+              us and to immerse our wine in the sea. We store it in the depths for more than 700
+              days.
             </p>
           </div>
 
@@ -74,14 +86,14 @@ export default function Dive() {
           </dl>
 
           <div className="ed-dive-r">
-            <p className="data-label text-gold">Sea</p>
+            <p className="data-label text-gold">The result</p>
             <p className="t-body mt-[var(--s-4)] text-ivory/72">
-              Seven hundred days with no light and no vibration, at twice the pressure of the
-              surface. Each one comes back carrying something different — oysters, coralline, the
-              shape of the cage it hung in. We do not clean it off.
+              With the immersion of the first bottle and amphora, we knew that we had made
+              something special, something that will contribute to history: the famous wine of
+              Pelješac becomes also a sea wine.
             </p>
             <p className="t-body mt-[var(--s-4)] text-ivory/72">
-              It arrives in a pinewood box, in the wrought-iron cradle it hung in on the seabed.
+              We called it Navis Mysterium – The Sea Mystery.
             </p>
 
             <div className="mt-[var(--s-6)]">

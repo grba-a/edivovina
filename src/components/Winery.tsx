@@ -30,20 +30,21 @@ export default function Winery() {
       <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
-        <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[15ch] text-ivory">
-          We stopped building cellars in 2013.
+        <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[26ch] text-ivory">
+          It is the Pelješac peninsula — or as we like to call it, wine paradise.
         </h2>
 
         <div className="mt-[var(--sec-y-tight)] grid gap-[var(--s-8)] md:grid-cols-[1.05fr_.95fr] md:items-start">
           <div>
             <p className="t-body text-ivory/70">
-              The first amphorae went down into a fishing boat that sank more than thirty years
-              ago, held under concession. It took a year of failed seals before the sea stayed
-              outside.
+              On the Adriatic coast, Croatia, there is a place where our story begins. Pelješac is
+              the place in Croatia where you can find excellent wines, such as Dingač or Plavac
+              Mali, that are famous all over the world.
             </p>
             <p className="t-body mt-[var(--s-4)] text-ivory/70">
-              The clay is from Petrinja, the wrought-iron cradle from Sisak, the pinewood box
-              from Varaždin. Nothing from far away — and neither is the wine.
+              Apart from Pelješac and wines, there is one more gift of nature that is central to
+              our story – it is the sea – the deep, crystal blue, Adriatic that holds treasures and
+              mysteries. Give us a visit while in Dubrovnik.
             </p>
 
             <dl className="mt-[var(--s-7)] grid grid-cols-3 gap-[var(--s-5)]">
@@ -67,7 +68,7 @@ export default function Winery() {
                 href="/about"
                 className="data-label pressable border border-gold/45 px-[var(--s-5)] py-[var(--s-4)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
               >
-                How it is made
+                Read More
               </Link>
               <Link
                 href="/visit"

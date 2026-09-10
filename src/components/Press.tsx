@@ -24,7 +24,7 @@ export default function Press() {
             rijeci u nizu i citao ih kao traku partnera. Najjaci tudi dokaz koji
             imaju bio je neoznacen. */}
         <h2 id={`${S.id}-h`} className="t-title mt-[var(--s-5)] text-ivory">
-          In the press
+          News &amp; stories
         </h2>
 
         <ul className="mt-[var(--s-5)] flex flex-wrap items-baseline gap-x-[var(--s-7)] gap-y-[var(--s-3)]">
