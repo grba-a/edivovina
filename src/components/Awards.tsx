@@ -100,14 +100,14 @@ export default function Awards() {
           amphora lifted off the seabed — nobody else does that.
         </p>
 
-        {/* Galerija stoji na istoj dubini (22 m) i pokazuje ono sto medalje
-            tvrde — obrastene amfore kakve dodju gore. */}
         <div className="mt-[var(--s-6)] flex flex-wrap items-center gap-[var(--s-4)]">
+          {/* Oznaka i ruta se moraju poklapati: gumb koji pise „About Us" ne
+              smije voditi na galeriju. */}
           <Link
-            href="/gallery"
+            href="/about"
             className="data-label pressable border border-gold/45 px-[var(--s-5)] py-[var(--s-4)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
           >
-            See them come up
+            About Us
           </Link>
           <Link
             href="/news"

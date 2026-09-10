@@ -1,19 +1,15 @@
 import Link from 'next/link'
 import Frame from '@/components/ui/Frame'
 import Station from '@/components/station/Station'
-import { WINES, bySlug } from '@/data/wines'
+import { bySlug } from '@/data/wines'
 import { eur } from '@/lib/money'
 import { station } from '@/data/stations'
 
 const S = station('surface')
 
-/* Cijene se ne pisu rukom. Prije su ovdje stajale tri zakovane vrijednosti
-   (€382 i raspon €17,50 — €536) i svaka je bila jedna izmjena kataloga daleko
-   od lazi. */
+/* Cijena se ne pise rukom: prije je €382 stajao zakovan i bio je jedna izmjena
+   kataloga daleko od lazi. Raspon €17,50 — €536 je skinut s hairlinea. */
 const AMPHORA = bySlug('navis-mysterium-undersea-amphora')!
-const PRICES = WINES.map((w) => w.price)
-const CHEAPEST = Math.min(...PRICES)
-const DEAREST = Math.max(...PRICES)
 
 /**
  * 0 METARA — POVRSINA. Prvi ekran, puna visina kadra.
@@ -123,13 +119,9 @@ export default function Hero() {
           <span className="data-label-sm text-ivory/60">
             Scroll and you sink
           </span>
+          {/* Raspon cijena je SKINUT na Petrov zahtjev. Vlas sada ide do
+              desnog ruba i red nosi samo oznaku skrola. */}
           <span aria-hidden className="h-px flex-1 bg-ivory/14" />
-{/* Raspon, ne „0,0 m": dubinu na 0 m nosi velika brojka u margini, a ovaj
-              slot je jedina besplatna nekretnina na prvom ekranu. Bez njega je
-              mobitel prvi broj na stranici sretao kao €382, bez mjerila. */}
-          <span className="data-label-sm tnum text-ivory/85">
-            {eur(CHEAPEST)} — {eur(DEAREST)}
-          </span>
         </div>
       </div>
     </Station>

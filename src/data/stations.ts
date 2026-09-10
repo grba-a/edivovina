@@ -103,7 +103,7 @@ export const STATIONS: Station[] = [
     id: 'shop',
     m: 12,
     name: 'The bottles',
-    light: 'At twelve metres orange disappears',
+    light: 'At twelve metres gold outlasts orange',
     act: 'small',
     /* PO SREDINI. Kratko sam ga pomaknuo u stranu (0,62) jer je iza neprozirnih
        kartica mjerio 0,00–0,05 % ekrana — ali bocni drift od tri metra do dna
@@ -134,7 +134,7 @@ export const STATIONS: Station[] = [
     id: 'seabed',
     m: 25,
     name: 'The seabed',
-    light: 'Here the amphora settles into its cradle',
+    light: 'Twenty-five metres down, nothing moves',
     act: 'full',
     x: 0,
     scale: 1,

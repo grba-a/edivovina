@@ -1,22 +1,24 @@
 import { AMPHORA, BOTTLE } from '@/data/silhouettes'
 
 /**
- * ANATOMIJA — tri panela, njihova sekvenca, nas crtez.
+ * ANATOMIJA — dva panela, njihova sekvenca, nas crtez.
  *
  * Ovo je element s dna njihove About stranice, onaj koji se Petru svidio. Kod
- * njih je to tri PROZIRNA PNG-a nad jednom `sea-bottom-background.jpg`, tri
- * banda po 80vh, statично: karta obale -> presjek vodenog stupa -> cutaway
+ * njih je to TRI prozirna PNG-a nad jednom `sea-bottom-background.jpg`, tri
+ * banda po 80vh, staticno: karta obale -> presjek vodenog stupa -> cutaway
  * amfore s tri zlatna callouta.
  *
- * Prenosimo TEHNIKU (jedan kontinuirani gradijent, tri prozracna banda, zlatna
+ * KARTA JE SKINUTA na Petrov zahtjev. Ostaju presjek i cutaway — dva crteza
+ * koja govore o predmetu; karta je govorila o mjestu, a to stranica vec kaze
+ * tekstom („one hour from Dubrovnik", dvije adrese) i cijela /visit stranica.
+ *
+ * Prenosimo TEHNIKU (jedan kontinuirani gradijent, prozracni bandovi, zlatna
  * hairline grafika, oznaka tijesno nad brojkom) i mijenjamo IMPLEMENTACIJU:
  *
  *   njihovo                        nase
  *   -------                        ----
  *   tekst zapecen u PNG            zivi <text> — prevodi se, ostaje ostar
  *   amphora-en.png + amphora-hr    jedan crtez, bez jezicnog blizanca
- *   „Ston"/„Dubrovnik" crno na     zlatno na tamnom, citljivo
- *     skoro crnom (nevidljivo)
  *   444 px raster                  vektor, ostar na svakom ekranu
  *   `cover` na 80vh kutiji         viewBox, nista se ne kropa
  *
@@ -66,103 +68,8 @@ export default function Anatomy() {
           </p>
         </div>
 
-        {/* ---------- 1. KARTA ---------- */}
-        <figure className="ed-in mt-[var(--sec-y)]">
-          <svg
-            viewBox="0 0 800 260"
-            role="img"
-            aria-labelledby="map-t"
-            className="h-auto w-full"
-          >
-            <title id="map-t">
-              The Pelješac peninsula, with Janjina and Drače marked, one hour from Dubrovnik
-            </title>
-            {/* Obala kao jedna hairline krivulja — kod njih je kopno samo
-                impliciano rasporedom pinova. */}
-            <path
-              d="M20 150 C110 116 176 128 246 120 C316 112 352 96 420 104 C470 110 512 130 566 146 C620 162 676 158 740 176 L780 190"
-              fill="none"
-              stroke="var(--color-ivory)"
-              strokeOpacity="0.22"
-              strokeWidth="1.5"
-            />
-            <path
-              d="M20 150 C110 116 176 128 246 120 C316 112 352 96 420 104 C470 110 512 130 566 146 C620 162 676 158 740 176 L780 190 L780 260 L20 260 Z"
-              fill="var(--color-ivory)"
-              fillOpacity="0.04"
-            />
-
-            <text
-              x="150"
-              y="86"
-              className="fill-gold"
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 15,
-                letterSpacing: '0.42em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Pelješac
-            </text>
-            <text
-              x="150"
-              y="108"
-              className="fill-gold"
-              fillOpacity="0.7"
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 11,
-                letterSpacing: '0.42em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Peninsula
-            </text>
-
-            {[
-              { x: 300, y: 118, label: 'Janjina', sub: 'the winery' },
-              { x: 396, y: 105, label: 'Drače', sub: 'the wine bar' },
-              { x: 690, y: 168, label: 'Dubrovnik', sub: 'one hour away' },
-            ].map((p) => (
-              <g key={p.label}>
-                {/* pin */}
-                <path
-                  d={`M${p.x} ${p.y} c-7 -9 -11 -14 -11 -20 a11 11 0 0 1 22 0 c0 6 -4 11 -11 20 z`}
-                  fill="var(--color-gold)"
-                />
-                <circle cx={p.x} cy={p.y - 20} r="3.6" fill="var(--color-abyss)" />
-                <text
-                  x={p.x}
-                  y={p.y + 20}
-                  textAnchor="middle"
-                  className="fill-ivory"
-                  style={{ fontFamily: 'var(--font-display)', fontSize: 15 }}
-                >
-                  {p.label}
-                </text>
-                <text
-                  x={p.x}
-                  y={p.y + 36}
-                  textAnchor="middle"
-                  className="fill-ivory"
-                  fillOpacity="0.5"
-                  style={{
-                    fontFamily: 'var(--font-sans)',
-                    fontSize: 9,
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {p.sub}
-                </text>
-              </g>
-            ))}
-          </svg>
-        </figure>
-
-        {/* ---------- 2. PRESJEK VODENOG STUPA ---------- */}
-        <figure className="ed-in mt-[var(--sec-y)]">
+        {/* ---------- 1. PRESJEK VODENOG STUPA ---------- */}
+        <figure className="ed-in mt-[var(--sec-y-tight)]">
           <svg
             viewBox="0 0 800 440"
             role="img"
@@ -276,7 +183,7 @@ export default function Anatomy() {
           </svg>
         </figure>
 
-        {/* ---------- 3. CUTAWAY ---------- */}
+        {/* ---------- 2. CUTAWAY ---------- */}
         <figure className="ed-in mt-[var(--sec-y)]" style={{ paddingBottom: 'var(--sec-y)' }}>
           <svg
             viewBox="0 0 620 300"

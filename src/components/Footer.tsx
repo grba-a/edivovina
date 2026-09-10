@@ -49,7 +49,7 @@ export default function Footer({ seabed = true }: { seabed?: boolean }) {
               href="/wines"
               className="data-label pressable bg-gold px-[var(--s-5)] py-[var(--s-4)] text-abyss"
             >
-              Buy a bottle
+              Visit Shop
             </Link>
             <Link
               href="/contact"

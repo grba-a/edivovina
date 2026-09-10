@@ -2,7 +2,6 @@ import Link from 'next/link'
 import Station from '@/components/station/Station'
 import { station } from '@/data/stations'
 import { bySlug } from '@/data/wines'
-import { eur } from '@/lib/money'
 
 const S = station('dive')
 
@@ -17,15 +16,13 @@ const S = station('dive')
  * MOBITEL: nema bocnog prostora, pa ista ideja ide vertikalno — glina gore,
  *   prazan pojas u kojem se predmet vidi, mjere pa more i akcija ispod.
  *
- * OVDJE SE ZATVARA CIJENA. Argument dolazi prije broja, i to je najbolja
- * odluka na stranici — ali broj je dugo stajao sam. Sad uz njega stoji
- * KONTROLA: `NM-REG` je isto vino, ista bacva, ista berba, nikad nije silo,
- * i kosta €39. Bez tog broja €382 nema s cime usporediti; s njim je razlika
- * cinjenica, a ne tvrdnja. Oba dolaze iz kataloga pa ne mogu driftati.
+ * CIJENE OVDJE NEMA. Sekcija nosi argument i vodi na shop; broj se zatvara
+ * na /wines, gdje cjenovna ljestvica pokazuje skok od kontrole (€39) do
+ * predmeta (€382). Prije je taj usporedni broj stajao ispod gumba — skinuto
+ * na Petrov zahtjev.
  */
 export default function Dive() {
   const amphora = bySlug('navis-mysterium-undersea-amphora')!
-  const control = bySlug('navis-mysterium-regular-bottle')!
 
   const FIELDS: [string, string][] = [
     ['Height', '300 mm'],
@@ -97,25 +94,16 @@ export default function Dive() {
             </p>
 
             <div className="mt-[var(--s-6)]">
+              {/* Oznaka i ruta se poklapaju: „Visit Shop" vodi na shop, ne na
+                  jedan proizvod. Kontrolna cijena (€39) i red o dostavi su
+                  skinuti na Petrov zahtjev — oboje sada stoji na /wines,
+                  odnosno na stranici proizvoda. */}
               <Link
-                href={`/product/${amphora.slug}`}
+                href="/wines"
                 className="data-label pressable inline-block bg-gold px-[var(--s-5)] py-[var(--s-4)] text-abyss"
               >
-                Take one — {eur(amphora.price)}
+                Visit Shop
               </Link>
-
-              {/* Recenice s brojem, ne tabela. Kao <dl> je `shrink-0` na dugom
-                  <dt> razvlacio red i izbacivao cijenu 17 px izvan kadra na
-                  360 px — tekst koji se moze lomiti nikad ne smije biti
-                  shrink-0. */}
-              <p className="t-field mt-[var(--s-4)] max-w-[34ch] text-ivory/65">
-                {control.name} — same wine, same barrel, never went down:{' '}
-                <b className="tnum font-normal text-ivory/85">{eur(control.price)}</b>
-              </p>
-              <p className="t-field mt-[var(--s-2)] max-w-[34ch] text-ivory/65">
-                Shipped from Janjina by UPS, DPD or DHL, dispatched within 24 hours. Customs
-                is paid by the buyer.
-              </p>
             </div>
           </div>
         </div>

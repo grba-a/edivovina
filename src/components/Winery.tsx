@@ -30,16 +30,16 @@ export default function Winery() {
       <div className="ed-in relative z-10">
         <p className="data-label text-gold">{S.light}</p>
 
-        <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[26ch] text-ivory">
-          It is the Pelješac peninsula — or as we like to call it, wine paradise.
+        <h2 id={`${S.id}-h`} className="t-plate mt-[var(--s-5)] max-w-[16ch] text-ivory">
+          Wine paradise.
         </h2>
 
         <div className="mt-[var(--sec-y-tight)] grid gap-[var(--s-8)] md:grid-cols-[1.05fr_.95fr] md:items-start">
           <div>
             <p className="t-body text-ivory/70">
-              On the Adriatic coast, Croatia, there is a place where our story begins. Pelješac is
-              the place in Croatia where you can find excellent wines, such as Dingač or Plavac
-              Mali, that are famous all over the world.
+              On the Adriatic coast, Croatia, there is a place where our story begins — the
+              Pelješac peninsula. It is the place in Croatia where you can find excellent wines,
+              such as Dingač or Plavac Mali, that are famous all over the world.
             </p>
             <p className="t-body mt-[var(--s-4)] text-ivory/70">
               Apart from Pelješac and wines, there is one more gift of nature that is central to

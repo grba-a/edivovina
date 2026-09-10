@@ -61,16 +61,13 @@ export default function Shop() {
         </ul>
 
         {/* Grid je najava, ne katalog — deset vina zivi na /wines. */}
-        <div className="mt-[var(--s-6)] flex flex-wrap items-center gap-[var(--s-4)]">
+        <div className="mt-[var(--s-6)]">
           <Link
             href="/wines"
-            className="data-label pressable border border-gold/45 px-[var(--s-5)] py-[var(--s-4)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
+            className="data-label pressable inline-block border border-gold/45 px-[var(--s-5)] py-[var(--s-4)] text-gold transition-colors duration-200 hover:bg-gold hover:text-abyss"
           >
-            All {WINES.length} wines
+            Visit Shop
           </Link>
-          <p className="t-field max-w-[32ch] text-ivory/60">
-            Including the €39 bottle that never left the cellar.
-          </p>
         </div>
       </div>
     </Station>
